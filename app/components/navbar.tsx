@@ -74,8 +74,8 @@ export const Navbar = () => {
           </div>
         </div>
         <div className=" flex lg:hidden flex-col gap-1">
-          <div className=" w-[15px] h-[1px] bg-black"></div>
-          <div className=" w-[15px] h-[1px] bg-black"></div>
+          <div className=" w-[15px] shrink-0 border-b-[1px] border-black"></div>
+          <div className=" w-[15px] border-b-[1px] shrink-0 border-black"></div>
         </div>
         <p>Dashy</p>
 
