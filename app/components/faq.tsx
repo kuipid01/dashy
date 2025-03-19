@@ -58,7 +58,7 @@ const Faq = () => {
         <p className="my-4 text-center lg:text-left max-w-[500px]">
           Couldn’t find the answer you need? You can check out our list of
           helpful information here or contact our support team at
-          customer@dashy.com
+          customer@Hubsell.com
         </p>
 
         <Sheet>

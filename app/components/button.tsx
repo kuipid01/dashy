@@ -3,18 +3,23 @@ import clsx from "clsx";
 export const Button = ({
   className,
   text,
-  onClick
+  onClick,
+  icon
 }: {
   text: string;
   className?: string;
   onClick?: () => void;
+  icon?: React.ReactNode;
 }) => {
   return (
     <button
       onClick={onClick}
-      className={clsx(" px-5  bg-white  text-black py-2 rounded-md", className)}
+      className={clsx(" px-5 flex items-center gap-3 bg-white  text-black py-2 rounded-[60px] border border-black", className)}
     >
-      {text}
+      {text}      
+      {
+        icon && icon
+      }
     </button>
   );
 };

@@ -9,9 +9,9 @@ const About = () => {
         <Image fill alt="about -image" src="" />
 
         <div className=" flex text-white items-start flex-col">
-          <p className=" text-[25px]">Discover Dashy</p>
+          <p className=" text-[25px]">Discover Hubsell</p>
           <p className=" w-full text-xs sm:text-lg sm:max-w-[500px] my-2">
-            At Dashy, we do more than just sell fashion—we curate and sometimes
+            At Hubsell, we do more than just sell fashion—we curate and sometimes
             create pieces that let you express your individuality. Our
             collections are designed for those who dare to stand out and
             showcase their true selves.

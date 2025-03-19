@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-[#201E1F] text-white py-10 px-4 md:px-10">
       <div className=" flex flex-col">
         <div className="flex lg:flex-row flex-col justify-between">
-          <h2 className=" font-medium">Dashy</h2>
+          <h2 className=" font-medium">Hubsell</h2>
           <div>
             <h3 className="text-white  text-xs uppercase mb-3">
               Be the first to know about the latest drops
@@ -94,7 +94,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-700 mt-10 pt-5 flex justify-between items-center text-gray-400 text-sm">
-        <p>&copy; {new Date().getFullYear()} Dashy</p>
+        <p>&copy; {new Date().getFullYear()} Hubsell</p>
         <div className="flex items-center gap-3">
           <CreditCard size={20} />
           <Apple size={20} />
