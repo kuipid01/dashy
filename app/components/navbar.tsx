@@ -10,7 +10,7 @@ export const Navbar = () => {
   return (
     <div
 
-      className="fixed h-fit w-full items-start  z-10 flex flex-col _gap-10"
+      className="fixed h-fit w-full items-start  z-100 flex flex-col _gap-10"
     >
       <nav
         className={clsx(
