@@ -14,7 +14,7 @@ export const Button = ({
   return (
     <button
       onClick={onClick}
-      className={clsx(" px-5 flex items-center gap-3 bg-white  text-black py-2 rounded-[60px] border border-black", className)}
+      className={clsx(" px-5 flex items-center justify-between gap-3 bg-white  text-black py-2 rounded-[60px] border border-black", className)}
     >
       {text}      
       {

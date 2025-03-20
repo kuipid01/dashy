@@ -1,8 +1,6 @@
 "use client";
 import clsx from "clsx";
-import { Search, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { Button } from "./button";
 
 export const Navbar = () => {
@@ -19,12 +17,9 @@ export const Navbar = () => {
         )}
       >
 
-        <div className=" flex lg:hidden flex-col text-black gap-1">
-          <div className=" w-[15px] shrink-0 border-b-[1px] border-black"></div>
-          <div className=" w-[15px] border-b-[1px] shrink-0 border-black"></div>
-        </div>
-        <p className=" font-bold">Hubsell</p>
-        <div className="flex items-center gap-4">
+
+        <p className=" text-[20px] font-bold">Hubsell</p>
+        <div className="hidden lg:flex items-center gap-4">
           <Link href="/features">
             Features</Link>
           <Link href="/pricing">
@@ -32,7 +27,11 @@ export const Navbar = () => {
           <Link href="/contact">
             Contact</Link>
         </div>
-        <Button className=" !bg-black text-white" text="Get Started" />
+        <Button className=" hidden lg:block !bg-black text-white" text="Get Started" />
+        <div className=" flex lg:hidden flex-col text-black gap-1">
+          <div className=" w-[25px] shrink-0 border-b-[2px] border-black"></div>
+          <div className=" w-[25px] border-b-[2px] shrink-0 border-black"></div>
+        </div>
       </nav>
     </div>
   );

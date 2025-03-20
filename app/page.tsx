@@ -1,9 +1,6 @@
-import About from "./components/about";
-import { Categories } from "./components/categories";
 import { CTA } from "./components/cta";
-import Faq from "./components/faq";
 import { Landing } from "./components/landingpage";
-import Retro from "./components/retro";
+// import Retro from "./components/retro";
 import { SimpleSteps } from "./components/simple-steps";
 import { Use1 } from "./components/use-1";
 import { WhatIsIncluded } from "./components/what-is-included";
@@ -26,7 +23,7 @@ export default function Home() {
 "
         sub="Discover our latest arrivals, fresh styles designed to inspire."
       /> */}
-      <Faq />
+      {/* <Faq /> */}
     </div>
   );
 }

@@ -3,19 +3,19 @@ import { CreditCard, Apple, CircleDollarSign } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#201E1F] text-white py-10 px-4 md:px-10">
+    <footer className="bg-[#E7E3D6] text-black py-10 px-4 md:px-10">
       <div className=" flex flex-col">
         <div className="flex lg:flex-row flex-col justify-between">
-          <h2 className=" font-medium">Hubsell</h2>
+          <h2 className=" font-medium text-[30px] ">Hubsell</h2>
           <div>
-            <h3 className="text-white  text-xs uppercase mb-3">
+            <h3 className="text-black  text-xs uppercase mb-3">
               Be the first to know about the latest drops
             </h3>
             <div className="flex w-full sm:w-[280px] h-[40px] bg-[#4C5454] relative overflow-hidden rounded-md items-center gap-2">
               <input
                 type="email"
                 placeholder="Your Email"
-                className="bg-transparent placeholder:uppercase text-xs flex-1 text-white px-4 py-2  focus:outline-none"
+                className="bg-transparent placeholder:uppercase text-xs flex-1 text-black px-4 py-2  focus:outline-none"
               />
               <button className="bg-white absolute right-0 bottom-0 top-0 h-full text-black px-4 py-2 rounded-md font-medium uppercase text-xs">
                 Subscribe
@@ -24,9 +24,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="grid mt-5 text-xs w-fit uppercase sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-10 gap-4 lg:gap-20">
+        <div className="grid mt-5 text-xs w-fit uppercase sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-20">
           <div>
-            <h3 className="text-gray-400 uppercase mb-3">Socials</h3>
+            <h3 className="text-black  uppercase mb-3">Socials</h3>
             <ul className="space-y-2 font-medium">
               <li>
                 <Link href="#" className="flex items-center gap-2">
@@ -47,7 +47,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-gray-400 uppercase mb-3">Pages</h3>
+            <h3 className="text-black uppercase mb-3">Pages</h3>
             <ul className="space-y-2 font-medium">
               <li>
                 <Link href="#">Index</Link>
@@ -68,7 +68,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-gray-400 uppercase mb-3">Help</h3>
+            <h3 className="text-black uppercase mb-3">Help</h3>
             <ul className="space-y-2 font-medium">
               <li>
                 <Link href="#">Contact</Link>
@@ -93,7 +93,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-700 mt-10 pt-5 flex justify-between items-center text-gray-400 text-sm">
+      <div className="border-t border-gray-700 mt-10 pt-5 flex justify-between items-center text-black text-sm">
         <p>&copy; {new Date().getFullYear()} Hubsell</p>
         <div className="flex items-center gap-3">
           <CreditCard size={20} />

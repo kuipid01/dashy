@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { Pill } from "./pill"
-import { ArrowRight } from "lucide-react"
+import { ArrowDown, ArrowRight } from "lucide-react"
 export const Use1 = () => {
 
     const features = [
@@ -29,18 +29,18 @@ export const Use1 = () => {
 
                 <Image src="/assets/use-mountain.svg" alt="" width={3440} height={778} className="absolute z-0 bottom-0 left-0 right-0 object-cover" />
 
-                <div className=" border-b relative mb-4 flex-1 w-[80%] mx-auto border-dashed border-black flex items-center justify-between">
+                <div className=" border-b relative flex-col-reverse lg:flex-row mb-4 flex-1 w-[80%] mx-auto border-dashed border-black flex items-center justify-between">
                     <div>
                         IMAGE GOES HERE
                     </div>
-                    <div className=" max-w-[40%]">
+                    <div className=" lg:max-w-[40%] flex flex-col items-center lg:items-start w-full">
                         <Pill text="QUICK AD INTEGRATION" />
 
-                        <h1 className=" text-black text-[46px] leading-[1.2] my-4">
+                        <h1 className=" text-black text-center lg:text-left text-[36px] lg:text-[46px] leading-[1.2] my-4">
                             Maximize Your Reach, Instantly, and Drive Real Conversions.
                         </h1>
-                        <p className="mt-2 leading-[1.5] text-[20px] text-black">
-                            Unlock your platform's potential with efficient ad integration. Reach your ideal audience across a wide network, optimizing for higher click-through rates and measurable results.
+                        <p className="mt-2 leading-[1.5] text-[20px] lg:text-[20px] text-black">
+                            Unlock your platform&apos;s potential with efficient ad integration. Reach your ideal audience across a wide network, optimizing for higher click-through rates and measurable results.
                         </p>
                     </div>
                 </div>
@@ -56,10 +56,10 @@ export const Use1 = () => {
                     </h1>
 
 
-                    <div className=" flex gap-3 mt-7">
+                    <div className=" flex flex-col lg:flex-row gap-3 mt-7">
                         {
                             features.map((feature) => (
-                                <div key={feature.step} className="relative first:rounded-l-[40px] rounded-2xl p-10 last:rounded-r-[40px] bg-white flex flex-row items-start justify-start">
+                                <div key={feature.step} className="relative lg:first:rounded-l-[40px] rounded-2xl p-10 lg:last:rounded-r-[40px] bg-white flex flex-row items-start justify-start">
                                     <div className=" mr-5">
                                         <p className=" text-[30px] text-accent font-medium">{feature.step}</p>
                                     </div>
@@ -69,9 +69,11 @@ export const Use1 = () => {
                                     </div>
 
 
-                                   { feature.showArrow && <div className="bg-primary z-10 top-1/2 -translate-y-1/2 right-[-40px] shrink-0 absolute  size-[60px]  rounded-full  grid place-items-center">
+                                   { feature.showArrow && <div className="bg-primary z-10 lg:top-1/2 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 bottom-[-40px] lg:right-[-40px] lg:bottom-auto shrink-0 absolute  size-[60px]  rounded-full  grid place-items-center">
                                         <div className=" bg-white size-[45px] rounded-full grid place-items-center">
-                                            <ArrowRight className=" text-black" />
+                                          
+                                            <ArrowRight className=" hidden lg:block text-black" />
+                                            <ArrowDown className=" lg:hidden text-black" />
                                         </div>
                                     </div>}
                                 </div>

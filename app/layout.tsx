@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-import { Raleway,Poiret_One } from "next/font/google";
+import { Poiret_One } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "./components/navbar";
 import Footer from "./components/footer";
 
-const raleway = Raleway({
-  variable: "--font-geist-sans",
-  subsets: ["latin"]
-});
 const poiretOne = Poiret_One({  
   variable: "--font-poiret-one",
   subsets: ["latin"]  ,
