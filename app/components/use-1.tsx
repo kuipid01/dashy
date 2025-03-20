@@ -25,7 +25,7 @@ export const Use1 = () => {
     ]
     return (
         <div className="h-fit min-h-screen bg-primary flex flex-col w-full ">
-            <div className="h-screen flex flex-col relative overflow-y-clip justify-center items-center">
+            <div className="h-screen pt-[100px] lg:pt-0 flex flex-col relative overflow-y-clip justify-center items-center">
 
                 <Image src="/assets/use-mountain.svg" alt="" width={3440} height={778} className="absolute z-0 bottom-0 left-0 right-0 object-cover" />
 
@@ -36,10 +36,10 @@ export const Use1 = () => {
                     <div className=" lg:max-w-[40%] flex flex-col items-center lg:items-start w-full">
                         <Pill text="QUICK AD INTEGRATION" />
 
-                        <h1 className=" text-black text-center lg:text-left text-[36px] lg:text-[46px] leading-[1.2] my-4">
+                        <h1 className=" text-black text-center lg:text-left text-[26px] md:text-[36px] lg:text-[46px] leading-[1.2] my-4">
                             Maximize Your Reach, Instantly, and Drive Real Conversions.
                         </h1>
-                        <p className="mt-2 leading-[1.5] text-[20px] lg:text-[20px] text-black">
+                        <p className="mt-2 leading-[1.5] text-[15px] md:text-[20px] text-center lg:text-left lg:text-[20px] text-black">
                             Unlock your platform&apos;s potential with efficient ad integration. Reach your ideal audience across a wide network, optimizing for higher click-through rates and measurable results.
                         </p>
                     </div>
@@ -51,7 +51,7 @@ export const Use1 = () => {
                 <div className="  flex flex-col items-center justify-center w-[90%] mx-auto">
                     <Pill text="3-step Process" />
 
-                    <h1 className=" text-black text-[46px] max-w-[60%] text-center leading-[1.2] mt-4">
+                    <h1 className=" text-black text-[26px] md:text-[36px] lg:text-[46px] lg:max-w-[60%] text-center leading-[1.2] mt-4">
                         Maximize Your Reach, Instantly, and Drive Real Conversions.
                     </h1>
 

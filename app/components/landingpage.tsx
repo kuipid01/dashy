@@ -45,8 +45,8 @@ export const Landing = () => {
   }, [currentStep]);
   return (
     <div className=" h-fit  pt-[200px]  flex flex-col justify-center items-center bg-primary w-full">
-      <h1 className="text-4xl lg:text-5xl max-w-[90%] lg:max-w-[800px] leading-[1.2] text-center">Launch Your Online Business in Seconds. Manage, and Sell Anything, Instantly. </h1>
-      <p className="text-lg max-w-[90%] lg:max-w-[800px] my-4 text-center">Effortlessly create your online store and sell your products whatever they may be  to a global audience, all within seconds. Revolutionize your e-commerce journey with HubSell&apos;s intuitive platform.</p>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-[97%] lg:max-w-[800px] leading-[1.2] text-center">Launch Your <span className="hidden lg:block">Online, </span>  Business in Seconds. <span className="hidden lg:block">Manage, </span> and Sell Anything, Instantly. </h1>
+      <p className="text-lg max-w-[90%] lg:max-w-[800px] my-4 text-center">Launch your global online store instantly and sell anything. HubSell simplifies e-commerce.</p>
 
       <div className="flex  flex-col lg:flex-row gap-5">
         <Button text="See Pricing" icon={<ArrowRight size={18} color="white" />} className="!bg-black w-[200px] lg:w-auto !text-white" />
@@ -58,23 +58,23 @@ export const Landing = () => {
         </div>
         <div className="flex  relative flex-col w-[450px] h-[50%] overflow-hidden lg:h-full ">
           <div>
-          {steps.map((step) => (
-            <motion.div
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: -(currentStep * 60) + "vh" }}
-              transition={{ duration: .8, delay: 0.1, ease: "easeInOut" }}
-              key={step.step} className="flex flex-col p-5 h-[60vh]  items-start gap-4">
-              <div className={clsx(`w-10 h-10 text-black font-medium  rounded-full flex items-center justify-center`, step.step % 2 === 0 ? "bg-accent" : "bg-secondary")}>
-                <p className="text-black">{step.step}</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-[30px]">{step.title}</h3>
-                <p className="text-[24px] font-medium text-zinc-600">{step.description}</p>
-              </div>
-            </motion.div>
-          ))}
+            {steps.map((step) => (
+              <motion.div
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: 1, y: -(currentStep * 60) + "vh" }}
+                transition={{ duration: .8, delay: 0.1, ease: "easeInOut" }}
+                key={step.step} className="flex flex-col p-5 h-[60vh]  items-start gap-4">
+                <div className={clsx(`w-10 h-10 text-black font-medium  rounded-full flex items-center justify-center`, step.step % 2 === 0 ? "bg-accent" : "bg-secondary")}>
+                  <p className="text-black">{step.step}</p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-[30px]">{step.title}</h3>
+                  <p className="text-[24px] font-medium text-zinc-600">{step.description}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        
+
         </div>
       </div>
     </div>
