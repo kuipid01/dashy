@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Poiret_One } from "next/font/google";
-import "./globals.css";
-import { Navbar } from "./components/navbar";
-import Footer from "./components/footer";
+import "../globals.css";
+import { Navbar } from "../components/navbar";
+import Footer from "../components/footer";
 
-const poiretOne = Poiret_One({  
+const poiretOne = Poiret_One({
   variable: "--font-poiret-one",
-  subsets: ["latin"]  ,
+  subsets: ["latin"],
   weight: ["400"]
 });
 
