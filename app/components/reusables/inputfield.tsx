@@ -10,10 +10,11 @@ interface Props
   onChange: (e: ChangeEvent) => void;
 }
 
-export const InputField = ({ type, placeholder, onChange }: Props) => {
+export const InputField = ({ type, placeholder, onChange, ...rest }: Props) => {
   return (
     <input
-      className=" px-2 border border-zinc-300 rounded-md  text-gray-700 w-[400px] h-[40px]"
+      {...rest}
+      className={` px-2 border border-zinc-300 rounded-md  text-gray-700 w-[400px] h-[40px]  ${rest.className}`}
       onChange={onChange}
       type={type}
       placeholder={placeholder}
