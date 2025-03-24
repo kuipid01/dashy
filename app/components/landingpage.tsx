@@ -45,7 +45,7 @@ export const Landing = () => {
   }, [currentStep]);
   return (
     <div className=" h-fit  pt-[200px]  flex flex-col justify-center items-center bg-primary w-full">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-[97%] lg:max-w-[800px] leading-[1.2] text-center">Launch Your <span className="hidden lg:block">Online, </span>  Business in Seconds. <span className="hidden lg:block">Manage, </span> and Sell Anything, Instantly. </h1>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-[97%] lg:w-[900px] font-medium leading-[1.2] text-center">Launch Your <span className="hidden lg:inline-block">Online, </span>  Business in Seconds. <span className="hidden lg:inline-block">Manage, </span> and Sell Anything, Instantly. </h1>
       <p className="text-lg max-w-[90%] lg:max-w-[800px] my-4 text-center">Launch your global online store instantly and sell anything. HubSell simplifies e-commerce.</p>
 
       <div className="flex  flex-col lg:flex-row gap-5">
