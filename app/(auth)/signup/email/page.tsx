@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { InputField } from "@/app/components/reusables/inputfield";
 import { ChevronDown, Globe } from "lucide-react";
 import Link from "next/link";

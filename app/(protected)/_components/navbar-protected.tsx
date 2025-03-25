@@ -1,6 +1,6 @@
 "use client";
 import clsx from "clsx";
-import { Bell, MessageSquare, Search } from "lucide-react";
+import { Bell, Menu, MessageSquare, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -33,12 +33,12 @@ const NavbarProtected = () => {
   const pathname = usePathname();
   console.log(pathname);
   return (
-    <div className=" w-full px-4 rounded-xl bg-white flex items-center justify-between h-[10vh] ">
+    <div className=" w-[90%] fixed z-100 backdrop-blur-[100px] top-[20px] bg-white/90 px-4 rounded-xl left-1/2 -translate-x-1/2 flex items-center justify-between h-[7vh] md:h-[10vh] ">
       <div className=" flex items-center gap-4">
         {/* wIP: LOGO GPES HERE */}
         <h1 className=" text-[20px] font-bold">Hubsell</h1>
       </div>
-      <div className="flex">
+      <div className="lg:flex hidden ">
         <ul className=" flex items-center gap-4">
           {links.map((link) => (
             <li key={link.href}>
@@ -46,7 +46,7 @@ const NavbarProtected = () => {
                 className={clsx(
                   "capitalize px-5 py-2 rounded-md",
                   pathname.toLowerCase() === `/${link.href.toLowerCase()}` &&
-                    "bg-[#F7F7F8]"
+                    "bg-[#d4d4d4]"
                 )}
                 href={link.href}
               >
@@ -56,7 +56,7 @@ const NavbarProtected = () => {
           ))}
         </ul>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="lg:flex hidden items-center gap-2">
         <div className=" rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
           <Search size={18} className=" text-zinc-600" />
         </div>
@@ -75,6 +75,8 @@ const NavbarProtected = () => {
           />
         </div>
       </div>
+
+      <Menu className=" lg:hidden"/>
     </div>
   );
 };
