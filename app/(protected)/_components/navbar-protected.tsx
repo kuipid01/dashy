@@ -33,7 +33,7 @@ const NavbarProtected = () => {
   const pathname = usePathname();
   console.log(pathname);
   return (
-    <div className=" w-[90%] fixed z-100 backdrop-blur-[100px] top-[20px] bg-white/90 px-4 rounded-xl left-1/2 -translate-x-1/2 flex items-center justify-between h-[7vh] md:h-[10vh] ">
+    <div className=" w-[90%] fixed z-100 backdrop-blur-[100px] top-[20px] bg-white/50 px-4 rounded-xl left-1/2 -translate-x-1/2 flex items-center justify-between h-[7vh] md:h-[10vh] ">
       <div className=" flex items-center gap-4">
         {/* wIP: LOGO GPES HERE */}
         <h1 className=" text-[20px] font-bold">Hubsell</h1>

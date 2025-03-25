@@ -1,3 +1,4 @@
+import { Product } from "@/constants/types";
 import { Star } from "lucide-react";
 import Image from "next/image";
 
