@@ -79,10 +79,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --primary: #F8F5ED;
-  --secondary: #3DDB60;
-  --accent: #FFC91C;
-  --darker-primary:#E7E3D6;
+  --primary: #f8f5ed;
+  --secondary: #3ddb60;
+  --accent: #ffc91c;
+  --darker-primary: #e7e3d6;
+  --general: #b53a53;
 }
 
 .dark {
@@ -129,7 +130,18 @@
   }
 }
 
-body{
+body {
   max-width: "100vw";
-  
+}
+
+@layer body {
+  .headerText {
+    @apply text-[18px] font-medium;
+  }
+  .headerText-l {
+    @apply text-black text-3xl;
+  }
+  .light_mid {
+    @apply text-[14px] text-zinc-400;
+  }
 }

@@ -48,16 +48,16 @@ const Page = () => {
               type="email"
               placeholder="Enter Email"
               onChange={(e) => {
-                //@ts-expect-error
-                setFormDetails({ ...formDetails, email: e.target.nodeValue });
+             
+                setFormDetails({ ...formDetails, email: e.target.value });
               }}
             />
             <InputField
               type="password"
               placeholder="Enter Password"
               onChange={(e) => {
-                //@ts-expect-error
-                setFormDetails({ ...formDetails, email: e.target.nodeValue });
+             
+                setFormDetails({ ...formDetails, email: e.target.value });
               }}
             />
 

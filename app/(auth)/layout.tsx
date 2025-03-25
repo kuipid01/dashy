@@ -34,7 +34,7 @@ export default function RootLayout({
                 <ChevronDown size={20} className=" text-zinc-300" />
               </div>
               <div className=" flex items-center gap-4 text-zinc-500">
-                Don't have an account?
+                Don&apos;t have an account?
                 <Link
                   href="/signup"
                   className=" px-3 cursor-pointer text-sm text-zinc-500 font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400"

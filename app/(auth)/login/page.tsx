@@ -1,9 +1,13 @@
 "use client";
 import { InputField } from "@/app/components/reusables/inputfield";
-import { ChevronDown, Globe, Play, Twitter } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Page() {
+  const [formDetails, setFormDetails] = useState({
+    email: "",
+    password: ""
+  });
   return (
     <div className=" flex  flex-1 flex-col bg-[#F7F7F8] h-full p-3">
       <div className="flex justify-center items-center flex-1">
@@ -73,8 +77,7 @@ export default function Page() {
             type="email"
             placeholder="Enter Email"
             onChange={(e) => {
-              //@ts-expect-error
-              setFormDetails({ ...formDetails, email: e.target.nodeValue });
+              setFormDetails({ ...formDetails, email: e.target.value });
             }}
           />
           <Link

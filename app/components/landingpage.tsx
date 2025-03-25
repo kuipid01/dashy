@@ -42,7 +42,7 @@ export const Landing = () => {
       setCurrentStep((prev) => prev + 1 > steps.length - 1 ? 0 : prev + 1);
     }, 2000);
     return () => clearInterval(interval);
-  }, [currentStep]);
+  }, [currentStep, steps.length]);
   return (
     <div className=" h-fit  pt-[200px]  flex flex-col justify-center items-center bg-primary w-full">
       <h1 className="text-3xl md:text-4xl lg:text-5xl max-w-[97%] lg:w-[900px] font-medium leading-[1.2] text-center">Launch Your <span className="hidden lg:inline-block">Online, </span>  Business in Seconds. <span className="hidden lg:inline-block">Manage, </span> and Sell Anything, Instantly. </h1>

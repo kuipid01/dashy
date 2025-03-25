@@ -7,7 +7,7 @@ interface Props
   > {
   type: "text" | "password" | "email";
   placeholder: string;
-  onChange: (e: ChangeEvent) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const InputField = ({ type, placeholder, onChange, ...rest }: Props) => {
