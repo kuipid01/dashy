@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { Filter, LayoutDashboard } from "lucide-react";
+import { Filter, LayoutDashboard, Loader } from "lucide-react";
 import React, { useState } from "react";
 import ProductCard from "../_components/product-card";
 import { mockProducts } from "@/constants/mock_data";
@@ -36,10 +36,10 @@ const Page = () => {
       <div className="flex justify-center  w-full">
         <button
           onClick={() => setPage(page + 1)}
-          className=" flex items-center cursor-pointer text-zinc-500 text-xs w-fit px-2 font-medium gap-1 rounded-md size-[40px] bg-[var(--input)] hover:bg-[var(--input)]"
+          className=" flex items-center cursor-pointer text-zinc-700 text-sm w-fit px-4 font-medium gap-1 rounded-md size-[40px] bg-[var(--input)] hover:bg-[var(--input)]"
         >
+          <Loader className=" text-zinc-500 w-4 h-4" />
           SHOW MORE
-          <LayoutDashboard className=" text-zinc-500 w-4 h-4" />
         </button>
       </div>
     </div>
