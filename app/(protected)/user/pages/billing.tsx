@@ -1,3 +1,4 @@
+"use client"
 import { CreditCard } from "lucide-react";
 import React from "react";
 import { Subcard } from "./_comps/sub-card";

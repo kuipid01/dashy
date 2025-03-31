@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from "react";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
 import { Switch } from "@/components/ui/switch";

@@ -1,27 +1,22 @@
 "use client";
 
-import React from "react";
-import PersonalInformation from "./pages/personal-information";
-import { useSearchParams } from "next/navigation";
-import Billing from "./pages/billing";
-import Security from "./pages/security";
-import Integrations from "./pages/integartion";
-import Modifications from "./pages/modifications";
+import React, { Suspense } from "react";
+import { Loader2 } from "lucide-react";
+import ActiveTabContent from "./pages/_comps/active-tab";
 
+export const dynamic = "force-dynamic"; 
 const Page = () => {
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab");
-
-  // Map search params to components
-  const componentMap: Record<string, React.ReactNode> = {
-    "Personal Information": <PersonalInformation />,
-    Billing: <Billing />,
-    Security: <Security />,
-    Integrations: <Integrations />,
-    Modifications: <Modifications />,
-  };
-
-  return <div>{componentMap[activeTab || ""] || <PersonalInformation />}</div>;
+  return (
+    <Suspense
+      fallback={
+        <div className="h-screen grid place-items-center">
+          <Loader2 className="animate-spin duration-300" />
+        </div>
+      }
+    >
+      <ActiveTabContent />
+    </Suspense>
+  );
 };
 
 export default Page;

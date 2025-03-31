@@ -1,3 +1,4 @@
+"use client"
 import { ImageUp, Pencil } from "lucide-react";
 import React from "react";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
