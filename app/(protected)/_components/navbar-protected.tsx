@@ -48,7 +48,7 @@ const NavbarProtected = () => {
                   pathname.toLowerCase() === `/${link.href.toLowerCase()}` &&
                     "bg-[#d4d4d4]"
                 )}
-                href={link.href}
+                href={link.href === "settings" ? "/user" : `/${link.href}`}
               >
                 {link.href}
               </Link>
@@ -76,7 +76,7 @@ const NavbarProtected = () => {
         </div>
       </div>
 
-      <Menu className=" lg:hidden"/>
+      <Menu className=" lg:hidden" />
     </div>
   );
 };
