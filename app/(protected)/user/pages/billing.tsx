@@ -44,7 +44,7 @@ const Billing = () => {
     },
   ];
   return (
-    <div className="pb-20 pt-10 max-w-4xl mx-auto">
+    <div className="pb-20 pt-10 md:max-w-4xl w-full overflow-x-hidden mx-auto">
       <div className="p-6 border rounded-lg border-gray-300 shadow-lg bg-white">
         <div>
           <h2 className="text-2xl font-semibold">Billing</h2>
@@ -55,7 +55,7 @@ const Billing = () => {
           Manage your billing information and view your order history
         </p>
         <div className="mt-5 justify-between flex md:flex-row flex-col gap-10">
-          <div>
+          <div className=" max-w-full md:w-auto overflow-x-auto ">
             <table>
               <thead>
                 <tr className="">

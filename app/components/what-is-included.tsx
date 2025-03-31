@@ -37,7 +37,7 @@ export const WhatIsIncluded = () => {
         <div className=" flex flex-col min-h-screen bg-[#E7E3D6] items-center justify-center w-full py-[100px]">
             <div className=" w-[80%] mx-auto flex items-center justify-center flex-col ">
                 <Pill text="Your Store" />
-                <h1 className="text-black text-[46px] max-w-[60%] text-center leading-[1.2] mt-4">
+                <h1 className="text-center mt-4 w-full lg:max-w-[80%] mb-10 mx-auto text-[26px] md:text-[36px] lg:text-[46px] text-black font-semibold">
                     What is included
                 </h1>
 
