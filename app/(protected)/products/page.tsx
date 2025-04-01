@@ -13,17 +13,17 @@ const Page = () => {
   const [page, setPage] = useState(1);
   return (
     <div className=" flex flex-col gap-5 p-5  bg-white rounded-xl min-h-screen h-full w-full">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row gap-3 justify-between lg:items-center">
         <Input
           type="search"
-          className=" w-[200px] lg:w-[300px] bg-[var(--input)]"
+          className=" w-full md:w-[200px] lg:w-[300px] bg-[var(--input)]"
           placeholder="Search products"
         />
         <div className="flex gap-2">
           <Button
           onClick={() => router.push("/products/add")}
             text="Add Product"
-            className=" !bg-black !text-white cursor-pointer !rounded-[10px]"
+            className=" !bg-black w-full text-center flex items-center justify-center text-nowrap !text-white cursor-pointer !rounded-[10px]"
           />
           <div className=" rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
             <Filter className=" text-zinc-500 w-5 h-5" />

@@ -6,7 +6,10 @@ import { useProductStore } from "@/stores/product-store";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-
+import { PaintbrushVertical } from "lucide-react";
+import UseAi from "../../_components/use-ai";
+import { toast } from "sonner";
+import { ImageSection } from "./_compoenents/image-upload-component";
 const steps = [
   {
     header: "Basic Information",
@@ -35,8 +38,15 @@ export default function ProductAddition() {
   const product = useProductStore((state) => state.product);
   const updateProduct = useProductStore((state) => state.updateProduct);
 
-  const nextStep = () =>
+  const nextStep = () => {
+    if (
+      (step === 3 && product.image.length === 0) ||
+      product.image.length <= 1
+    ) {
+      toast.error("Please you need to upload more than one images to proceed");
+    }
     setStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   const isStepValid = () => {
@@ -44,7 +54,7 @@ export default function ProductAddition() {
       case 0:
         return product.name?.length > 0 && product.category?.length > 0;
       case 1:
-        return product.description?.length > 10;
+        return product.description?.length > 10 && product.image?.length > 1;
       case 2:
         return product.stock >= 0;
       case 3:
@@ -58,8 +68,8 @@ export default function ProductAddition() {
 
   return (
     <div className="min-h-[80vh] flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-2xl mx-4 p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800">
+      <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
+        <h1 className=" text-lg md:text-xl lg:text-3xl font-bold mb-8 text-gray-800">
           Add New Product
         </h1>
 
@@ -90,9 +100,14 @@ export default function ProductAddition() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="category" className="text-gray-700">
-                  Category *
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="category" className="text-gray-700">
+                    Category *
+                  </Label>
+
+                  <UseAi onClick={() => {}} />
+                </div>
+
                 <Input
                   id="category"
                   placeholder="Enter category"
@@ -106,16 +121,19 @@ export default function ProductAddition() {
 
           {step === 1 && (
             <div className="space-y-4">
+              <ImageSection />
               <div className="space-y-2">
                 <Label htmlFor="description" className="text-gray-700">
                   Product Description *
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Enter product description (min 10 characters)"
+                  placeholder="Enter product description (min 20 characters)"
                   value={product.description || ""}
                   className="min-h-[120px] border-gray-300 focus:border-blue-500"
-                  onChange={(e) => updateProduct({ description: e.target.value })}
+                  onChange={(e) =>
+                    updateProduct({ description: e.target.value })
+                  }
                 />
               </div>
             </div>
