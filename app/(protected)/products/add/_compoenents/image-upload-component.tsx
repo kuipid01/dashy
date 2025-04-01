@@ -19,11 +19,11 @@ export const ImageSection = () => {
     maxFiles: 10,
   });
 
-  // Debounced state update
-  const debounceSetActiveImage = useCallback((index: number | null) => {
-    const timeout = setTimeout(() => setActiveImage(index), 50); // Adjust delay as needed
-    return () => clearTimeout(timeout);
-  }, []);
+//   // Debounced state update
+//   const debounceSetActiveImage = useCallback((index: number | null) => {
+//     const timeout = setTimeout(() => setActiveImage(index), 50); // Adjust delay as needed
+//     return () => clearTimeout(timeout);
+//   }, []);
 
   return (
     <div>
