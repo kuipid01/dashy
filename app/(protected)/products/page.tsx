@@ -4,8 +4,11 @@ import { Filter, LayoutDashboard, Loader } from "lucide-react";
 import React, { useState } from "react";
 import ProductCard from "../_components/product-card";
 import { mockProducts } from "@/constants/mock_data";
+import { Button } from "@/app/components/button";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const [itemsToShown] = useState(12);
   const [page, setPage] = useState(1);
   return (
@@ -17,6 +20,11 @@ const Page = () => {
           placeholder="Search products"
         />
         <div className="flex gap-2">
+          <Button
+          onClick={() => router.push("/products/add")}
+            text="Add Product"
+            className=" !bg-black !text-white cursor-pointer !rounded-[10px]"
+          />
           <div className=" rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
             <Filter className=" text-zinc-500 w-5 h-5" />
           </div>
@@ -27,11 +35,9 @@ const Page = () => {
       </div>
 
       <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 ">
-        {mockProducts
-          .slice(0, page * itemsToShown)
-          .map((product) => (
-            <ProductCard key={product.name} product={product} />
-          ))}
+        {mockProducts.slice(0, page * itemsToShown).map((product) => (
+          <ProductCard key={product.name} product={product} />
+        ))}
       </div>
       <div className="flex justify-center  w-full">
         <button
