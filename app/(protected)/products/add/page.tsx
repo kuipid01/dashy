@@ -6,7 +6,6 @@ import { useProductStore } from "@/stores/product-store";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { PaintbrushVertical } from "lucide-react";
 import UseAi from "../../_components/use-ai";
 import { toast } from "sonner";
 import { ImageSection } from "./_compoenents/image-upload-component";
