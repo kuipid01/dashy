@@ -5,7 +5,7 @@ export const mockProducts: Product[] = [
   {
     name: "Lace and Velvet Midi Dress",
     category: "Women's Clothing",
-    image: ["https://patbo.com/products/preorder-lace-and-velvet-midi-dress"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "A bustier-style midi dress featuring soft lace fabric with stretch velvet accents, inset boning, and underwire for a flattering fit.",
@@ -17,9 +17,7 @@ export const mockProducts: Product[] = [
   {
     name: "Leather Ankle Boots",
     category: "Footwear",
-    image: [
-      "https://www.poetryfashion.com/product-RG51/leather-ankleboots.htm",
-    ],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Elegant leather ankle boots designed with a rounded block heel and a gold-tone zip at the back for a sophisticated touch.",
@@ -31,7 +29,7 @@ export const mockProducts: Product[] = [
   {
     name: "Silk Scarf",
     category: "Accessories",
-    image: ["https://www.istockphoto.com/photos/silk-scarf"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Luxurious silk scarf available in various colors and patterns, perfect for adding a touch of elegance to any outfit.",
@@ -43,7 +41,7 @@ export const mockProducts: Product[] = [
   {
     name: "Denim Jacket",
     category: "Men's Clothing",
-    image: ["https://www.istockphoto.com/photos/denim-jacket"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Classic denim jacket featuring a button-front closure and multiple pockets, ideal for layering in any season.",
@@ -55,7 +53,7 @@ export const mockProducts: Product[] = [
   {
     name: "Water-Repellant Italian Wool Trench Coat",
     category: "Women's Outerwear",
-    image: ["https://bananarepublic.gap.com/browse/product.do?pid=604586002"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Modern trench coat crafted from beautiful Italian wool, featuring a point collar, button front closure, and a removable belt.",
@@ -67,7 +65,7 @@ export const mockProducts: Product[] = [
   {
     name: "Floral Maxi Skirt",
     category: "Women's Clothing",
-    image: ["https://www.amazon.com/Maxi-Floral-Skirt/s?k=Maxi+Floral+Skirt"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "High-waisted boho floral maxi skirt with a flowy, pleated design, perfect for beach outings and casual wear.",
@@ -79,9 +77,7 @@ export const mockProducts: Product[] = [
   {
     name: "Suede Loafers",
     category: "Footwear",
-    image: [
-      "https://bananarepublicfactory.gapfactory.com/browse/product.do?pid=593662001",
-    ],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Timeless slip-on loafers crafted from genuine suede, featuring a breathable fabric lining and Ortholite footbed for all-day comfort.",
@@ -93,9 +89,7 @@ export const mockProducts: Product[] = [
   {
     name: "Cashmere Sweater",
     category: "Women's Clothing",
-    image: [
-      "https://www.poetryfashion.com/category-POACA/cashmere-collection.htm",
-    ],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Soft and luxurious cashmere sweater available in various colors, offering a generous silhouette for supreme comfort.",
@@ -107,7 +101,7 @@ export const mockProducts: Product[] = [
   {
     name: "High-Waisted Jeans",
     category: "Women's Clothing",
-    image: ["https://vervetdenim.com/collections/high-rise"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Stylish high-rise jeans with a wide-leg design, offering a flattering fit and versatile styling options.",
@@ -119,7 +113,7 @@ export const mockProducts: Product[] = [
   {
     name: "Leather Crossbody Bag",
     category: "Accessories",
-    image: ["https://www.portlandleathergoods.com/collections/crossbody-bags"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Handmade full-grain leather crossbody bag featuring an interior pocket and adjustable strap for functionality and style.",
@@ -131,7 +125,7 @@ export const mockProducts: Product[] = [
   {
     name: "Linen Blazer",
     category: "Women's Clothing",
-    image: ["https://oldnavy.gap.com/browse/product.do?pid=663788002"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Fitted linen-blend suit blazer with a notched lapel, single-button front, and front pockets, perfect for professional and casual wear.",
@@ -143,7 +137,7 @@ export const mockProducts: Product[] = [
   {
     name: "Chunky Knit Scarf",
     category: "Accessories",
-    image: ["https://www.amazon.com/chunky-knit-scarf/s?k=chunky+knit+scarf"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Warm and cozy chunky knit scarf, available in various colors and patterns, ideal for cold weather.",
@@ -155,7 +149,7 @@ export const mockProducts: Product[] = [
   {
     name: "Silk Blouse",
     category: "Women's Clothing",
-    image: ["https://www.quince.com/women/silk/blouses"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Elegant washable silk blouse with a classic button-up design, suitable for both professional and casual settings.",
@@ -167,7 +161,7 @@ export const mockProducts: Product[] = [
   {
     name: "Chelsea Boots",
     category: "Footwear",
-    image: ["https://thursdayboots.com/collections/mens-boots-chelsea"],
+    image: ["https://images.unsplash.com/photo-1741606369311-8e3d4dbe4b8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
     videos: [],
     description:
       "Handcrafted Chelsea boots available in leather and suede styles, offering a sleek silhouette and comfortable fit.",
@@ -177,6 +171,7 @@ export const mockProducts: Product[] = [
     rating: 4.6,
   },
 ];
+
 export const MockOrders: Order[] = [
   {
     orderId: "ORD001",

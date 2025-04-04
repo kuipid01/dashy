@@ -11,9 +11,7 @@ export const getImageSrc = (file: File | { path: string } | string): string => {
     }
   
     if (typeof file === "string") {
-        console.log("here3")
-      const cleaned = file.startsWith("./") ? file.slice(1) : file;
-      return cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
+      return file;
     }
   
     return "/assets/login.jpg"; 
