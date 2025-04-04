@@ -4,13 +4,43 @@ import { InputField } from "@/app/components/reusables/inputfield";
 import { ChevronDown, Globe } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
+import { PasswordStrengthUi } from "./components/password-strength";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const [formDetails, setFormDetails] = useState({
     email: "",
-    password: ""
+    password: "",
   });
-  console.log(formDetails);
+
+  const passwordValid = () => {
+    const hasUpperCase = /[A-Z]/.test(formDetails.password);
+    const hasLowerCase = /[a-z]/.test(formDetails.password);
+    const hasNumbers = /\d/.test(formDetails.password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(formDetails.password);
+    const isLengthValid = formDetails.password.length >= 8;
+
+    return (
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumbers &&
+      hasSpecialChar &&
+      isLengthValid
+    );
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleCreateAccount = () => {
+    toast.success("Account created successfully");
+    router.push("/verify-mail");
+  };
+  // console.log(formDetails);
   return (
     <div className=" flex flex-col bg-white h-full p-3 rounded-l-xl">
       <div className="flex justify-between items-center">
@@ -48,7 +78,6 @@ const Page = () => {
               type="email"
               placeholder="Enter Email"
               onChange={(e) => {
-             
                 setFormDetails({ ...formDetails, email: e.target.value });
               }}
             />
@@ -56,11 +85,10 @@ const Page = () => {
               type="password"
               placeholder="Enter Password"
               onChange={(e) => {
-             
-                setFormDetails({ ...formDetails, email: e.target.value });
+                setFormDetails({ ...formDetails, password: e.target.value });
               }}
             />
-
+            <PasswordStrengthUi password={formDetails.password} />
             <div className=" flex  max-w-[400px] gap-3">
               <input
                 className=" bg-white accent-primary size-5 border-zinc-300 border"
@@ -85,12 +113,14 @@ const Page = () => {
             </div>
           </div>
 
-          <Link
-            href="/signup/email"
-            className="w-[400px]  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
+          <button
+            type="button"
+            onClick={handleCreateAccount}
+            disabled={!passwordValid() || !isValidEmail(formDetails.email)}
+            className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
             Create my account
-          </Link>
+          </button>
           <p className=" max-w-[400px] mt-6 text-sm leading-[1.2] font-light ">
             This site is protected by reCAPTCHA and the Google
             <Link href="" className=" underline ml-1 ">

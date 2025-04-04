@@ -12,6 +12,11 @@ const poiretOne = Poiret_One({
   weight: ["400"],
 });
 
+
+//  const metadata: Metadata = {
+//   title: "Join Hubsell | Auth",
+//   description: "Hubsell Auth Pages"
+// };
 export default function RootLayout({
   children,
 }: Readonly<{

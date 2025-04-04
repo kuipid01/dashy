@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { CloudUpload } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import Image from "next/image";
 
 export const ImageSection = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -54,9 +55,11 @@ export const ImageSection = () => {
                 setActiveImage(null);
               }}
             >
-              <img
+              <Image
                 src={URL.createObjectURL(file)}
                 alt="Preview"
+                width={100}
+                height={100}
                 className="w-full h-full object-cover rounded-md"
               />
               <div

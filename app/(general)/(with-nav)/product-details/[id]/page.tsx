@@ -1,4 +1,5 @@
 "use client";
+import YouMightLike from "@/app/(general)/_compoenents/you-might-like";
 import { Pill } from "@/app/components/pill";
 import Back from "@/app/components/reusables/back";
 import { cn } from "@/lib/utils";
@@ -6,7 +7,6 @@ import { CalendarHeart, ChevronDown, ChevronUp, Heart, PackageOpen, Percent } fr
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import YouMightLike from "../../_compoenents/you-might-like";
 
 const Page = () => {
   const router = useRouter();
