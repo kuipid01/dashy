@@ -1,4 +1,6 @@
-import { Product } from "@/constants/types";
+
+import { getImageSrc } from "@/app/utils/image";
+import { Product } from "@/stores/product-store";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,8 +13,9 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <div className=" bg-[var(--input)] relative h-[250px] flex items-center justify-center">
         <Image
-          src={product.image}
+          src={getImageSrc(product.image[0])}
           alt={product.name}
+          unoptimized
           fill
           className=" object-cover"
         />

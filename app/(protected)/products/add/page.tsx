@@ -9,14 +9,19 @@ import { Label } from "@/components/ui/label";
 import UseAi from "../../_components/use-ai";
 import { toast } from "sonner";
 import { ImageSection } from "./_compoenents/image-upload-component";
+import ProductSample from "./_compoenents/product-sample";
 const steps = [
   {
     header: "Basic Information",
     subheader: "Enter essential product details",
   },
   {
-    header: "Media & Description",
-    subheader: "Add visuals and product description",
+    header: "Media ",
+    subheader: "Add visuals ",
+  },
+  {
+    header: "Description of product ",
+    subheader: "Add description to help buyers",
   },
   {
     header: "Inventory",
@@ -53,18 +58,20 @@ export default function ProductAddition() {
       case 0:
         return product.name?.length > 0 && product.category?.length > 0;
       case 1:
-        return product.description?.length > 10 && product.image?.length > 1;
+        return product.image?.length > 1;
       case 2:
-        return product.stock >= 0;
+        return product.description?.length > 10;
       case 3:
-        return product.price > 0;
+        return product.stock >= 0;
       case 4:
+        return product.price > 0;
+      case 5:
         return true;
       default:
         return false;
     }
   };
-
+  console.log(product.image);
   return (
     <div className="min-h-[80vh] flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
@@ -121,6 +128,10 @@ export default function ProductAddition() {
           {step === 1 && (
             <div className="space-y-4">
               <ImageSection />
+            </div>
+          )}
+          {step === 2 && (
+            <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="description" className="text-gray-700">
                   Product Description *
@@ -138,10 +149,14 @@ export default function ProductAddition() {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div className="space-y-2">
               <Label htmlFor="stock" className="text-gray-700">
-                Stock Quantity *
+                Stock Quantity{" "}
+                <span className="text-gray-500">
+                  (How many items are available){" "}
+                </span>{" "}
+                *
               </Label>
               <Input
                 id="stock"
@@ -157,43 +172,57 @@ export default function ProductAddition() {
             </div>
           )}
 
-          {step === 3 && (
-            <div className="space-y-2">
-              <Label htmlFor="price" className="text-gray-700">
-                Price ($) *
-              </Label>
-              <Input
-                id="price"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="Enter price"
-                value={product.price || ""}
-                className="h-12 border-gray-300 focus:border-blue-500"
-                onChange={(e) =>
-                  updateProduct({ price: parseFloat(e.target.value) || 0 })
-                }
-              />
+          {step === 4 && (
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-gray-700">
+                  Price ($) *
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Enter price"
+                  value={product.price || ""}
+                  className="h-12 border-gray-300 focus:border-blue-500"
+                  onChange={(e) =>
+                    updateProduct({ price: parseFloat(e.target.value) || 0 })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-gray-700">
+                  Discounted Price ($){" "}
+                  <span className="text-gray-500">
+                    (This will be the price that product would be sold.)
+                  </span>
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Enter discounted price"
+                  value={product.discountedPrice || ""}
+                  className="h-12 border-gray-300 focus:border-blue-500"
+                  onChange={(e) =>
+                    updateProduct({
+                      discountedPrice: parseFloat(e.target.value) || 0,
+                    })
+                  }
+                />
+              </div>
             </div>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-4">
                 Please review your product details:
               </p>
               <pre className="text-sm bg-white p-4 rounded border text-gray-700 overflow-auto">
-                {JSON.stringify(
-                  {
-                    Name: product.name,
-                    Category: product.category,
-                    Description: product.description,
-                    Stock: product.stock,
-                    Price: `$${product.price?.toFixed(2)}`,
-                  },
-                  null,
-                  2
-                )}
+              <ProductSample product={product} />
               </pre>
             </div>
           )}
@@ -202,7 +231,7 @@ export default function ProductAddition() {
         <div className="flex justify-between mt-8">
           <Button
             variant="outline"
-            className="w-24 border-gray-300 hover:bg-gray-100"
+            className="w-24 cursor-pointer border-gray-300 hover:bg-gray-100"
             onClick={prevStep}
             disabled={step === 0}
           >
@@ -211,7 +240,7 @@ export default function ProductAddition() {
           {step < steps.length - 1 ? (
             <Button
               disabled={!isStepValid()}
-              className="w-24 bg-black hover:bg-black/40 text-white disabled:bg-gray-400"
+              className="w-24 bg-black cursor-pointer  hover:bg-black/40 text-white disabled:bg-gray-400"
               onClick={nextStep}
             >
               Next

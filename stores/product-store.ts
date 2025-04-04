@@ -1,13 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface Product {
+export interface Product {
   name: string;
   category: string;
-  image: string[];
+  image: (string | File)[];
+  videos: (string | File)[];
   description: string;
   stock: number;
   price: number;
+  discountedPrice: number;
+  rating: number;
 }
 
 interface ProductStore {
@@ -25,6 +28,9 @@ export const useProductStore = create<ProductStore>()(
         description: "",
         stock: 0,
         price: 0,
+        discountedPrice: 0,
+        rating: 0,
+        videos:[]
       },
       updateProduct: (updates) =>
         set((state) => ({
