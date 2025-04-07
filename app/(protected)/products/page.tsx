@@ -36,7 +36,7 @@ const Page = () => {
 
       <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 ">
         {mockProducts.slice(0, page * itemsToShown).map((product) => (
-          <ProductCard key={product.name} product={product} />
+          <ProductCard isAdmin={true} key={product.name} product={product} />
         ))}
       </div>
       <div className="flex justify-center  w-full">

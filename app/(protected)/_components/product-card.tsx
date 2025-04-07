@@ -1,14 +1,23 @@
-
 import { getImageSrc } from "@/app/utils/image";
 import { Product } from "@/stores/product-store";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({
+  product,
+  isAdmin,
+}: {
+  isAdmin?: boolean;
+  product: Product;
+}) {
   return (
     <Link
-      href={`/product-details/${product.name}`}
+      href={
+        isAdmin
+          ? `/products/details/${product.name}`
+          : `/product-details/${product.name}`
+      }
       className=" hover:border hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
     >
       <div className=" bg-[var(--input)] relative h-[250px] flex items-center justify-center">

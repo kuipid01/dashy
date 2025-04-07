@@ -10,6 +10,7 @@ import UseAi from "../../_components/use-ai";
 import { toast } from "sonner";
 import { ImageSection } from "./_compoenents/image-upload-component";
 import ProductSample from "./_compoenents/product-sample";
+import { useRouter } from "next/navigation";
 const steps = [
   {
     header: "Basic Information",
@@ -71,7 +72,10 @@ export default function ProductAddition() {
         return false;
     }
   };
-  console.log(product.image);
+  const router = useRouter();
+  const handlePublish = () => {
+    router.push("/products");
+  };
   return (
     <div className="min-h-[80vh] flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
@@ -222,7 +226,7 @@ export default function ProductAddition() {
                 Please review your product details:
               </p>
               <pre className="text-sm bg-white p-4 rounded border text-gray-700 overflow-auto">
-              <ProductSample product={product} />
+                <ProductSample product={product} />
               </pre>
             </div>
           )}
@@ -248,6 +252,7 @@ export default function ProductAddition() {
           ) : (
             <Button
               disabled={!isStepValid()}
+              onClick={handlePublish}
               className="w-24 bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
             >
               Publish
