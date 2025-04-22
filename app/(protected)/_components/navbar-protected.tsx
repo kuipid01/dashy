@@ -9,23 +9,23 @@ import React from "react";
 const NavbarProtected = () => {
   const links = [
     {
-      href: "dashboard",
+      href: "dashboard"
     },
     {
-      href: "products",
+      href: "products"
     },
     {
-      href: "earnings",
+      href: "earnings"
     },
     {
-      href: "orders",
+      href: "orders"
     },
     // {
     //   href: "calendars",
     // },
     {
-      href: "settings",
-    },
+      href: "settings"
+    }
     // {
     //   href: "flows",
     // },
@@ -36,7 +36,9 @@ const NavbarProtected = () => {
     <div className=" w-[90%] fixed z-10 backdrop-blur-[100px] top-[20px] bg-white/50 px-4 rounded-xl left-1/2 -translate-x-1/2 flex items-center justify-between h-[7vh] md:h-[10vh] ">
       <div className=" flex items-center gap-4">
         {/* wIP: LOGO GPES HERE */}
-        <Link href="/" className=" text-[20px] font-bold">Hubsell</Link>
+        <Link href="/" className=" text-[20px] font-bold">
+          Hubsell
+        </Link>
       </div>
       <div className="lg:flex hidden ">
         <ul className=" flex items-center gap-4">
@@ -63,9 +65,12 @@ const NavbarProtected = () => {
         <div className=" rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
           <Bell size={18} className=" text-zinc-600" />
         </div>
-        <div className=" rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
+        <Link
+          href="/chat"
+          className=" rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]"
+        >
           <MessageSquare size={18} className=" text-zinc-600" />
-        </div>
+        </Link>
         <div className=" size-[40px] overflow-hidden ml-3 rounded-full relative">
           <Image
             alt="user profile picture"

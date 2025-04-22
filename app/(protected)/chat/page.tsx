@@ -1,7 +1,18 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import MessagesComponent from "./components/message-component";
+import ChatComponent from "./components/chat-comp";
+import Profile from "./components/profile";
 
-const page = () => {
-  return <div>page</div>;
+const Page = () => {
+  const [showDetails, setShowDetails] = useState(true);
+  return (
+    <div className=" flex gap-10">
+      <MessagesComponent />
+      <ChatComponent conversationId={"true"} />
+      {showDetails && <Profile setShowDetails={setShowDetails} />}
+    </div>
+  );
 };
 
-export default page;
+export default Page;
