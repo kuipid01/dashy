@@ -7,6 +7,7 @@ const settingsList = [
   { link: "Personal Information", active: true },
   { link: "Billing", active: true },
   { link: "Security", active: true },
+  { link: "Integrations", active: true },
 ];
 
 const SettingsSidebar = () => {

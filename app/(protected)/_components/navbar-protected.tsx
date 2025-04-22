@@ -20,15 +20,15 @@ const NavbarProtected = () => {
     {
       href: "orders",
     },
-    {
-      href: "calendars",
-    },
+    // {
+    //   href: "calendars",
+    // },
     {
       href: "settings",
     },
-    {
-      href: "flows",
-    },
+    // {
+    //   href: "flows",
+    // },
   ];
   const pathname = usePathname();
   console.log(pathname);

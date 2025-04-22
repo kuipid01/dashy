@@ -25,7 +25,7 @@ const PersonalInformation = () => {
 
         <div className="grid w-full grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
           <div>
-            <InputComponent placeholder="Full Name" label="Name" name="name" />
+            <InputComponent  placeholder="Full Name" label="Name" name="name" />
           </div>
           <div>
             <InputComponent
