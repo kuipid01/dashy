@@ -4,32 +4,36 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
+  DialogFooter
 } from "@/components/ui/dialog";
 import Link from "next/link";
 // import hey from "../../../../public/animated/lottie/Hey.json";
 import Image from "next/image";
 export function ProductModal({
   showModal,
-  setShowModal,
+  setShowModal
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
 }) {
-
-
   return (
     <>
       {/* Trigger the modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogTrigger asChild>
-          <button className="btn btn-primary">Add Product</button>
+          <button className="btn hidden btn-primary">Add Product</button>
         </DialogTrigger>
 
         {/* Modal content */}
-        <DialogContent> 
-            <Image src='/animated/hey.gif' className="mx-auto flex" width={100} height={100} alt="Hey"/>
-            
+        <DialogContent>
+          <Image
+            src="/animated/hey.gif"
+            className="mx-auto flex"
+            width={100}
+            height={100}
+            alt="Hey"
+          />
+
           <DialogTitle className="text-3xl font-bold">
             Add Your First Product
           </DialogTitle>

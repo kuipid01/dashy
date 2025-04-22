@@ -5,16 +5,15 @@ import {
   ChevronRight,
   MapPin,
   MoveRight,
-  Truck,
+  Truck
 } from "lucide-react";
 import Image from "next/image";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 
 export default function OrderCard({ order }: { order: Order }) {
@@ -23,33 +22,33 @@ export default function OrderCard({ order }: { order: Order }) {
       <div className=" p-3 flex flex-col gap-3">
         <div className="flex justify-between">
           <div className="flex flex-col">
-            <p className=" text-[8px] md:text-xs  lg:text-[14px]  font-medium text-zinc-600">
+            <p className=" text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-600">
               ORDER ID
             </p>
 
-            <p className=" text-[14px]  md:text-[16px]  lg:text-[18px]  text-zinc-900 font-medium">
+            <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  text-zinc-900 font-medium">
               #{order.orderId}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex text-[8px] md:text-xs  lg:text-[14px]  font-medium text-zinc-600 bg-gray-50 px-3 py-3 rounded items-center gap-1">
+            <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-600 bg-gray-50 px-3 py-3 rounded items-center gap-1">
               <span className="e">ARRIVAL DATE</span>
               <span className="">{order.arrivalDate}</span>
             </div>
-            <div className="flex text-[8px] md:text-xs  lg:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
+            <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
               <span className=" capitalize">{order.status}</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-5 justify-between">
-          <div className="flex text-[8px] md:text-xs  lg:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
+          <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
             <Bus size={14} className="text-zinc-500" />
             {order.from}
           </div>
 
-          <MoveRight className="text-zinc-500 w-[30px] md:w-[50px] lg:w-[50px]" />
-          <div className="flex text-[8px] md:text-xs  lg:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
+          <MoveRight className="text-zinc-500 w-[30px] md:w-[50px] 2xl:w-[50px]" />
+          <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
             <MapPin size={14} className="text-zinc-500" />
             {order.to}
           </div>
@@ -63,10 +62,10 @@ export default function OrderCard({ order }: { order: Order }) {
             className="w-[100px] h-[100px] rounded-md object-cover"
           />
           <div className="flex flex-col gap-1">
-            <p className=" text-[14px]  md:text-[16px]  lg:text-[18px]  font-medium text-black">
+            <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  font-medium text-black">
               {order.items[0].name}
             </p>
-            <p className=" text-[14px]  md:text-[16px]  lg:text-[18px]  text-black">
+            <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  text-black">
               {order.items[0].price}
             </p>
           </div>
@@ -74,12 +73,12 @@ export default function OrderCard({ order }: { order: Order }) {
       </div>
 
       <div className=" w-full p-3 flex justify-between items-center  border-t-2 border-gray-200">
-        <p className="text-[14px]  md:text-[16px]  lg:text-[18px]  font-medium text-black">
+        <p className="text-[14px]  md:text-[16px]  2xl:text-[18px]  font-medium text-black">
           {order.items.length} items
         </p>
         <Dialog>
           <DialogTrigger asChild>
-            <button className=" cursor-pointer px-5 py-2 rounded-md bg-[#F7F7F8] text-[14px]  md:text-[16px]  lg:text-[18px]  font-medium text-black ">
+            <button className=" cursor-pointer px-5 py-2 rounded-md bg-[#F7F7F8] text-[14px]  md:text-[16px]  2xl:text-[18px]  font-medium text-black ">
               {" "}
               DETAILS
             </button>
@@ -102,12 +101,12 @@ export default function OrderCard({ order }: { order: Order }) {
                 ORDER ID: <span className="text-zinc-800">{order.orderId}</span>
               </p>
               <div className="flex items-center  gap-2">
-                <button className="p-2 flex items-center gap-1 rounded-md bg-[#F7F7F8]/10 border border-zinc-600 text-[9px]  lg:text-[10px]  font-medium text-black ">
+                <button className="p-2 flex items-center gap-1 rounded-md bg-[#F7F7F8]/10 border border-zinc-600 text-[9px]  2xl:text-[10px]  font-medium text-black ">
                   {" "}
                   <BookDown size={14} className="text-zinc-800" />
                   INVOICE
                 </button>
-                <button className="p-2 flex items-center gap-1 rounded-md bg-black text-[9px]  lg:text-[10px]  font-medium text-white ">
+                <button className="p-2 flex items-center gap-1 rounded-md bg-black text-[9px]  2xl:text-[10px]  font-medium text-white ">
                   {" "}
                   <Truck size={14} className="text-zinc-300" />
                   TRACK
