@@ -14,28 +14,28 @@ import { useRouter } from "next/navigation";
 const steps = [
   {
     header: "Basic Information",
-    subheader: "Enter essential product details",
+    subheader: "Enter essential product details"
   },
   {
     header: "Media ",
-    subheader: "Add visuals ",
+    subheader: "Add visuals "
   },
   {
     header: "Description of product ",
-    subheader: "Add description to help buyers",
+    subheader: "Add description to help buyers"
   },
   {
     header: "Inventory",
-    subheader: "Set stock quantities",
+    subheader: "Set stock quantities"
   },
   {
     header: "Pricing",
-    subheader: "Define product pricing",
+    subheader: "Define product pricing"
   },
   {
     header: "Review",
-    subheader: "Confirm all details",
-  },
+    subheader: "Confirm all details"
+  }
 ];
 
 export default function ProductAddition() {
@@ -61,9 +61,9 @@ export default function ProductAddition() {
       case 1:
         return product.image?.length > 1;
       case 2:
-        return product.description?.length > 10;
+        return product.description && product?.description?.length > 10;
       case 3:
-        return product.stock >= 0;
+        return product.stock && product?.stock >= 0;
       case 4:
         return product.price > 0;
       case 5:
@@ -212,7 +212,7 @@ export default function ProductAddition() {
                   className="h-12 border-gray-300 focus:border-blue-500"
                   onChange={(e) =>
                     updateProduct({
-                      discountedPrice: parseFloat(e.target.value) || 0,
+                      discountedPrice: parseFloat(e.target.value) || 0
                     })
                   }
                 />

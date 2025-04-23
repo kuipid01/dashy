@@ -30,7 +30,7 @@ export const ImageSection = () => {
     onDrop,
     accept: { "image/*": [] },
     maxSize: 3 * 1024 * 1024,
-    maxFiles: 10,
+    maxFiles: 10
   });
 
   const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
@@ -38,7 +38,7 @@ export const ImageSection = () => {
       onDrop: onVideoDrop,
       accept: { "video/*": [] },
       maxSize: 3 * 1024 * 1024,
-      maxFiles: 1,
+      maxFiles: 1
     });
 
   return (
@@ -60,45 +60,46 @@ export const ImageSection = () => {
 
       {product.image.length > 0 && (
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-          {product.image.map((file, index) => (
-            <div
-              key={index}
-              className="relative w-full h-[150px] border-4 border-gray-200 rounded-md shadow-sm cursor-pointer"
-              onMouseEnter={() => setActiveImage(index)}
-              onMouseLeave={() => setActiveImage(null)}
-            >
-              <Image
-                src={getImageSrc(file)}
-                alt="Preview"
-                width={100}
-                height={100}
-                unoptimized
-                className="w-full h-full object-cover rounded-md"
-              />
+          {typeof product.image !== "string" &&
+            product.image.map((file, index) => (
               <div
-                className={clsx(
-                  "absolute inset-0 flex transition-opacity duration-200 justify-center items-center bg-black/50 rounded-md",
-                  activeImage === index
-                    ? "opacity-100"
-                    : "opacity-0 pointer-events-none"
-                )}
+                key={index}
+                className="relative w-full h-[150px] border-4 border-gray-200 rounded-md shadow-sm cursor-pointer"
+                onMouseEnter={() => setActiveImage(index)}
+                onMouseLeave={() => setActiveImage(null)}
               >
-                <button className="text-white font-medium text-xs capitalize">
-                  Make thumbnail
-                </button>
-
-                <Trash2
-                  onClick={() => {
-                    updateProduct({
-                      image: product.image.filter((_, i) => i !== index),
-                    });
-                    toast.success("Image removed successfully");
-                  }}
-                  className=" absolute right-3 top-3 cursor-pointer text-white w-5 h-5"
+                <Image
+                  src={getImageSrc(file)}
+                  alt="Preview"
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="w-full h-full object-cover rounded-md"
                 />
+                <div
+                  className={clsx(
+                    "absolute inset-0 flex transition-opacity duration-200 justify-center items-center bg-black/50 rounded-md",
+                    activeImage === index
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                  )}
+                >
+                  <button className="text-white font-medium text-xs capitalize">
+                    Make thumbnail
+                  </button>
+
+                  <Trash2
+                    onClick={() => {
+                      // updateProduct({
+                      //   image: typeof product.image==="object" && product.image.filter((_, i) => i !== index)
+                      // });
+                      toast.success("Image removed successfully");
+                    }}
+                    className=" absolute right-3 top-3 cursor-pointer text-white w-5 h-5"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
 
