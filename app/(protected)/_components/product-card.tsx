@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function ProductCard({
   product,
-  isAdmin,
+  isAdmin
 }: {
   isAdmin?: boolean;
   product: Product;
@@ -22,7 +22,11 @@ export default function ProductCard({
     >
       <div className=" bg-[var(--input)] relative h-[250px] flex items-center justify-center">
         <Image
-          src={getImageSrc(product.image[0])}
+          src={
+            typeof product.image === "string"
+              ? product.image
+              : getImageSrc(product.image[0])
+          }
           alt={product.name}
           unoptimized
           fill

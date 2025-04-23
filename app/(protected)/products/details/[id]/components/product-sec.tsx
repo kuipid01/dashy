@@ -122,16 +122,17 @@ const PoductSec = () => {
           </Newbtn>
         </div>
         <div className="flex gap-4">
-          {product.image.map((url, index) => (
-            <Image
-              key={index}
-              width={124}
-              height={124}
-              src={url as string}
-              alt={`Media ${index + 1}`}
-              className="w-32 h-32 object-cover rounded-md"
-            />
-          ))}
+          {typeof product.image !== "string" &&
+            product.image.map((url, index) => (
+              <Image
+                key={index}
+                width={124}
+                height={124}
+                src={url as string}
+                alt={`Media ${index + 1}`}
+                className="w-32 h-32 object-cover rounded-md"
+              />
+            ))}
         </div>
       </div>
     </div>

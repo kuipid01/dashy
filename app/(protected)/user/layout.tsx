@@ -5,12 +5,12 @@ import { Loader2 } from "lucide-react";
 import SettingsSidebar from "./pages/_comps/settings-sidebar";
 
 export default function Layout({
-  children,
+  children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
-        className={`lg:px-15 overflow-x-hidden relative pt-[calc(40px+7vh)] lg:pt-[calc(40px+10vh)] flex flex-col gap-5 md:px-8 px-5 bg-[#F7F7F8] min-h-screen antialiased`}
+        className={`_lg:px-15 overflow-x-hidden relative _pt-[calc(40px+7vh)] _lg:pt-[calc(40px+10vh)] flex flex-col gap-5 _md:px-8 _px-5 bg-[#F7F7F8] min-h-screen antialiased`}
       >
         <div className="flex md:flex-row flex-col">
           <Suspense

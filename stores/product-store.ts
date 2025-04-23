@@ -2,14 +2,15 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export interface Product {
+  id?: number | string;
   name: string;
   category: string;
-  image: (string | File)[];
-  videos: (string | File)[];
-  description: string;
-  stock: number;
+  image: (string | File)[] | string;
+  videos?: (string | File)[];
+  description?: string;
+  stock?: number;
   price: number;
-  discountedPrice: number;
+  discountedPrice?: number;
   rating: number;
 }
 
@@ -30,15 +31,15 @@ export const useProductStore = create<ProductStore>()(
         price: 0,
         discountedPrice: 0,
         rating: 0,
-        videos:[]
+        videos: []
       },
       updateProduct: (updates) =>
         set((state) => ({
-          product: { ...state.product, ...updates },
-        })),
+          product: { ...state.product, ...updates }
+        }))
     }),
     {
-      name: "product-storage",
+      name: "product-storage"
     }
   )
 );
