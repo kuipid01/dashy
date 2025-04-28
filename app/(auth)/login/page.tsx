@@ -1,13 +1,20 @@
 "use client";
-import { InputField } from "@/app/components/reusables/inputfield";
-import Link from "next/link";
-import { useState } from "react";
+// import { InputField } from "@/app/components/reusables/inputfield";
+// import Link from "next/link";
+// import { useState } from "react";
 
 export default function Page() {
-  const [formDetails, setFormDetails] = useState({
-    email: "",
-    password: ""
-  });
+  // const [formDetails, setFormDetails] = useState({
+  //   email: "",
+  //   password: ""
+  // });
+
+  const handleGoogleLogin = () => {
+    console.log("clicked")
+    // Redirect to the backend to start the Google OAuth flow
+    window.location.href = "http://localhost:4000/v1/api/users";
+  };
+
   return (
     <div className=" flex  flex-1 flex-col bg-[#F7F7F8] h-full p-3">
       <div className="flex justify-center items-center flex-1">
@@ -23,7 +30,10 @@ export default function Page() {
             Log in to manage your thriving online business.
           </p>
 
-          <button className="w-full mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
+          <button 
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full cursor-pointer mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
             <svg
               width="24"
               height="24"
@@ -71,8 +81,8 @@ export default function Page() {
             </svg>
             Sign in with Twitter
           </button>
-          <hr className=" border-b my-5 border-zinc-200 w-full " />
-          <InputField
+          {/* <hr className=" border-b my-5 border-zinc-200 w-full " /> */}
+          {/* <InputField
             className=" w-full mb-5"
             type="email"
             placeholder="Enter Email"
@@ -85,7 +95,7 @@ export default function Page() {
             className="w-full  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
             Sign up with email
-          </Link>
+          </Link> */}
         </form>
       </div>
     </div>

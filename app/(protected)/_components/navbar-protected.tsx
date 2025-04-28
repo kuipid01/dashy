@@ -3,6 +3,7 @@ import clsx from "clsx";
 import {
   Bell,
   LayoutDashboard,
+  Loader2,
   LogOut,
   Menu,
   MessageSquare,
@@ -23,8 +24,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import React from "react";
+import { useHandleLogout } from "@/app/(handlers)/auth-handlers/auth";
 
 const NavbarProtected = () => {
+
+  const {handleLogout,loading} = useHandleLogout()
   const links = [
     {
       href: "dashboard"
@@ -150,18 +154,92 @@ const NavbarProtected = () => {
 
             <DropdownMenuSeparator className="mt-5" />
             <DropdownMenuItem asChild>
-              <Link
-                href="#"
+              <button
+              onClick={handleLogout}
+            
                 className=" text-red-500 cursor-pointer py-3 mt-2 focus:bg-red-50 flex items-center gap-3"
               >
-                <LogOut color="#fb2c36" size={24} /> Log Out
-              </Link>
+               { loading ? <Loader2 className="animate-spin duration-200"/>  : <LogOut color="#fb2c36" size={24} />}{ loading ? "Loading"  : "Log Out"}
+              </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      <Menu className=" lg:hidden" />
+<div className="flex gap-3  lg:hidden  items-center
+">
+   <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className=" size-[40px]  cursor-pointer overflow-hidden ml-3 rounded-full relative">
+              <Image
+                alt="user profile picture"
+                fill
+                className="object-cover"
+                src="/assets/login.jpg"
+              />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="bottom"
+            className="min-w-[300px] mr-20  p-5"
+          >
+            <DropdownMenuLabel className="mb-3">Account</DropdownMenuLabel>
+            <div className="flex items-center  mb-3 justify-between">
+              <div className="flex gap-2">
+                <div className="size-10 relative rounded-full">
+                  <Image
+                    alt="user profile picture"
+                    fill
+                    className="object-cover rounded-full"
+                    src="/assets/login.jpg"
+                  />
+                </div>
+                <div className="flex flex-col ">
+                  <p className=" font-bold ">Stephen Adegoke</p>
+                  <p className=" text-sm text-gray-600">kuipid01@gmail.com</p>
+                </div>
+              </div>
+            </div>
+            <DropdownMenuSeparator className="mb-3" />
+            <DropdownMenuItem asChild>
+              <Link
+                href="/store/id"
+                className=" flex items-center  py-3 hover:bg-gray-200 cursor-pointer  gap-3"
+              >
+                <Store size={24} />
+                Store
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className=" flex items-center  py-3 hover:bg-gray-200 cursor-pointer  gap-3">
+              {" "}
+              <LayoutDashboard size={24} />
+              Dashboard
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href="/user"
+                className=" flex items-center  py-3 hover:bg-gray-200 cursor-pointer  gap-3"
+              >
+                <Settings size={24} /> Settings
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="mt-5" />
+            <DropdownMenuItem asChild>
+              <button
+              onClick={handleLogout}
+            
+                className=" text-red-500 cursor-pointer py-3 mt-2 focus:bg-red-50 flex items-center gap-3"
+              >
+               { loading ? <Loader2 className="animate-spin duration-200"/>  : <LogOut color="#fb2c36" size={24} />}{ loading ? "Loading"  : "Log Out"}
+              </button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+   <Menu />
+</div>
+     
     </div>
   );
 };

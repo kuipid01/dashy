@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poiret_One } from "next/font/google";
 import "../globals.css";
 import { Toaster } from "sonner";
+import { ReactQueryProviders } from "../(handlers)/provicder";
 
 const poiretOne = Poiret_One({
   variable: "--font-poiret-one",
@@ -39,7 +40,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Toaster />
-      <body className={` ${poiretOne.variable} antialiased`}>{children}</body>
+
+      <body className={` ${poiretOne.variable} antialiased`}>
+        <ReactQueryProviders> {children}</ReactQueryProviders>
+      </body>
     </html>
   );
 }
