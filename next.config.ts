@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       "www.bananarepublicfactory.com",
       "www.oldnavy.com",
       "www.vervetdenim.com",
+      "lh3.googleusercontent.com",
     ],
   },
 };

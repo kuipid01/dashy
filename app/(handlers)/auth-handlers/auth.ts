@@ -5,6 +5,8 @@ import { api } from "../base";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie'
+import { User } from "@/constants/types";
+import { useQuery } from "@tanstack/react-query";
 export function useHandleGoogleLogin() {
   const [state, setState] = useState({
     loading: false,
@@ -77,4 +79,31 @@ export function useHandleLogout() {
     ...state,
     handleLogout,
   };
+}
+
+
+
+const fetchUser = async (): Promise<User> => {
+  const response = await api.get(`/users/me`)
+  return response.data.user
+}
+
+export const useFetchUser = () => {
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+  } = useQuery<User, Error>({
+    queryKey: ['current-user'],
+    queryFn: fetchUser,
+    retry: 1,
+  })
+
+  return {
+    user: data,
+    isLoading,
+    error,
+    isError,
+  }
 }
