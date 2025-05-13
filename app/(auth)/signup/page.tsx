@@ -1,13 +1,14 @@
 "use client";
 import { ChevronDown, Globe } from "lucide-react";
 import Link from "next/link";
+import {BACKEND_URL} from '@/constants/backend-url'
 
 export default function Page() {
 
     const handleGoogleLogin = () => {
       console.log("clicked")
       // Redirect to the backend to start the Google OAuth flow
-      window.location.href = "http://localhost:4000/v1/api/users";
+      window.location.href = "{BACKEND_URL}/v1/api/users";
     };
   
   
