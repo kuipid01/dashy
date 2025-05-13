@@ -1,4 +1,7 @@
 "use client";
+
+import { BACKEND_URL } from "@/constants/backend-url";
+
 // import { InputField } from "@/app/components/reusables/inputfield";
 // import Link from "next/link";
 // import { useState } from "react";
@@ -12,7 +15,7 @@ export default function Page() {
   const handleGoogleLogin = () => {
     console.log("clicked")
     // Redirect to the backend to start the Google OAuth flow
-    window.location.href = "http://localhost:4000/v1/api/users";
+    window.location.href = `${BACKEND_URL}/v1/api/users"` ;
   };
 
   return (
