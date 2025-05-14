@@ -4,12 +4,10 @@ import Link from "next/link";
 import {BACKEND_URL} from '@/constants/backend-url'
 
 export default function Page() {
-
-    const handleGoogleLogin = () => {
-      console.log("clicked")
-      // Redirect to the backend to start the Google OAuth flow
-      window.location.href = "{BACKEND_URL}/v1/api/users";
-    };
+  const handleGoogleLogin = () => {
+    console.log("clicked");
+    window.location.href = `${BACKEND_URL}/v1/api/users`;
+  };
   
   
   return (
@@ -85,7 +83,7 @@ export default function Page() {
             </svg>
            Sign up with Google
           </button>
-          <button className="w-[400px]  text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
+          <button className="w-[400px] cu  text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
