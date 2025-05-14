@@ -8,7 +8,7 @@ export default function Page() {
     const handleGoogleLogin = () => {
       console.log("clicked")
       // Redirect to the backend to start the Google OAuth flow
-      window.location.href = "{BACKEND_URL}/v1/api/users";
+      window.location.href = `${BACKEND_URL}/v1/api/users`;
     };
   
   
