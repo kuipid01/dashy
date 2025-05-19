@@ -13,9 +13,9 @@ export default function Page() {
   // });
 
   const handleGoogleLogin = () => {
-    console.log("clicked")
+    console.log("clicked");
     // Redirect to the backend to start the Google OAuth flow
-    window.location.href = `${BACKEND_URL}/v1/api/users"` ;
+    window.location.href = `${BACKEND_URL}/v1/api/users`;
   };
 
   return (
@@ -33,10 +33,11 @@ export default function Page() {
             Log in to manage your thriving online business.
           </p>
 
-          <button 
-          type="button"
-          onClick={handleGoogleLogin}
-          className="w-full cursor-pointer mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full cursor-pointer mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3"
+          >
             <svg
               width="24"
               height="24"

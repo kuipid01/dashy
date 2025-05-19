@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
-const protectedRoutes = ["/dashboard", "/chat", "/earnings", "/orders", "/settings", "/profile"];
+const protectedRoutes = [
+  "/dashboard",
+  "/chat",
+  "/earnings",
+  "/orders",
+  "/settings",
+  "/profile",
+];
 
 // Your secret key (must be Uint8Array for jose)
 const secret = new TextEncoder().encode("secretforaccess");
-// const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_ACCESS_TOKEN_SECRET!);
-
+// const secret = new TextEncoder().encode(
+//   process.env.NEXT_PUBLIC_ACCESS_TOKEN_SECRET!
+// );
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -26,15 +34,15 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    console.log("secret", secret)
+    // console.log("secret", secret)
     // 🔥 Validate token using jose
 
-    console.log(accessToken,"accesstoken")
+    //console.log(accessToken,"accesstoken")
     await jwtVerify(accessToken, secret);
 
     return NextResponse.next();
   } catch (err) {
-    // console.error("Invalid token", err);
+    //console.error("Invalid token", err);
     const loginUrl = new URL("/login", req.url);
     return NextResponse.redirect(loginUrl);
   }
