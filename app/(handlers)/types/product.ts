@@ -3,8 +3,8 @@ export interface Product {
     id: number;
     name: string;
     category: string;
-    image: string; // Comma-separated string from backend
-    videos?: string | null;
+    image: string[]; // Comma-separated string from backend
+    videos?: string[] | null;
     description?: string | null;
     stock?: number | null;
     price: number;

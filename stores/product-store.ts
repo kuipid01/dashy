@@ -1,18 +1,8 @@
+import { Product } from "@/app/(handlers)/types/product";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface Product {
-  id?: number | string;
-  name: string;
-  category: string;
-  image: (string | File)[] | string;
-  videos?: (string | File)[];
-  description?: string;
-  stock?: number;
-  price: number;
-  discountedPrice?: number;
-  rating: number;
-}
+
 
 interface ProductStore {
   product: Product;
@@ -23,6 +13,8 @@ export const useProductStore = create<ProductStore>()(
   persist(
     (set) => ({
       product: {
+        id: 0,
+        storeId: 0,
         name: "",
         category: "",
         image: [],

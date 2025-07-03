@@ -1,12 +1,12 @@
+import { Product } from "@/app/(handlers)/types/product";
 import { getImageSrc } from "@/app/utils/image";
-import { Product } from "@/stores/product-store";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function ProductCard({
   product,
-  isAdmin
+  isAdmin,
 }: {
   isAdmin?: boolean;
   product: Product;
