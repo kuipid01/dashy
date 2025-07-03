@@ -20,9 +20,12 @@ export const useProductStore = create<ProductStore>()(
         image: [],
         description: "",
         stock: 0,
+        store_id:0,
         price: 0,
         discountedPrice: 0,
+        discounted_price: 0,
         rating: 0,
+        live:false,
         videos: []
       },
       updateProduct: (updates) =>

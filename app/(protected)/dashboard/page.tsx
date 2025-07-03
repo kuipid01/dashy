@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
 import { Coins } from "lucide-react";
@@ -23,8 +24,10 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ProductModal } from "../_components/modals/product-modal";
+import { useFetchUserProducts } from "@/app/(handlers)/product/product";
 
 const Page = () => {
+  const { data } = useFetchUserProducts();
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
@@ -192,7 +195,10 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <ProductModal setShowModal={setShowModal} showModal={showModal} />
+      <ProductModal
+        setShowModal={setShowModal}
+        showModal={data?.length === 0}
+      />
     </>
   );
 };

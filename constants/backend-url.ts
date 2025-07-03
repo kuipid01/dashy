@@ -1,1 +1,1 @@
-export const BACKEND_URL ="https://go-backend-hubsell.onrender.com"
+export const BACKEND_URL ="http://localhost:4000"

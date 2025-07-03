@@ -3,14 +3,17 @@ export interface Product {
     id: number;
     name: string;
     category: string;
-    image: string[]; // Comma-separated string from backend
-    videos?: string[] | null;
+    image: string[] | File[] ; // Comma-separated string from backend
+    videos?: string[]  | File[] | null;
     description?: string | null;
     stock?: number | null;
     price: number;
     discountedPrice?: number | null;
+    discounted_price?: number | null;
     rating: number;
     storeId: number;
+    store_id: number;
+    live:boolean;
     store?: {
       id: number;
       name: string;

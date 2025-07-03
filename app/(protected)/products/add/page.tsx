@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,39 +7,46 @@ import { useProductStore } from "@/stores/product-store";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import UseAi from "../../_components/use-ai";
+// import UseAi from "../../_components/use-ai";
 import { toast } from "sonner";
 import { ImageSection } from "./_compoenents/image-upload-component";
 import ProductSample from "./_compoenents/product-sample";
 import { useRouter } from "next/navigation";
+import {
+  usePublishProducts,
+  useUploadImage,
+} from "@/app/(handlers)/product/product";
+import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
+import { Loader2 } from "lucide-react";
 const steps = [
   {
     header: "Basic Information",
-    subheader: "Enter essential product details"
+    subheader: "Enter essential product details",
   },
   {
     header: "Media ",
-    subheader: "Add visuals "
+    subheader: "Add visuals ",
   },
   {
     header: "Description of product ",
-    subheader: "Add description to help buyers"
+    subheader: "Add description to help buyers",
   },
   {
     header: "Inventory",
-    subheader: "Set stock quantities"
+    subheader: "Set stock quantities",
   },
   {
     header: "Pricing",
-    subheader: "Define product pricing"
+    subheader: "Define product pricing",
   },
   {
     header: "Review",
-    subheader: "Confirm all details"
-  }
+    subheader: "Confirm all details",
+  },
 ];
 
 export default function ProductAddition() {
+  const [addingProduct, setAddingProduct] = useState(false);
   const [step, setStep] = useState(0);
   const product = useProductStore((state) => state.product);
   const updateProduct = useProductStore((state) => state.updateProduct);
@@ -73,9 +81,91 @@ export default function ProductAddition() {
     }
   };
   const router = useRouter();
-  const handlePublish = () => {
-    router.push("/products");
+
+  const { mutateAsync } = usePublishProducts();
+  const { store } = useFetchUserStore();
+  // console.log(store);
+  const { upload } = useUploadImage();
+  const handlePublish = async () => {
+    try {
+      setAddingProduct(true);
+      if (!store) {
+        toast.error("Only stores can own products");
+        return;
+      }
+
+      // return;
+      if (!product) {
+        toast.error("No Product");
+        return;
+      }
+
+      const requiredFields = [
+        product.name,
+        product.price,
+        product.image,
+        product.description,
+        product.category,
+      ];
+
+      if (
+        requiredFields.some(
+          (field) => !field || (Array.isArray(field) && field.length === 0)
+        )
+      ) {
+        toast.error("Please fill in all required details");
+        return;
+      }
+
+      let imageUrls = product.image;
+
+      // Upload only the new files (skip existing URLs)
+      const newFiles = product.image.filter(
+        (file: any) => file instanceof File
+      );
+      const existingUrls = product.image.filter(
+        (file: any) => typeof file === "string"
+      );
+
+      if (newFiles.length > 0) {
+        try {
+          const res = await upload(newFiles); // expects return { urls: string[] }
+
+          if (!res?.urls || !Array.isArray(res.urls)) {
+            toast.error("Invalid upload response");
+            return;
+          }
+
+          imageUrls = [...existingUrls, ...res.urls];
+        } catch (err) {
+          toast.error("Upload failed");
+          console.error(err);
+          return;
+        }
+      }
+
+      try {
+        await mutateAsync({
+          ...product,
+          storeId: store.store.id,
+          image: imageUrls,
+        });
+        toast.success("Product published successfully");
+        localStorage.removeItem("product-storage");
+        router.push("/products");
+      } catch (err) {
+        toast.error("Publishing failed");
+        console.error(err);
+      }
+    } catch (error) {
+      toast.error("Publishing failed");
+      console.error(error);
+      setAddingProduct(false);
+    } finally {
+      setAddingProduct(false);
+    }
   };
+
   return (
     <div className="min-h-[80vh] flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
@@ -115,7 +205,7 @@ export default function ProductAddition() {
                     Category *
                   </Label>
 
-                  <UseAi onClick={() => {}} />
+                  {/* <UseAi onClick={() => {}} /> */}
                 </div>
 
                 <Input
@@ -208,11 +298,11 @@ export default function ProductAddition() {
                   min="0"
                   step="0.01"
                   placeholder="Enter discounted price"
-                  value={product.discountedPrice || ""}
+                  value={product.discounted_price || ""}
                   className="h-12 border-gray-300 focus:border-blue-500"
                   onChange={(e) =>
                     updateProduct({
-                      discountedPrice: parseFloat(e.target.value) || 0
+                      discounted_price: parseFloat(e.target.value) || 0,
                     })
                   }
                 />
@@ -251,11 +341,15 @@ export default function ProductAddition() {
             </Button>
           ) : (
             <Button
-              disabled={!isStepValid()}
+              disabled={!isStepValid() || addingProduct}
               onClick={handlePublish}
               className="w-24 bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
             >
-              Publish
+              {addingProduct ? (
+                <Loader2 className="animate-spin duration-300 " />
+              ) : (
+                "Publish"
+              )}
             </Button>
           )}
         </div>

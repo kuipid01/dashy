@@ -1,12 +1,35 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PoductSec from "./components/product-sec";
 import MediaSec from "./components/media-sec";
 import { Switch } from "@/components/ui/switch";
 import clsx from "clsx";
+import {
+  useGetCurrentProduct,
+  useUpdateProduct,
+} from "@/app/(handlers)/product/product";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
 
 const Page = () => {
-  const [activeProduct, setActiveProduct] = useState(false);
+  const params = useParams();
+
+  const id = params?.id as string;
+  const { product, isLoading } = useGetCurrentProduct(id);
+  const { store, isLoading: fetchingsTore } = useFetchUserStore();
+  console.log(product);
+  const [liveState, setLiveState] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (product) {
+      setLiveState(product.live);
+    }
+  }, [product]);
+  const { mutateAsync, isPending } = useUpdateProduct(id);
   // Mock data for products, media, and reviews
   // const product: Product = {
   //   name: "Sample Product",
@@ -20,9 +43,28 @@ const Page = () => {
   //   rating: 3,
   // };
 
+  const handleUpdate = async () => {
+    if (liveState === null) return;
+
+    const newLiveValue = !liveState;
+    setLiveState(newLiveValue); // optimistic toggle
+
+    try {
+      const payload = {
+        ...product,
+        storeId: store.store.id,
+        live: newLiveValue,
+      };
+      await mutateAsync(payload);
+    } catch (err: any) {
+      toast.error("Failed to update product", err);
+      setLiveState(!newLiveValue); // rollback
+    }
+  };
+
   const reviews = [
     { user: "John Doe", rating: 5, comment: "Amazing product!" },
-    { user: "Jane Smith", rating: 4, comment: "Good, but could be better." }
+    { user: "Jane Smith", rating: 4, comment: "Good, but could be better." },
   ];
 
   return (
@@ -31,19 +73,22 @@ const Page = () => {
         <p
           className={clsx(
             " font-medium uppercase  px-3 py-1 rounded-md",
-            activeProduct ? "bg-black text-white " : "bg-black/50 text-gray-700"
+            product?.live ? "bg-black text-white " : "bg-black/50 text-gray-700"
           )}
         >
           {" "}
           Live Product
         </p>
-        <Switch
-          className=" cursor-pointer"
-          checked={activeProduct}
-          onCheckedChange={() => {
-            setActiveProduct(!activeProduct);
-          }}
-        />
+        {!product ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          <Switch
+            className="cursor-pointer"
+            checked={liveState ?? false}
+            onCheckedChange={handleUpdate}
+            disabled={isLoading || isPending}
+          />
+        )}
       </div>
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Main Section */}

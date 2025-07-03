@@ -1,5 +1,6 @@
 import { Product } from "@/app/(handlers)/types/product";
 import { getImageSrc } from "@/app/utils/image";
+import clsx from "clsx";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,11 +16,20 @@ export default function ProductCard({
     <Link
       href={
         isAdmin
-          ? `/products/details/${product.name}`
+          ? `/products/details/${product.id}`
           : `/product-details/${product.name}`
       }
-      className=" hover:border hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
+      className=" hover:border relative hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
     >
+      <div
+        className={clsx(
+          " absolute z-100 right-5 font-medium text-xs uppercase text-white top-5 px-3 py-1 rounded-md  ",
+          product.live ? "bg-green-800" : " bg-red-800"
+        )}
+      >
+        {" "}
+        {product.live ? "Active" : "Inactive"}
+      </div>
       <div className=" bg-[var(--input)] relative h-[250px] flex items-center justify-center">
         <Image
           src={

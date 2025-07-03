@@ -87,6 +87,11 @@ const fetchUser = async (): Promise<User> => {
   const response = await api.get(`/users/me`)
   return response.data.user
 }
+const fetchUserStore = async (): Promise<any> => {
+  const response = await api.get(`/store/me`)
+  console.log(response)
+  return response.data
+}
 
 export const useFetchUser = () => {
   const {
@@ -102,6 +107,25 @@ export const useFetchUser = () => {
 
   return {
     user: data,
+    isLoading,
+    error,
+    isError,
+  }
+}
+export const useFetchUserStore = () => {
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+  } = useQuery<any, Error>({
+    queryKey: ['current-user-store'],
+    queryFn: fetchUserStore,
+    retry: 1,
+  })
+
+  return {
+    store: data,
     isLoading,
     error,
     isError,
