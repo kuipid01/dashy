@@ -2,9 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import PersonalInformation from "../personal-information";
-import Billing from "../billing";
+// import Billing from "../billing";
 import Security from "../security";
-import Integrations from "../integartion";
+// import Integrations from "../integartion";
 import Modifications from "../modifications";
 import StoreDetails from "./store-details";
 
@@ -14,9 +14,9 @@ const ActiveTabContent = () => {
 
   const componentMap: Record<string, React.ReactNode> = {
     "Personal Information": <PersonalInformation />,
-    Billing: <Billing />,
+    // Billing: <Billing />,
     Security: <Security />,
-    Integrations: <Integrations />,
+    // Integrations: <Integrations />,
     Modifications: <Modifications />,
     Store: <StoreDetails />
   };

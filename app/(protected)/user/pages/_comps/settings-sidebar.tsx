@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 const settingsList = [
   { link: "Personal Information", active: true },
-  { link: "Billing", active: true },
+  // { link: "Billing", active: true },
   { link: "Security", active: true },
-  { link: "Integrations", active: true },
+  // { link: "Integrations", active: true },
   { link: "Store", active: true }
 ];
 

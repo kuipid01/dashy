@@ -5,7 +5,7 @@ import {
   ChevronRight,
   MapPin,
   MoveRight,
-  Truck
+  Truck,
 } from "lucide-react";
 import Image from "next/image";
 import {
@@ -13,7 +13,7 @@ import {
   DialogClose,
   DialogContent,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 
 export default function OrderCard({ order }: { order: Order }) {
@@ -27,13 +27,13 @@ export default function OrderCard({ order }: { order: Order }) {
             </p>
 
             <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  text-zinc-900 font-medium">
-              #{order.orderId}
+              #{order.id}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-600 bg-gray-50 px-3 py-3 rounded items-center gap-1">
               <span className="e">ARRIVAL DATE</span>
-              <span className="">{order.arrivalDate}</span>
+              {/* <span className="">{order.arrivalDate}</span> */}
             </div>
             <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
               <span className=" capitalize">{order.status}</span>
@@ -44,18 +44,18 @@ export default function OrderCard({ order }: { order: Order }) {
         <div className="flex items-center gap-5 justify-between">
           <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
             <Bus size={14} className="text-zinc-500" />
-            {order.from}
+            {/* {order.from} */}
           </div>
 
           <MoveRight className="text-zinc-500 w-[30px] md:w-[50px] 2xl:w-[50px]" />
           <div className="flex text-[8px] md:text-xs  2xl:text-[14px]  font-medium text-zinc-500 bg-gray-50 px-3 py-3 rounded items-center gap-1">
             <MapPin size={14} className="text-zinc-500" />
-            {order.to}
+            {order.contact?.name}
           </div>
         </div>
         <div className=" p-3 w-full flex items-center gap-3 rounded-md bg-[#F7F7F8]">
           <Image
-            alt={order.orderId}
+            alt={""}
             src="/assets/login.jpg"
             width={100}
             height={100}
@@ -63,10 +63,10 @@ export default function OrderCard({ order }: { order: Order }) {
           />
           <div className="flex flex-col gap-1">
             <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  font-medium text-black">
-              {order.items[0].name}
+              {order.orderItems[0].name}
             </p>
             <p className=" text-[14px]  md:text-[16px]  2xl:text-[18px]  text-black">
-              {order.items[0].price}
+              {order.orderItems[0].price}
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function OrderCard({ order }: { order: Order }) {
 
       <div className=" w-full p-3 flex justify-between items-center  border-t-2 border-gray-200">
         <p className="text-[14px]  md:text-[16px]  2xl:text-[18px]  font-medium text-black">
-          {order.items.length} items
+          {order.orderItems.length ?? 0} items
         </p>
         <Dialog>
           <DialogTrigger asChild>
@@ -94,11 +94,11 @@ export default function OrderCard({ order }: { order: Order }) {
     "
             >
               Home <ChevronRight size={12} /> Orders <ChevronRight size={12} />{" "}
-              <span className="">#ID{order.orderId}</span>
+              <span className="">#ID{order.id}</span>
             </div>
             <div className="flex justify-between w-full items-center">
               <p className="text-black text-xl font-medium">
-                ORDER ID: <span className="text-zinc-800">{order.orderId}</span>
+                ORDER ID: <span className="text-zinc-800">{order.id}</span>
               </p>
               <div className="flex items-center  gap-2">
                 <button className="p-2 flex items-center gap-1 rounded-md bg-[#F7F7F8]/10 border border-zinc-600 text-[9px]  2xl:text-[10px]  font-medium text-black ">
@@ -133,9 +133,9 @@ export default function OrderCard({ order }: { order: Order }) {
             </div>
 
             <div className="flex flex-col gap-3  py-3 border-y border-gray-300 w-full">
-              {order.items.map((order) => (
+              {order.orderItems?.map((order) => (
                 <div
-                  key={order.name}
+                  key={order.orderID}
                   className="  flex items-center justify-between"
                 >
                   <div className=" flex gap-2 items-center">
@@ -146,7 +146,7 @@ export default function OrderCard({ order }: { order: Order }) {
                       height={80}
                       className="object-cover h-[80px] rounded-md"
                     />
-                    <div className="flex flex-col GAP-2">
+                    <div className="flex flex-col gap-2">
                       <p className="headerText">{order.name}</p>
                       <p className="light_mid capitalize">CATEGORY gOES HERE</p>
                     </div>
@@ -180,7 +180,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   <p className=" text-zinc-600 text-xs font-medium m">
                     ADDRESS
                   </p>
-                  <p className="light_mid">{order.to}</p>
+                  <p className="light_mid">{order.contact?.name}</p>
                 </div>
               </div>
             </div>

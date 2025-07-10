@@ -4,15 +4,15 @@ import { DollarSign, TrendingDown, TrendingUp } from "lucide-react";
 import clsx from "clsx";
 
 // Sample data
-const data = [
-  { value: 12 },
-  { value: 25 },
-  { value: 14 },
-  { value: 1 },
-  { value: 16 },
-  { value: 0 },
-  { value: 23 }
-];
+// const data = [
+//   { value: 12 },
+//   { value: 25 },
+//   { value: 14 },
+//   { value: 1 },
+//   { value: 16 },
+//   { value: 0 },
+//   { value: 23 },
+// ];
 
 // CustomDot with `index` manually added to the type
 interface CustomDotProps extends DotProps {
@@ -40,8 +40,17 @@ interface TopcardProp {
   direction: "surged" | "decreased";
   percent: number;
   amount: number;
+  chartData?: { month: string; earnings: number }[];
 }
-const TopCard = ({ title, amount, subText, direction }: TopcardProp) => {
+const TopCard = ({
+  title,
+  amount,
+  subText,
+  direction,
+  chartData,
+  percent,
+}: TopcardProp) => {
+  const formattedData = chartData?.map((data) => ({ value: data.earnings }));
   return (
     <Card className="w-full max-w-md rounded-xl shadow-sm">
       <CardHeader className="pb-2">
@@ -65,7 +74,7 @@ const TopCard = ({ title, amount, subText, direction }: TopcardProp) => {
                 ) : (
                   <TrendingUp className="w-3 h-3 mr-1" />
                 )}
-                +0.6%
+                {percent}%
               </div>
             </div>
 
@@ -84,7 +93,7 @@ const TopCard = ({ title, amount, subText, direction }: TopcardProp) => {
 
       <CardContent className="h-[100px]">
         <ResponsiveContainer className="" width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={formattedData}>
             <Line
               type="monotone"
               dataKey="value"

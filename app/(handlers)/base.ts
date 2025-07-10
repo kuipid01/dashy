@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const api = axios.create({
-  baseURL: 'http://localhost:4000/v1/api/',
+  baseURL: "http://localhost:4000/v1/api/",
   withCredentials: true, // Ensure cookies are sent with requests
 });
 
@@ -11,24 +11,33 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Check if the error is 401 and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true; // Mark as retried to avoid infinite loops
+    // Initialize retry count if not set
+    if (!originalRequest._retryCount) {
+      originalRequest._retryCount = 0;
+    }
 
+    // Check for 401 and allow up to 1 retry
+    if (error.response?.status === 401 && originalRequest._retryCount < 1) {
+      originalRequest._retryCount += 1;
+      console.log("here ran");
       try {
-        // Call the refresh endpoint
-        await api.post('/users/refresh');
-        // Retry the original request with new access_token (sent via cookie)
-        return api(originalRequest);
+        // Attempt to refresh token
+        await api.post("/users/refresh");
+        return api(originalRequest); // Retry original request
       } catch (refreshError) {
-        // If refresh fails (e.g., invalid refresh_token), redirect to login
-        console.error('Token refresh failed:', refreshError);
-        window.location.href = '/login';
+        console.error("Token refresh failed:", refreshError);
+        // Redirect to login if refresh fails
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
 
-    // If error is not 401 or retry fails, reject the error
+    // Redirect to login if exceeded retry limit
+    if (originalRequest._retryCount >= 1) {
+      console.warn("Too many retry attempts, redirecting to login.");
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   }
 );
