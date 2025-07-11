@@ -38,6 +38,7 @@ export const Navbar = () => {
           <Link href="/features">Features</Link>
           <Link href="/pricing">Pricing</Link>
           <Link href="/contact">Contact</Link>
+          <Link href="/discover">Discover</Link>
         </div>
         <Button
           onClick={() => router.push("/signup")}
