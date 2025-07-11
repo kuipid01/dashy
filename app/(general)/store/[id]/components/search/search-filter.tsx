@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import Filters from "./flters";
 import { filters } from "../data/filter";
 import SearchBar from "./search-bar";
 
-const SearchAndFilters: React.FC = () => {
+const SearchAndFilters = ({setFilters}:{setFilters:React.Dispatch<React.SetStateAction<{
+    searchTerm: string;
+    ratings: null;
+    priceRange: null;
+    category: string;
+}>>}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string>

@@ -4,10 +4,14 @@ import React, { useState } from "react";
 import { LeftSection } from "./components/left";
 import { RightSection } from "./components/right";
 import Back from "@/app/components/reusables/back";
+import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+const {store} = useFetchUserStore()
 
+  const userStore = store?.store
+  console.log(userStore);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -22,7 +26,7 @@ const Page = () => {
         <div className=" px-4 md:px-6 lg:px-8 pt-5 justify-between  flex items-center gap-2">
           <Back />
 
-          <p>STORE NAME GOES HERE</p>
+          <p className="uppercase font-bold">{userStore?.name}</p>
         </div>
         <LeftSection />
       </div>

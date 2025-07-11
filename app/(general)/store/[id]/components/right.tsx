@@ -8,6 +8,8 @@ import {
   Shield
 } from "lucide-react";
 import StoreInfo from "./store/store-info";
+import { useParams } from "next/navigation";
+import { useFetchStore } from "@/app/(handlers)/general/general";
 
 interface RightSectionProps {
   isOpen: boolean;
@@ -18,6 +20,10 @@ export const RightSection: React.FC<RightSectionProps> = ({
   isOpen,
   toggle
 }) => {
+const {id}  = useParams()
+  const {data, isLoading} = useFetchStore(id as string)
+  console.log(data)
+
   return (
     <aside
       className={`fixed top-0 z-100 right-0 h-full bg-white shadow-lg transition-all duration-300 ease-in-out overflow-hidden ${
@@ -33,7 +39,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </button>
 
         <div className={`mt-16 px-6 ${!isOpen && "opacity-0"}`}>
-          <StoreInfo />
+          <StoreInfo data={data} isLoading={isLoading} />
         </div>
 
         {!isOpen && (

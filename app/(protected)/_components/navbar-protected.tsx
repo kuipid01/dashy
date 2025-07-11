@@ -26,13 +26,16 @@ import {
 import React from "react";
 import {
   useFetchUser,
+  useFetchUserStore,
   useHandleLogout,
 } from "@/app/(handlers)/auth-handlers/auth";
 
 const NavbarProtected = () => {
   const { user, isLoading } = useFetchUser();
+  const {store} = useFetchUserStore()
 
-  console.log(user, isLoading);
+  const userStore = store?.store
+  console.log(userStore);
   const { handleLogout, loading } = useHandleLogout();
   const links = [
     {
@@ -232,7 +235,7 @@ const NavbarProtected = () => {
             <DropdownMenuSeparator className="mb-3" />
             <DropdownMenuItem asChild>
               <Link
-                href="/store/id"
+                href={`/store/${userStore.id || userStore.ID}`}
                 className=" flex items-center  py-3 hover:bg-gray-200 cursor-pointer  gap-3"
               >
                 <Store size={24} />

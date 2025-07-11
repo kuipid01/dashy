@@ -1,14 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { Star, MapPin, Phone, Clock, MessageSquare, Mail } from "lucide-react";
+import { Store } from "@/types/store";
+import Skeleton from "@/app/(general)/_compoenents/skeleton";
 
-const StoreInfo: React.FC = () => {
-  const storeRating = 4.8;
-
+const StoreInfo = ({data,isLoading}:{data?:Store,isLoading:boolean}) => {
+  // const storeRating = 4.8;
+  if (!data || isLoading ) return (
+    <div className=" flex flex-col gap-5">
+      <Skeleton className="w-full h-[50px] "/>
+      <Skeleton className="w-full h-[50px]"/>
+      <Skeleton className="w-full h-[50px]"/>
+      <Skeleton className="w-full h-[50px]"/>
+    </div>
+  )
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">Modern Store</h2>
-        <div className="flex items-center justify-center mt-2">
+        <h2 className="text-2xl uppercase font-bold text-gray-900">{data?.name}</h2>
+        {/* <div className="flex items-center justify-center mt-2">
           {[...Array(5)].map((_, index) => (
             <Star
               key={index}
@@ -25,7 +35,7 @@ const StoreInfo: React.FC = () => {
             {storeRating}/5
           </span>
         </div>
-        <p className="mt-1 text-sm text-gray-500">Based on 248 reviews</p>
+        <p className="mt-1 text-sm text-gray-500">Based on 248 reviews</p> */}
       </div>
 
       <div className="space-y-4">
@@ -34,7 +44,7 @@ const StoreInfo: React.FC = () => {
           <div>
             <p className="font-medium">Location</p>
             <p className="text-sm text-gray-500">
-              123 Market Street, San Francisco, CA
+              {data.address}
             </p>
           </div>
         </div>
@@ -43,7 +53,7 @@ const StoreInfo: React.FC = () => {
           <Phone size={18} className="text-black flex-shrink-0" />
           <div>
             <p className="font-medium">Contact</p>
-            <p className="text-sm text-gray-500">+1 (555) 123-4567</p>
+            <p className="text-sm text-gray-500">{data.phone_number}</p>
           </div>
         </div>
 
@@ -51,11 +61,11 @@ const StoreInfo: React.FC = () => {
           <Mail size={18} className="text-black flex-shrink-0" />
           <div>
             <p className="font-medium">Email</p>
-            <p className="text-sm text-gray-500">hello@modernstore.com</p>
+            <p className="text-sm text-gray-500">{data.email}</p>
           </div>
         </div>
 
-        <div className="flex items-start gap-3 text-gray-700">
+        {/* <div className="flex items-start gap-3 text-gray-700">
           <Clock size={18} className="text-black flex-shrink-0 mt-0.5" />
           <div>
             <p className="font-medium">Business Hours</p>
@@ -65,7 +75,7 @@ const StoreInfo: React.FC = () => {
               <p>Sunday: 12pm - 5pm</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* 
       <div className="space-y-4">
