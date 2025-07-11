@@ -155,7 +155,7 @@ const NavbarProtected = () => {
             <DropdownMenuSeparator className="mb-3" />
             <DropdownMenuItem asChild>
               <Link
-                href="/store/id"
+                href={`/store/${userStore.id}`}
                 className="flex items-center py-3 hover:bg-gray-200 cursor-pointer gap-3"
               >
                 <Store size={24} />
