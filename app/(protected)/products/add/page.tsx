@@ -89,8 +89,9 @@ export default function ProductAddition() {
   const handlePublish = async () => {
     try {
       setAddingProduct(true);
-      if (!store) {
+      if (!store?.store?.id) {
         toast.error("Only stores can own products");
+        setAddingProduct(false);
         return;
       }
 
