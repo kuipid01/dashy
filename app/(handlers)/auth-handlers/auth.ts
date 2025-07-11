@@ -88,8 +88,10 @@ const fetchUser = async (): Promise<User> => {
   return response.data.user
 }
 const fetchUserStore = async (): Promise<any> => {
-  const response = await api.get(`/store/me`)
-  console.log(response)
+  console.log("got here")
+  const response = await api.get(`mystore`)
+  console.log("got here too")
+  
   return response.data
 }
 
@@ -119,7 +121,7 @@ export const useFetchUserStore = () => {
     error,
     isError,
   } = useQuery<any, Error>({
-    queryKey: ['current-user-store'],
+    queryKey: ['current-user-store-2'],
     queryFn: fetchUserStore,
     retry: 1,
   })

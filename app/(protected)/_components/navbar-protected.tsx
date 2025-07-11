@@ -32,7 +32,7 @@ import {
 
 const NavbarProtected = () => {
   const { user, isLoading } = useFetchUser();
-  const {store} = useFetchUserStore()
+  const { store } = useFetchUserStore()
 
   const userStore = store?.store
   console.log(userStore);
@@ -80,7 +80,7 @@ const NavbarProtected = () => {
                   link.href === "settings" && pathname.toLowerCase() === "/user"
                     ? "bg-[#d4d4d4]"
                     : pathname.toLowerCase() ===
-                        `/${link.href.toLowerCase()}` && "bg-[#d4d4d4]"
+                    `/${link.href.toLowerCase()}` && "bg-[#d4d4d4]"
                 )}
                 href={link.href === "settings" ? "/user" : `/${link.href}`}
               >
@@ -235,7 +235,7 @@ const NavbarProtected = () => {
             <DropdownMenuSeparator className="mb-3" />
             <DropdownMenuItem asChild>
               <Link
-                href={`/store/${userStore.id || userStore.ID}`}
+                href={`/store/${userStore?.id || userStore?.ID}`}
                 className=" flex items-center  py-3 hover:bg-gray-200 cursor-pointer  gap-3"
               >
                 <Store size={24} />

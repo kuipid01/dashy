@@ -17,13 +17,13 @@ export default function ProductCard({
       href={
         isAdmin
           ? `/products/details/${product?.id}`
-          : `/product-details/${product?.name}`
+          : `/product-details/${product?.id}`
       }
       className=" hover:border relative hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
     >
       <div
         className={clsx(
-          " absolute z-100 right-5 font-medium text-xs uppercase text-white top-5 px-3 py-1 rounded-md  ",
+          " absolute z-1 right-5 font-medium text-xs uppercase text-white top-5 px-3 py-1 rounded-md  ",
           product?.live ? "bg-green-800" : " bg-red-800"
         )}
       >

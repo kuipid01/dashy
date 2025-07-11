@@ -17,7 +17,7 @@ api.interceptors.response.use(
     }
 
     // Check for 401 and allow up to 1 retry
-    if (error.response?.status === 401 && originalRequest._retryCount < 1) {
+    if (error.response?.status === 401 && originalRequest._retryCount < 3) {
       originalRequest._retryCount += 1;
       console.log("here ran");
       try {

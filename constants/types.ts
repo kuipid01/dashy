@@ -168,3 +168,28 @@ interface MonthlyEarning {
   start: string; // ISO timestamp (RFC3339)
   end: string; // ISO timestamp (RFC3339)
 }
+
+
+
+export interface ProductVariant {
+  ID: string;
+  ProductID: number;
+
+  Size?: string;
+  Color?: string;
+  Material?: string;
+  Weight?: number;
+  Dimensions?: string;
+  SKU?: string;
+  Barcode?: string;
+  Stock?: number;
+  Price?: number;
+
+  CreatedAt?: string; // ISO date string format
+  UpdatedAt?: string;
+
+  [key: string]: any; // Allow extra properties for flexibility
+}
+
+
+

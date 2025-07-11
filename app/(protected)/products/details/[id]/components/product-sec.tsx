@@ -107,113 +107,118 @@ const PoductSec = () => {
           )}
         </Newbtn>
       </div>
-
-      <div className="grid border-t border-gray-200 pt-3 gap-3 grid-cols-1">
-        <InputComponent
-          label="Product Name"
-          name="Product Name"
-          defaultValue={product?.name}
-          disabled={!canBeEdited}
-          onChange={(e) => handleChange("name", e.target.value)}
-        />
-
-        <InputComponent
-          label="Product Category"
-          name="Product Category"
-          defaultValue={product?.category}
-          disabled={!canBeEdited}
-          onChange={(e) => handleChange("category", e.target.value)}
-        />
-
-        <div className="grid grid-cols-3 gap-3 ">
-          <InputComponent
-            label="Product Price"
-            name="Product Price"
-            type="number"
-            defaultValue={product?.price}
-            disabled={!canBeEdited}
-            onChange={(e) =>
-              handleChange("price", parseFloat(e.target.value) || 0)
-            }
-          />
-          <InputComponent
-            label=" Discount Price"
-            name="Product Discount Price"
-            type="number"
-            defaultValue={product?.discounted_price || 0}
-            disabled={!canBeEdited}
-            onChange={(e) =>
-              handleChange("discounted_price", parseFloat(e.target.value) || 0)
-            }
-          />
-          <InputComponent
-            label=" Stock Quantity"
-            name="Product Stock"
-            type="number"
-            defaultValue={product?.stock ?? 0}
-            disabled={!canBeEdited}
-            onChange={(e) =>
-              handleChange("stock", parseInt(e.target.value) || 0)
-            }
-          />
-        </div>
-
-        <div className="flex mt-3  justify-between items-center">
-          <p>Product Description</p>
-          <UseAi />
-        </div>
-        <textarea
-          disabled={!canBeEdited}
-          name="description"
-          id="description"
-          className={cn(
-            "shadow-sm h-[200px] p-2 focus:ring-indigo-500 border border-gray-300 focus:border-indigo-500 block w-full sm:text-sm rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-gray-900 dark:focus:border-gray-900",
-            !canBeEdited ? " cursor-not-allowed bg-gray-200" : ""
-          )}
-          defaultValue={product?.description ?? ""}
-          onChange={(e) => handleChange("description", e.target.value)}
-        />
-      </div>
-      <div className="border mt-4 p-4 rounded-lg shadow-md">
-        <div className="flex mb-2 justify-between items-center">
-          <p>Product Media</p>
-          <Newbtn
-            onClick={() => {
-              setCanBeEdited(!canBeEdited);
-            }}
-          >
-            {canBeEdited ? (
-              <div>
-                <SaveAll size={16} />{" "}
-                <span className=" text-sm uppercase">
-                  {isPending ? (
-                    <Loader2 className="animate-spin  duration-300" />
-                  ) : (
-                    "Save"
-                  )}
-                </span>
-              </div>
-            ) : (
-              <>
-                <Pen size={16} />{" "}
-                <span className=" text-sm uppercase">Edit</span>
-              </>
-            )}
-          </Newbtn>
-        </div>
-        <div className="flex gap-4">
-          {product?.image?.map((url, index) => (
-            <Image
-              key={index}
-              width={124}
-              height={124}
-              src={url as string}
-              alt={`Media ${index + 1}`}
-              className="w-32 h-32 object-cover rounded-md"
+      {isLoading ? <div className=" flex justify-center items-center w-full h-full min-h-[500px]">
+        <Loader2 className=" animate-spin duration-300" />
+      </div> :
+        <>
+          <div className="grid border-t border-gray-200 pt-3 gap-3 grid-cols-1">
+            <InputComponent
+              label="Product Name"
+              name="Product Name"
+              defaultValue={product?.name}
+              disabled={!canBeEdited}
+              onChange={(e) => handleChange("name", e.target.value)}
             />
-          ))}
-        </div>
-      </div>
+
+            <InputComponent
+              label="Product Category"
+              name="Product Category"
+              defaultValue={product?.category}
+              disabled={!canBeEdited}
+              onChange={(e) => handleChange("category", e.target.value)}
+            />
+
+            <div className="grid grid-cols-3 gap-3 ">
+              <InputComponent
+                label="Product Price"
+                name="Product Price"
+                type="number"
+                defaultValue={product?.price}
+                disabled={!canBeEdited}
+                onChange={(e) =>
+                  handleChange("price", parseFloat(e.target.value) || 0)
+                }
+              />
+              <InputComponent
+                label=" Discount Price"
+                name="Product Discount Price"
+                type="number"
+                defaultValue={product?.discounted_price || 0}
+                disabled={!canBeEdited}
+                onChange={(e) =>
+                  handleChange("discounted_price", parseFloat(e.target.value) || 0)
+                }
+              />
+              <InputComponent
+                label=" Stock Quantity"
+                name="Product Stock"
+                type="number"
+                defaultValue={product?.stock ?? 0}
+                disabled={!canBeEdited}
+                onChange={(e) =>
+                  handleChange("stock", parseInt(e.target.value) || 0)
+                }
+              />
+            </div>
+
+            <div className="flex mt-3  justify-between items-center">
+              <p>Product Description</p>
+              <UseAi />
+            </div>
+            <textarea
+              disabled={!canBeEdited}
+              name="description"
+              id="description"
+              className={cn(
+                "shadow-sm h-[200px] p-2 focus:ring-indigo-500 border border-gray-300 focus:border-indigo-500 block w-full sm:text-sm rounded-md dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-gray-900 dark:focus:border-gray-900",
+                !canBeEdited ? " cursor-not-allowed bg-gray-200" : ""
+              )}
+              defaultValue={product?.description ?? ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </div>
+          <div className="border mt-4 p-4 rounded-lg shadow-md">
+            <div className="flex mb-2 justify-between items-center">
+              <p>Product Media</p>
+              <Newbtn
+                onClick={() => {
+                  setCanBeEdited(!canBeEdited);
+                }}
+              >
+                {canBeEdited ? (
+                  <div>
+                    <SaveAll size={16} />{" "}
+                    <span className=" text-sm uppercase">
+                      {isPending ? (
+                        <Loader2 className="animate-spin  duration-300" />
+                      ) : (
+                        "Save"
+                      )}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <Pen size={16} />{" "}
+                    <span className=" text-sm uppercase">Edit</span>
+                  </>
+                )}
+              </Newbtn>
+            </div>
+            <div className="flex gap-4">
+              {product?.image?.map((url, index) => (
+                <Image
+                  key={index}
+                  width={124}
+                  height={124}
+                  src={url as string}
+                  alt={`Media ${index + 1}`}
+                  className="w-32 h-32 object-cover rounded-md"
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      }
     </div>
   );
 };
