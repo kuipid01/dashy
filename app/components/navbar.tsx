@@ -106,6 +106,12 @@ export const Navbar = () => {
                 >
                   <Link href="/contact">Contact</Link>
                 </motion.li>
+                <motion.li
+                  className="text-right text-2xl font-semibold px-5 py-3"
+                  variants={item}
+                >
+                  <Link href="/discover">Discover</Link>
+                </motion.li>
               </motion.ul>
 
               {/* Separate AnimatePresence for instant exit */}
