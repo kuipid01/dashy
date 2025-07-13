@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { Poiret_One } from "next/font/google";
 import "../globals.css";
-import { Toaster } from "sonner";
+import { Toaster } from "sonner"; // Corrected typo
+import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { getDiscoveryContent } from "../(handlers)/content/api";
 import { ReactQueryProviders } from "../(handlers)/provicder";
 
 const poiretOne = Poiret_One({
   variable: "--font-poiret-one",
   subsets: ["latin"],
-  weight: ["400"]
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -22,27 +24,37 @@ export const metadata: Metadata = {
       "Your Hubsell account has been successfully verified. Welcome aboard! Hubsell ❤",
     url: "https://www.hubsell.com/verification-success",
     siteName: "Hubsell",
-    type: "website"
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Hubsell Verification Success",
     description:
-      "Account verification completed successfully. Get started with Hubsell today! ❤"
-  }
+      "Account verification completed successfully. Get started with Hubsell today! ❤",
+  },
 };
 
-export default function RootLayout({
-  children
+export default async function RootLayout({
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["discovery-contents"],
+    queryFn: getDiscoveryContent,
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+
   return (
     <html lang="en">
-      <Toaster />
-
-      <body className={` ${poiretOne.variable} antialiased`}>
-        <ReactQueryProviders> {children}</ReactQueryProviders>
+      <body className={`${poiretOne.variable} antialiased`}>
+        <Toaster />
+        <ReactQueryProviders initialState={dehydratedState}>
+          {children}
+        </ReactQueryProviders>
       </body>
     </html>
   );

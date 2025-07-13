@@ -1,94 +1,60 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Heart,
+  // Heart,
   ShoppingCart,
-  Star,
+  // Star,
   ChevronUp,
   ChevronDown,
   Eye,
   Share2,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getDiscoveryContent } from "@/app/(handlers)/content/api";
+import { useMarkContentAsViewed } from "@/app/(handlers)/content/content";
+import { ContentItem } from "@/app/(protected)/contents/types/content";
+import ProducOverlay from "./comps/product-overlay";
+import ProductOverlay from "./comps/product-overlay";
+import StoreOverlay from "./comps/store-overlay";
 
-const products = [
-  {
-    id: 1,
-    name: "Wireless Noise-Canceling Headphones",
-    price: 299.99,
-    originalPrice: 399.99,
-    description: "Premium sound quality with active noise cancellation",
-    image: "/assets/man.jpg",
-    category: "Electronics",
-    rating: 4.8,
-    reviews: 1247,
-    discount: 25,
-  },
-  {
-    id: 2,
-    name: "Minimalist Leather Backpack",
-    price: 159.99,
-    originalPrice: null,
-    description: "Handcrafted genuine leather with modern design",
-    image: "/assets/man.jpg",
-    category: "Fashion",
-    rating: 4.9,
-    reviews: 892,
-    discount: null,
-  },
-  {
-    id: 3,
-    name: "Smart Fitness Watch",
-    price: 249.99,
-    originalPrice: 329.99,
-    description: "Track your health with advanced sensors",
-    image: "/assets/man.jpg",
-    category: "Electronics",
-    rating: 4.7,
-    reviews: 2156,
-    discount: 24,
-  },
-  {
-    id: 4,
-    name: "Organic Cotton T-Shirt",
-    price: 39.99,
-    originalPrice: null,
-    description: "Sustainable fashion with premium comfort",
-    image: "/assets/man.jpg",
-    category: "Fashion",
-    rating: 4.6,
-    reviews: 543,
-    discount: null,
-  },
-  {
-    id: 5,
-    name: "Ceramic Coffee Mug Set",
-    price: 49.99,
-    originalPrice: 69.99,
-    description: "Handmade ceramic mugs for the perfect brew",
-    image: "/assets/man.jpg",
-    category: "Home",
-    rating: 4.8,
-    reviews: 324,
-    discount: 29,
-  },
-];
-
-const categories = [
-  "All",
-  "Electronics",
-  "Fashion",
-  "Home",
-  "Beauty",
-  "Sports",
-];
+// const categories = [
+//   "All",
+//   "Electronics",
+//   "Fashion",
+//   "Home",
+//   "Beauty",
+//   "Sports",
+// ];
 
 export default function ProductDiscovery() {
+  const [contents, setContents] = useState<ContentItem[]>([]);
+  const [activeID, setActiveID] = useState<string | null>(null);
+  const { data } = useQuery({
+    queryKey: ["discovery-contents"],
+    queryFn: getDiscoveryContent,
+  });
+  const { data: contentMarked, isLoading } = useMarkContentAsViewed(
+    activeID ?? ""
+  );
+  console.log(data);
+
+  useEffect(() => {
+    if (!data) return;
+    setActiveID(data[0].id);
+  }, [data]);
+
+  useEffect(() => {
+    if (!data) return;
+    setContents([...data]);
+  }, [data]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -96,8 +62,8 @@ export default function ProductDiscovery() {
 
   const filteredProducts =
     selectedCategory === "All"
-      ? products
-      : products.filter((product) => product.category === selectedCategory);
+      ? contents
+      : contents.filter((product) => product);
 
   const currentProduct = filteredProducts[currentIndex];
 
@@ -115,10 +81,10 @@ export default function ProductDiscovery() {
     setTimeout(() => setIsAnimating(false), 300);
   };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentIndex(0);
-  };
+  // const handleCategoryChange = (category: string) => {
+  //   setSelectedCategory(category);
+  //   setCurrentIndex(0);
+  // };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -150,7 +116,7 @@ export default function ProductDiscovery() {
         </div>
 
         {/* Category Tabs */}
-        <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
+        {/* <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
           <TabsList className="bg-white/10 border-0">
             {categories.map((category) => (
               <TabsTrigger
@@ -162,7 +128,7 @@ export default function ProductDiscovery() {
               </TabsTrigger>
             ))}
           </TabsList>
-        </Tabs>
+        </Tabs> */}
       </div>
 
       {/* Main Product Display */}
@@ -181,8 +147,8 @@ export default function ProductDiscovery() {
           {/* Product Image */}
           <div className="relative h-full">
             <Image
-              src={currentProduct.image || "/placeholder.svg"}
-              alt={currentProduct.name}
+              src={currentProduct.url || "/placeholder.svg"}
+              alt={currentProduct.title}
               fill
               className="object-cover"
               priority
@@ -192,71 +158,17 @@ export default function ProductDiscovery() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
             {/* Discount Badge */}
-            {currentProduct.discount && (
+            {/* {currentProduct.discount && (
               <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white">
                 -{currentProduct.discount}%
               </Badge>
+            )} */}
+
+            {currentProduct?.product ? (
+              <ProductOverlay product={currentProduct.product} />
+            ) : (
+              <StoreOverlay store={currentProduct?.store} />
             )}
-
-            {/* Product Info Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">
-                    {currentProduct.rating}
-                  </span>
-                </div>
-                <span className="text-sm text-gray-300">
-                  ({currentProduct.reviews.toLocaleString()} reviews)
-                </span>
-              </div>
-
-              {/* Product Name */}
-              <h2 className="text-2xl font-bold leading-tight">
-                {currentProduct.name}
-              </h2>
-
-              {/* Description */}
-              <p className="text-gray-300 text-sm leading-relaxed">
-                {currentProduct.description}
-              </p>
-
-              {/* Price */}
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-white">
-                  ${currentProduct.price}
-                </span>
-                {currentProduct.originalPrice && (
-                  <span className="text-lg text-gray-400 line-through">
-                    ${currentProduct.originalPrice}
-                  </span>
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-2">
-                <Button className="flex-1 bg-white text-black hover:bg-gray-100 font-semibold py-3 transition-all duration-200 hover:scale-105">
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 py-3 transition-all duration-200 hover:scale-105 bg-transparent"
-                >
-                  <Eye className="w-5 h-5 mr-2" />
-                  Details
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-white/10 py-3 transition-all duration-200 hover:scale-105"
-                >
-                  <Heart className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
           </div>
         </Card>
 
