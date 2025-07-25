@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContent, deleteContent, getContentById, getDiscoveryContent, getMyContents, markContentAsViewed, updateContent } from "./api";
+import { createContent, deleteContent, getContentById, getDiscoveryContent, getMyContents, getStoreContents, markContentAsViewed, updateContent } from "./api";
 import { ContentItem } from "@/app/(protected)/contents/types/content";
 
 
@@ -24,6 +24,13 @@ export const useFetchDiscoveryContent = () => {
   return useQuery({
     queryKey: ["content", "discovery"],
     queryFn: getDiscoveryContent,
+  });
+};
+export const useFetchStoreContent = (id:string) => {
+  return useQuery({
+    queryKey: ["store-contents", id],
+    queryFn: () => getStoreContents(id),
+    enabled:!!id
   });
 };
 export const useMarkContentAsViewed = (id:string) => {

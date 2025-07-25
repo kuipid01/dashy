@@ -9,7 +9,7 @@ interface ReviewCardProps {
 
 const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
+    <div className="bgblur rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
       <div className="flex items-start gap-4">
         <img
           src={review.avatar}

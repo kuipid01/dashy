@@ -5,7 +5,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 
 const data = [
@@ -13,12 +13,12 @@ const data = [
   { time: "7AM", customers: 25 },
   { time: "8AM", customers: 78 },
   { time: "9AM", customers: 70 },
-  { time: "NOW", customers: 65 }
+  { time: "NOW", customers: 65 },
 ];
 
 const ActiveCustomersChart: React.FC = () => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div className="bgblur p-6 rounded-lg shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Active Customer</h3>
         <div className="flex items-center">

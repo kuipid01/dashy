@@ -16,7 +16,8 @@ const nextConfig: NextConfig = {
       "www.oldnavy.com",
       "www.vervetdenim.com",
       "lh3.googleusercontent.com",
-      "res.cloudinary.com"
+      "res.cloudinary.com",
+      "placeholder.svg"
     ],
   },
 };

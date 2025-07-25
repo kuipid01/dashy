@@ -99,17 +99,13 @@ const Page = () => {
   const handleCreateContent = async () => {
     if (!formData.url) {
       toast.error("Provide URL or upload an image");
+      return;
     }
     if (!formData.title) {
       toast.error("Provide default title or upload a file");
+      return;
     }
-    const content: ContentItem = {
-      ...formData,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      analytics: { views: 0, clicks: 0, clickThroughRate: 0, engagement: 0 },
-    };
+
     const payload = {
       ...formData,
       type:
@@ -117,18 +113,22 @@ const Page = () => {
           ? "photo"
           : (formData.type as "photo" | "video"),
     };
+
     try {
-      await mutateAsync(payload);
-      setContents((prev) => [content, ...prev]);
-      toast.error("Success");
+      const newContent = await mutateAsync(payload);
+
+      setContents((prev) => [...prev, newContent]);
+
+      toast.success("Content created successfully");
+
       setFormData({
         title: "",
-        type: "image" as "image" | "video",
+        type: "image",
         url: "",
         thumbnail: "",
         description: "",
-        tags: [] as string[],
-        status: "draft" as "draft" | "published" | "archived",
+        tags: [],
+        status: "draft",
       });
       setIsCreateModalOpen(false);
     } catch (error) {
@@ -183,9 +183,9 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 rounded-md">
+    <div className="min-h-screen bgblur rounded-md">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bgblur border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">Content Manager</h1>
           <div className="flex items-center space-x-4">

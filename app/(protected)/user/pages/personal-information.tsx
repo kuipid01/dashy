@@ -140,7 +140,7 @@ const PersonalInformation = () => {
   return (
     <div className="pb-20 pt-10">
       <form onSubmit={handleSubmit}>
-        <div className="p-3 md:p-5 bg-white border rounded-md border-gray-300 max-w-full md:max-w-[80%] mx-auto md:px-10 flex flex-col">
+        <div className="p-3 md:p-5 bgblur border rounded-lg _border-gray-300 max-w-full md:max-w-[80%] mx-auto md:px-10 flex flex-col">
           {/* PROFILE PICTURE */}
           <label
             htmlFor="profile-picture"

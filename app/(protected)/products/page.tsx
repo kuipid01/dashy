@@ -38,7 +38,7 @@ const Page = () => {
   );
 
   return (
-    <div className="flex flex-col gap-6 p-5 bg-white rounded-xl min-h-screen">
+    <div className="flex flex-col gap-6 p-5 bgblur rounded-xl min-h-screen">
       {/* Header */}
       <div className="flex flex-col lg:flex-row gap-3 justify-between lg:items-center">
         <div className="relative w-full md:w-[200px] lg:w-[300px]">
@@ -57,7 +57,7 @@ const Page = () => {
             onClick={() => router.push("/products/add")}
             text="Add Product"
             icon={<Plus size={16} />}
-            className="!bg-black text-white px-4 py-2 rounded-[10px] flex items-center gap-1"
+            className="!bg-black !hover:bg-black/50 cursor-pointer hover:backdrop-blur-3xl text-white px-4 py-2 rounded-[10px] flex items-center gap-1"
           />
           <div className="rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
             <Filter className="text-zinc-500 w-5 h-5" />

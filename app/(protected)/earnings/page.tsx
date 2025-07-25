@@ -37,7 +37,7 @@ const Page = () => {
           chartData={chartData}
         />
 
-        <div className="xl:col-span-2 h-[400px]">
+        <div className="xl:col-span-2  h-[400px]">
           <EarningsChart chartData={chartData} />
         </div>
       </div>
@@ -49,7 +49,7 @@ const Page = () => {
           <ActiveCustomersChart />
 
           {topProducts && topProducts?.length > 0 && (
-            <div className="p-4 bg-white rounded-xl shadow-md flex flex-col gap-4">
+            <div className="p-4 bgblur rounded-xl shadow-md flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold text-gray-900">
                   Top Products

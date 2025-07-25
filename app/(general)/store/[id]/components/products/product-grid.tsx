@@ -19,17 +19,21 @@ export const ProductGrid = ({
 }) => {
   const { id } = useParams();
 
-  const { data: fetchedProducts, isLoading } = useFetchStoreProducts(id as string);
+  const { data: fetchedProducts, isLoading } = useFetchStoreProducts(
+    id as string
+  );
 
   console.log(fetchedProducts);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {isLoading
-        ? <ProductLoadingSkeleton number={6} />
-        : fetchedProducts?.map((product) => (
+    <div className="grid grid-cols-1 bgblur py-8 px-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {isLoading ? (
+        <ProductLoadingSkeleton number={6} />
+      ) : (
+        fetchedProducts?.map((product) => (
           <ProductCard isAdmin={false} key={product.id} product={product} />
-        ))}
+        ))
+      )}
     </div>
   );
 };

@@ -50,7 +50,7 @@ const EarningsChart: React.FC<EarningsChartProps> = ({ chartData }) => {
   const averageEarnings = getAverageEarnings(chartData);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div className=" p-6 bgblur rounded-lg ">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Earnings</h3>
         {/* <div className="text-sm flex items-center px-2 py-1 rounded-md cursor-pointer gap-3 text-gray-500 border border-gray-200">

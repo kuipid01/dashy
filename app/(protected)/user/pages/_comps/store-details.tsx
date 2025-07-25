@@ -95,7 +95,7 @@ const StoreDetails = () => {
 
   return (
     <div className="pb-20  pt-10 ">
-      <div className="p-3 md:p-5 bg-white border rounded-md border-gray-300 max-w-full md:max-w-[80%] mx-auto md:px-10 flex flex-col">
+      <div className="p-3 md:p-5 bgblur border rounded-md border-gray-300 max-w-full md:max-w-[80%] mx-auto md:px-10 flex flex-col">
         <div className="flex items-center gap-10">
           <label
             className=" cursor-pointer rounded-full relative grid place-items-center  size-50 bg-gray-300"
@@ -177,8 +177,8 @@ const StoreDetails = () => {
           </div>
           <div>
             <InputComponent
-               placeholder={userStore?.store?.address || "Store Location "}
-                 disabled
+              placeholder={userStore?.store?.address || "Store Location "}
+              disabled
               label="Store Location"
               name="storeName"
             />
@@ -187,8 +187,8 @@ const StoreDetails = () => {
         <div className="grid w-full mt-10 grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
           <div>
             <InputComponent
-            disabled
-             placeholder={userStore?.store?.phone_number || "Phone Number"}
+              disabled
+              placeholder={userStore?.store?.phone_number || "Phone Number"}
               label="Phone Number"
               name="phoneNumber"
             />

@@ -13,7 +13,8 @@ export type Product = {
 
 export interface User {
   id: number;
-  // ... other user fields
+  name:string
+  
 }
 
 export interface Payment {

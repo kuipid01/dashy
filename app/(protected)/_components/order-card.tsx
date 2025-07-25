@@ -18,7 +18,7 @@ import {
 
 export default function OrderCard({ order }: { order: Order }) {
   return (
-    <div className=" rounded-xl py-3 h-fit bg-white  overflow-hidden flex flex-col gap-3">
+    <div className=" rounded-xl py-3 h-fit bgblur  overflow-hidden flex flex-col gap-3">
       <div className=" p-3 flex flex-col gap-3">
         <div className="flex justify-between">
           <div className="flex flex-col">

@@ -3,12 +3,12 @@ import { X } from "lucide-react";
 import React from "react";
 
 const Profile = ({
-  setShowDetails
+  setShowDetails,
 }: {
   setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
-    <div className="w-[25%] bg-white h-fit max-h-[80vh] p-6 rounded-xl shadow-lg flex flex-col gap-6 border border-gray-200">
+    <div className=" hidden lg:w-[25%] bgblur h-fit max-h-[80vh] p-6 rounded-xl shadow-lg lg:flex flex-col gap-6 border border-gray-200">
       <div className="flex justify-between items-center">
         <h2 className="text-black font-medium">Detail group</h2>
         <X

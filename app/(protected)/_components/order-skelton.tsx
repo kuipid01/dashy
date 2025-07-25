@@ -2,7 +2,7 @@ import React from "react";
 
 const OrderSkeletonLoader: React.FC = () => {
   return (
-    <div className="animate-pulse space-y-6 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
+    <div className="animate-pulse space-y-6 mr-6 p-6 bgblur rounded-lg shadow-md max-w-3xl mx-auto">
       {/* Header Section: Order ID and Status */}
       <div className="flex justify-between items-center pb-4 border-b border-gray-200">
         <div className="h-6 bg-gray-200 rounded w-48"></div> {/* Order ID */}

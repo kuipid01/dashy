@@ -66,7 +66,7 @@ const Security = () => {
   return (
     <div className="pb-20 pt-10">
       <form onSubmit={handleSubmit}>
-        <div className="p-5 border rounded-md border-gray-300 max-w-full md:max-w-[80%] mx-auto px-10 flex flex-col">
+        <div className="p-5 bgblur border rounded-l _border-gray-300 max-w-full md:max-w-[80%] mx-auto px-10 flex flex-col">
           {/* Password Change Section */}
           <h2 className="text-xl font-semibold mb-5">Password Settings</h2>
           {shouldShowPasswordSettings && (

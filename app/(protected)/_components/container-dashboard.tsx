@@ -11,7 +11,7 @@ const ContainerDashboard = ({
   return (
     <div
       className={cn(
-        " w-full h-[320px] max-h-[650px] rounded-xl p-10 bg-white",
+        " w-full h-[320px] max-h-[650px] rounded-xl p-10 bg-[#e7e3d6] backdrop-blur-3xl shadow shadow-gray-300",
         className
       )}
     >

@@ -167,8 +167,8 @@ export default function ProductAddition() {
   };
 
   return (
-    <div className="min-h-[80vh] flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bg-white border border-gray-200 rounded-2xl shadow-xl">
+    <div className="min-h-[80vh] flex justify-center items-center bg-primary">
+      <div className="w-full max-w-2xl mx-4 p-4 md:p-8 bgblur border _border-gray-200 rounded-2xl shadow-xl">
         <h1 className=" text-lg md:text-xl lg:text-3xl font-bold mb-8 text-gray-800">
           Add New Product
         </h1>
@@ -177,10 +177,10 @@ export default function ProductAddition() {
           <h2 className="text-xl font-semibold text-gray-800">
             {steps[step].header}
           </h2>
-          <p className="text-sm text-gray-500 mt-1">{steps[step].subheader}</p>
+          <p className="text-sm text-[#b53a53] mt-1">{steps[step].subheader}</p>
           <Progress
             value={(step / (steps.length - 1)) * 100}
-            className="mt-4 h-2 bg-gray-200"
+            className="mt-4 h-2 bg-gray-300 backdrop-blur-3xl"
           />
         </div>
 
@@ -195,7 +195,7 @@ export default function ProductAddition() {
                   id="product-name"
                   placeholder="Enter product name"
                   value={product.name || ""}
-                  className="h-12 border-gray-300 focus:border-blue-500"
+                  className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) => updateProduct({ name: e.target.value })}
                 />
               </div>
@@ -212,7 +212,7 @@ export default function ProductAddition() {
                   id="category"
                   placeholder="Enter category"
                   value={product.category || ""}
-                  className="h-12 border-gray-300 focus:border-blue-500"
+                  className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) => updateProduct({ category: e.target.value })}
                 />
               </div>
@@ -234,7 +234,7 @@ export default function ProductAddition() {
                   id="description"
                   placeholder="Enter product description (min 20 characters)"
                   value={product.description || ""}
-                  className="min-h-[120px] border-gray-300 focus:border-blue-500"
+                  className="min-h-[120px] border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) =>
                     updateProduct({ description: e.target.value })
                   }
@@ -258,7 +258,7 @@ export default function ProductAddition() {
                 min="0"
                 placeholder="Enter stock quantity"
                 value={product.stock || ""}
-                className="h-12 border-gray-300 focus:border-blue-500"
+                className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                 onChange={(e) =>
                   updateProduct({ stock: parseInt(e.target.value) || 0 })
                 }
@@ -279,7 +279,7 @@ export default function ProductAddition() {
                   step="0.01"
                   placeholder="Enter price"
                   value={product.price || ""}
-                  className="h-12 border-gray-300 focus:border-blue-500"
+                  className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) =>
                     updateProduct({ price: parseFloat(e.target.value) || 0 })
                   }
@@ -299,7 +299,7 @@ export default function ProductAddition() {
                   step="0.01"
                   placeholder="Enter discounted price"
                   value={product.discounted_price || ""}
-                  className="h-12 border-gray-300 focus:border-blue-500"
+                  className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) =>
                     updateProduct({
                       discounted_price: parseFloat(e.target.value) || 0,
@@ -325,7 +325,7 @@ export default function ProductAddition() {
         <div className="flex justify-between mt-8">
           <Button
             variant="outline"
-            className="w-24 cursor-pointer border-gray-300 hover:bg-gray-100"
+            className="w-24 cursor-pointer border-accent hover:bg-gray-100"
             onClick={prevStep}
             disabled={step === 0}
           >
@@ -343,7 +343,7 @@ export default function ProductAddition() {
             <Button
               disabled={!isStepValid() || addingProduct}
               onClick={handlePublish}
-              className="w-24 bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-400"
+              className="w-24 bg-[#b53a53] hover:bg-[##b53a53]/70 cursor-pointer text-white disabled:bg-gray-400"
             >
               {addingProduct ? (
                 <Loader2 className="animate-spin duration-300 " />

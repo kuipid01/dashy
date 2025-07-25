@@ -34,3 +34,7 @@ export const markContentAsViewed = async (id:string): Promise<ContentItem[]> => 
   const response = await api.get(`/viewed/${id}`);
   return response.data;
 };
+export const getStoreContents = async (id:string): Promise<ContentItem[]> => {
+  const response = await api.get(`/store/contents/${id}`);
+  return response.data;
+};

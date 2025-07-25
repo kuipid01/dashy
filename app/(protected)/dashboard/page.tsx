@@ -36,7 +36,7 @@ const Page = () => {
 
   return (
     <>
-      <div className=" flex flex-col gap-5">
+      <div className=" flex bg-primary flex-col gap-5">
         <div className="grid grid-cols-5 gap-5">
           <div className="  col-span-3">
             {" "}
@@ -195,10 +195,9 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <ProductModal
-        setShowModal={setShowModal}
-        showModal={data?.length === 0}
-      />
+      {data?.length === 0 && (
+        <ProductModal setShowModal={setShowModal} showModal={showModal} />
+      )}
     </>
   );
 };

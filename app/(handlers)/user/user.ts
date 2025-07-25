@@ -1,8 +1,9 @@
 
 import { User } from "@/constants/types";
 import { api } from "../base";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Security } from "@/types/security";
+import { getUsersStores } from "../chat/api";
 
 const updateUser = async (user: Partial<User>): Promise<User> => {
   const response = await api.put(`/users/update`, user);
@@ -40,4 +41,14 @@ export const useUpdateUserSecurity = () => {
     mutateAsync,
     isPending,
   };
+};
+
+
+
+export const useSearchUserStores = (query:string) => {
+  return useQuery({
+    queryKey: ["user-stores", query],
+    queryFn: () => getUsersStores(query),
+    enabled:query!==""
+  });
 };

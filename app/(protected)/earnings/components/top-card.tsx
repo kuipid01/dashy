@@ -52,7 +52,7 @@ const TopCard = ({
 }: TopcardProp) => {
   const formattedData = chartData?.map((data) => ({ value: data.earnings }));
   return (
-    <Card className="w-full max-w-md rounded-xl shadow-sm">
+    <Card className="w-full max-w-md bgblur rounded-xl shadow-sm">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>

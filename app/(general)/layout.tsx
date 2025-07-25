@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Poiret_One } from "next/font/google";
+// import { Poiret_One } from "next/font/google";
 import "../globals.css";
 import { Toaster } from "sonner"; // Corrected typo
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { getDiscoveryContent } from "../(handlers)/content/api";
 import { ReactQueryProviders } from "../(handlers)/provicder";
 
-const poiretOne = Poiret_One({
-  variable: "--font-poiret-one",
-  subsets: ["latin"],
-  weight: ["400"],
-});
+// const poiretOne = Poiret_One({
+//   variable: "--font-poiret-one",
+//   subsets: ["latin"],
+//   weight: ["400"],
+// });
 
 export const metadata: Metadata = {
   title: "Hubsell Verification Success | Account Confirmed",
@@ -50,7 +50,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${poiretOne.variable} antialiased`}>
+      <body style={{ fontFamily: "MilanesaSerif" }} className={`antialiased`}>
         <Toaster />
         <ReactQueryProviders initialState={dehydratedState}>
           {children}

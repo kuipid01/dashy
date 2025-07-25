@@ -8,16 +8,16 @@ import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-const {store} = useFetchUserStore()
+  const { store } = useFetchUserStore();
 
-  const userStore = store?.store
+  const userStore = store?.store;
   console.log(userStore);
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-primary">
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${
           sidebarOpen ? "md:pr-[320px]" : "md:pr-[80px]"

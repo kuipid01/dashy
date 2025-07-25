@@ -12,7 +12,7 @@ export function ReactQueryProviders({
   initialState,
 }: {
   children: React.ReactNode;
-  initialState: DehydratedState;
+  initialState?: DehydratedState;
 }) {
   const [queryClient] = useState(
     () =>

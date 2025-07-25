@@ -12,10 +12,10 @@ export default function Home() {
 
       {/* <SimpleSteps 
       /> */}
-    
+
       <Use1 />
       <Testominal />
-      
+
       <WhatIsIncluded />
       <CTA />
       {/* <About />

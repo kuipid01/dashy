@@ -58,13 +58,13 @@ export const Landing = () => {
         </div>
 
         <div className=" h-[70vh] md:h-screen md:pl-10 flex flex-col justify-center relative w-full md:w-1/2 ">
-          <h1 className="text-3xl w-full md:max-w-[70%] md:text-4xl lg:text-5xl  lg:w-[900px] font-medium leading-[1.5] text-center md:text-left">
+          <h1 className="text-3xl font-black w-full md:max-w-[70%] md:text-4xl lg:text-[60px]  lg:w-auto  leading-[1.3] text-center md:text-left">
             Launch Your <span className="hidden lg:inline-block">Online, </span>{" "}
             Business in Seconds.{" "}
             <span className="hidden lg:inline-block">Manage, </span> and Sell
             Anything, Instantly.{" "}
           </h1>
-          <p className="text-lg w-full md:max-w-[70%] lg:max-w-[80%] my-4 text-center md:text-left">
+          <p className="text-2xl w-full md:max-w-[70%] lg:max-w-[80%] my-4 text-center md:text-left">
             Launch your global online store instantly and sell anything. HubSell
             simplifies e-commerce.
           </p>

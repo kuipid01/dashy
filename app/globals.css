@@ -4,6 +4,44 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+@font-face {
+  font-family: 'MilanesaSerif';
+  src: url('/fonts/MilanesaSerif/MilanesaSerif-Regular.otf');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MilanesaSerif';
+  src: url('/fonts/MilanesaSerif/MilanesaSerif-ExtraBold.otf');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MilanesaSerif';
+  src: url('/fonts/MilanesaSerif/MilanesaSerif-DemiBold.otf');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MilanesaSerif';
+  src: url('/fonts/MilanesaSerif/MilanesaSerif-Black.otf');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MilanesaSerif';
+  src: url('/fonts/MilanesaSerif/MilanesaSerif-Thin.otf');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -78,7 +116,7 @@
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: lab(66.24% 0 -0.01);
   --primary: #f8f5ed;
   --secondary: #3ddb60;
   --accent: #ffc91c;
@@ -144,5 +182,8 @@ body {
   }
   .light_mid {
     @apply text-[14px] text-zinc-400;
+  }
+  .bgblur {
+    @apply bg-[#e7e3d6] backdrop-blur-3xl  rounded-[15px] shadow shadow-gray-300;
   }
 }

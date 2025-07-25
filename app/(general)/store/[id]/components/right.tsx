@@ -6,7 +6,7 @@ import {
   Store,
   Phone,
   Clock,
-  Shield
+  Shield,
 } from "lucide-react";
 import StoreInfo from "./store/store-info";
 import { useParams } from "next/navigation";
@@ -19,7 +19,7 @@ interface RightSectionProps {
 
 export const RightSection: React.FC<RightSectionProps> = ({
   isOpen,
-  toggle
+  toggle,
 }) => {
   const { id } = useParams();
   const { data, isLoading } = useFetchStore(id as string);
@@ -34,7 +34,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing.current) return;
     const newWidth = window.innerWidth - e.clientX;
-    setDynamicWidth(Math.max(80, Math.min(newWidth, 600))); 
+    setDynamicWidth(Math.max(80, Math.min(newWidth, 600)));
   };
 
   const handleMouseUp = () => {
@@ -56,7 +56,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 
   return (
     <aside
-      className="fixed top-0 right-0 h-full bg-white shadow-lg transition-all duration-300 ease-in-out overflow-hidden z-10"
+      className="fixed top-0 right-0 h-full bg-primary shadow-lg transition-all duration-300 ease-in-out overflow-hidden z-10"
       style={{ width: dynamicWidth }}
     >
       <SideResizer onMouseDown={handleMouseDown} />
@@ -91,7 +91,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 };
 
 const SideResizer = ({
-  onMouseDown
+  onMouseDown,
 }: {
   onMouseDown: React.MouseEventHandler<HTMLDivElement>;
 }) => {

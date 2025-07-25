@@ -1,6 +1,6 @@
 import { Store } from "@/types/store";
 import { api } from "../base";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const updateStore = async (store: Partial<Store>): Promise<Store> => {
   const response = await api.put(`/store/update`, store);
@@ -21,4 +21,17 @@ export const useUpdateStore = () => {
     mutateAsync,
     isPending,
   };
+};
+
+export const getStoreById = async (id:string): Promise<Store> => {
+  const response = await api.get(`/store/${id}`);
+  return response.data;
+};
+
+export const useFetchStoreById = (id:string) => {
+  return useQuery({
+    queryKey: ["store-by-id", id],
+    queryFn: () => getStoreById(id),
+    enabled:!!id
+  });
 };
