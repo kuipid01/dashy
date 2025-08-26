@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ReactQueryProviders } from "../(handlers)/provicder";
+import { Toaster } from "sonner";
 
 const poiretOne = Poiret_One({
   variable: "--font-poiret-one",
@@ -27,6 +28,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Toaster richColors />
       {isLoginPage ? (
         <body
           className={` h-screen bg-white flex ${poiretOne.variable}  antialiased`}

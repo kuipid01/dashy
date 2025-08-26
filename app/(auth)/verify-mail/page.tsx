@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const Page = () => {
-  const email = "kuipid01@gmail.com"; // You could make this dynamic via props or state
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") ?? "";
   const router = useRouter();
   return (
     <div className="flex-1 bg-white min-h-screen flex justify-center items-center flex-col p-4">
@@ -27,10 +28,20 @@ const Page = () => {
           Please check your inbox (and spam/junk folder) and click the link to
           verify your account.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 w-full flex flex-col items-center gap-3">
           <button
             className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
-            onClick={() => router.push("/verification-successful")} // Add your resend logic here
+            onClick={() =>
+              router.push(`/verify-code?email=${encodeURIComponent(email)}`)
+            }
+          >
+            Enter code
+          </button>
+          <button
+            className="w-[400px] cursor-pointer disabled:opacity-50  text-secondary h-[40px] font-medium  py-1 rounded-md  flex justify-center items-center gap-3"
+            onClick={() => {
+              /* TODO: trigger resend email */
+            }}
           >
             Didn&apos;t receive an email? Resend
           </button>

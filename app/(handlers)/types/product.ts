@@ -21,3 +21,16 @@ export interface Product {
     };
     tweets?: { id: number; content: string }[]; // Simplified Tweet type
   }
+export interface ProductCreationShortDTO {
+   
+    name: string;
+    category: string;
+   
+    image: string[] | File[] ; // Comma-separated string from backend
+    
+    description?: string | null;
+
+    price: number;
+    storeId: number;
+    
+  }

@@ -1,15 +1,14 @@
 "use client";
 import { ChevronDown, Globe } from "lucide-react";
 import Link from "next/link";
-import {BACKEND_URL} from '@/constants/backend-url'
+import { BACKEND_URL } from "@/constants/backend-url";
 
 export default function Page() {
   const handleGoogleLogin = () => {
     console.log("clicked");
     window.location.href = `${BACKEND_URL}/v1/api/users`;
   };
-  
-  
+
   return (
     <div className=" flex flex-col bg-white h-full p-3 lg:rounded-l-xl">
       <div className="flex justify-between items-center">
@@ -44,9 +43,9 @@ export default function Page() {
           </p>
 
           <button
-          type="button"
+            type="button"
             // disabled={loading}
-            onClick={ handleGoogleLogin}
+            onClick={handleGoogleLogin}
             className="w-[400px] cursor-pointer disabled:opacity-25 mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3"
           >
             <svg
@@ -81,7 +80,7 @@ export default function Page() {
                 fill="#EA4335"
               ></path>
             </svg>
-           Sign up with Google
+            Sign up with Google
           </button>
           <button className="w-[400px] cu  text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3">
             <svg
@@ -96,14 +95,13 @@ export default function Page() {
             </svg>
             Sign up with Twitter
           </button>
-          {/* <p className=" my-5">OR</p> */}
-          {/* <Link
-          
+          <p className=" my-5">OR</p>
+          <Link
             href="/signup/email"
             className="w-[400px]  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
             Sign up with email
-          </Link> */}
+          </Link>
         </form>
       </div>
     </div>

@@ -105,7 +105,6 @@ export interface Order {
 
   addressId?: string;
   address?: Address;
-
   orderStatus: string;
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   updatedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
@@ -147,6 +146,8 @@ export interface User {
   ClientIDStr: string | null;
 
   security?: Security;
+  hasCompletedOnboarding:boolean;
+  
 }
 
 // Assuming you have a corresponding Go struct for Store

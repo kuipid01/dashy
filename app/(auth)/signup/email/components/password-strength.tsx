@@ -1,9 +1,13 @@
 import clsx from "clsx";
 import { CircleCheck, XCircleIcon } from "lucide-react";
 
-export const PasswordStrengthUi = ({ password }: { password: string }) => {
-
-
+export const PasswordStrengthUi = ({
+  password,
+  passwordConfirmed
+}: {
+  password: string;
+  passwordConfirmed: string;
+}) => {
   const passwordStrength = () => {
     if (password.length === 0) return "Empty";
     if (password.length < 8) return "Weak";
@@ -23,6 +27,12 @@ export const PasswordStrengthUi = ({ password }: { password: string }) => {
         return password.length >= 8 ? <CircleCheck /> : <XCircleIcon />;
       case "uppercase":
         return /[A-Z]/.test(password) ? <CircleCheck /> : <XCircleIcon />;
+      case "confirm":
+        return password === passwordConfirmed && password !== "" ? (
+          <CircleCheck />
+        ) : (
+          <XCircleIcon />
+        );
       case "lowercase":
         return /[a-z]/.test(password) ? <CircleCheck /> : <XCircleIcon />;
       case "special":
@@ -46,6 +56,10 @@ export const PasswordStrengthUi = ({ password }: { password: string }) => {
         return /[A-Z]/.test(password) ? "text-green-500" : "text-red-500";
       case "lowercase":
         return /[a-z]/.test(password) ? "text-green-500" : "text-red-500";
+      case "confirm":
+        return password === passwordConfirmed && password !== ""
+          ? "text-green-500"
+          : "text-red-500";
       case "special":
         return /[!@#$%^&*(),.?":{}|<>]/.test(password)
           ? "text-green-500"
@@ -82,7 +96,7 @@ export const PasswordStrengthUi = ({ password }: { password: string }) => {
             width: `${
               password.length >= 8 ? 100 : (password.length / 8) * 100
             }%`,
-            transition: "width 0.3s ease-in-out",
+            transition: "width 0.3s ease-in-out"
           }}
         ></div>
       </div>
@@ -90,9 +104,12 @@ export const PasswordStrengthUi = ({ password }: { password: string }) => {
         Password strength: {passwordStrength()}
       </p>
 
-      <div className="flex flex-col gap-1 text-sm mt-2">
+      <div className="grid grid-cols-2 gap-1 text-sm mt-2">
         <p
-          className={clsx("flex items-center gap-1", getTextColor("min-character"))}
+          className={clsx(
+            "flex items-center gap-1",
+            getTextColor("min-character")
+          )}
         >
           {validIcon("min-character")} 8 characters minimum
         </p>
@@ -106,15 +123,14 @@ export const PasswordStrengthUi = ({ password }: { password: string }) => {
         >
           {validIcon("lowercase")} Lowercase character
         </p>
-        <p
-          className={clsx("flex items-center gap-1", getTextColor("special"))}
-        >
+        <p className={clsx("flex items-center gap-1", getTextColor("special"))}>
           {validIcon("special")} Special character
         </p>
-        <p
-          className={clsx("flex items-center gap-1", getTextColor("number"))}
-        >
+        <p className={clsx("flex items-center gap-1", getTextColor("number"))}>
           {validIcon("number")} Number
+        </p>
+        <p className={clsx("flex items-center gap-1", getTextColor("confirm"))}>
+          {validIcon("confirm")} Confirm Password
         </p>
       </div>
     </div>

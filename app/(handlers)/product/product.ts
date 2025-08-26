@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Product } from "../types/product";
+import { Product, ProductCreationShortDTO } from "../types/product";
 import { api } from "../base";
 
 const fetchProducts = async (): Promise<Product[]> => {
@@ -9,7 +9,7 @@ const fetchProducts = async (): Promise<Product[]> => {
 };
 const fetchTopProducts = async (): Promise<Product[]> => {
   const response = await api.get(`/top/products `);
-  console.log("Top Products Response:", response.data); 
+  console.log("Top Products Response:", response.data);
   return response.data.products;
 };
 const fetchProduct = async (id: string | number): Promise<Product> => {
@@ -17,6 +17,10 @@ const fetchProduct = async (id: string | number): Promise<Product> => {
   return response.data;
 };
 const addProduct = async (product: Product): Promise<Product> => {
+  const response = await api.post(`/products`, product);
+  return response.data;
+};
+const addProductShort = async (product: ProductCreationShortDTO): Promise<Product> => {
   const response = await api.post(`/products`, product);
   return response.data;
 };
@@ -38,7 +42,7 @@ const uploadImage = async (images: File[]): Promise<any> => {
       "Content-Type": "multipart/form-data", //
     },
   });
-
+  console.log(response, "response")
   return response.data;
 };
 
@@ -72,7 +76,7 @@ export const useFetchTopProducts = () => {
 };
 export const useGetCurrentProduct = (id: string | number) => {
   const { data, isLoading, error, isError } = useQuery<Product, Error>({
-    queryKey: ["product",id],
+    queryKey: ["product", id],
     queryFn: () => fetchProduct(id),
     retry: 1,
   });
@@ -88,6 +92,16 @@ export const useGetCurrentProduct = (id: string | number) => {
 export const usePublishProducts = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (product: Product) => addProduct(product),
+  });
+
+  return {
+    mutateAsync,
+    isPending,
+  };
+};
+export const usePublishProductsShort = () => {
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (product: ProductCreationShortDTO) => addProductShort(product),
   });
 
   return {

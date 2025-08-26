@@ -8,6 +8,7 @@ export const AudioPlayer = ({
   setIsRecording,
   isRecording,
   setShowRecordingStudio,
+  sendMessage,
 }: {
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
   isRecording: boolean;
@@ -17,6 +18,7 @@ export const AudioPlayer = ({
       blob: null | Blob;
     }>
   >;
+  sendMessage: () => Promise<void>;
   setShowRecordingStudio: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -25,7 +27,6 @@ export const AudioPlayer = ({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const chunks = useRef<Blob[]>([]);
   const [amplitudes, setAmplitudes] = useState<number[]>([]);
-  // const [isRecording, setIsRecording] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -35,43 +36,47 @@ export const AudioPlayer = ({
     let dataArray: Uint8Array;
 
     (async () => {
-      const userStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-      setStream(userStream);
+      try {
+        const userStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        setStream(userStream);
 
-      const recorder = new MediaRecorder(userStream);
-      mediaRecorderRef.current = recorder;
+        const recorder = new MediaRecorder(userStream);
+        mediaRecorderRef.current = recorder;
 
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.current.push(e.data);
-      };
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.current.push(e.data);
+        };
 
-      recorder.onstop = () => {
-        const blob = new Blob(chunks.current, { type: "audio/webm" });
-        const url = URL.createObjectURL(blob);
-        setVoiceRecord({ local: url, blob });
-        setAudioUrl(url);
-      };
+        recorder.onstop = () => {
+          const blob = new Blob(chunks.current, { type: "audio/webm" });
+          const url = URL.createObjectURL(blob);
+          setVoiceRecord({ local: url, blob });
+          setAudioUrl(url);
+        };
 
-      recorder.start();
+        recorder.start();
 
-      // Waveform setup
-      audioCtx = new AudioContext();
-      const source = audioCtx.createMediaStreamSource(userStream);
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64;
-      const bufferLength = analyser.frequencyBinCount;
-      dataArray = new Uint8Array(bufferLength);
-      source.connect(analyser);
+        // Waveform visualization
+        audioCtx = new AudioContext();
+        const source = audioCtx.createMediaStreamSource(userStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        source.connect(analyser);
 
-      const draw = () => {
-        analyser.getByteTimeDomainData(dataArray);
-        setAmplitudes(Array.from(dataArray.slice(0, 100)));
-        animationId = requestAnimationFrame(draw);
-      };
+        const draw = () => {
+          analyser.getByteTimeDomainData(dataArray);
+          setAmplitudes(Array.from(dataArray.slice(0, 100)));
+          animationId = requestAnimationFrame(draw);
+        };
 
-      draw();
+        draw();
+      } catch (error) {
+        console.error("Audio recording failed:", error);
+      }
     })();
 
     return () => {
@@ -82,7 +87,7 @@ export const AudioPlayer = ({
 
   useEffect(() => {
     setIsRecording(true);
-  }, []);
+  }, [setIsRecording]);
 
   const togglePause = () => {
     const recorder = mediaRecorderRef.current;
@@ -97,11 +102,18 @@ export const AudioPlayer = ({
     }
   };
 
-  const stopAndSave = () => {
+  const stopAndSave = async () => {
     mediaRecorderRef.current?.stop();
     stream?.getTracks().forEach((track) => track.stop());
     setIsRecording(false);
+    setShowRecordingStudio(false);
+    try {
+      sendMessage();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const handlePlayPausePreview = () => {
     if (!audioRef.current) return;
     if (audioRef.current.paused) {
@@ -151,13 +163,13 @@ export const AudioPlayer = ({
           className="cursor-pointer hover:text-red-500 transition"
         />
 
-        {isRecording && (
+        {isRecording && !isPaused && (
           <Pause
             onClick={togglePause}
             className="cursor-pointer hover:text-yellow-400"
           />
         )}
-        {isPaused && (
+        {isRecording && isPaused && (
           <Mic2
             onClick={togglePause}
             className="cursor-pointer hover:text-green-500"

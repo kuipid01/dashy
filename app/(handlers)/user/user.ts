@@ -9,6 +9,12 @@ const updateUser = async (user: Partial<User>): Promise<User> => {
   const response = await api.put(`/users/update`, user);
   return response.data;
 };
+const updateUserOnboardingStatus = async (hasCompletedOnboarding:boolean): Promise<User> => {
+  const response = await api.put(`/users/update-onboarding-status`, {
+    hasCompletedOnboarding
+  });
+  return response.data;
+};
 const updateUserSecurity = async (security_settings: Partial<Security>): Promise<Security> => {
   const response = await api.put(`/users/security`, security_settings);
   return response.data;
@@ -18,6 +24,20 @@ export const useUpdateUser = () => {
   const query = useQueryClient();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (user: Partial<User>) => updateUser(user),
+    onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["current-user"] });
+    },
+  });
+
+  return {
+    mutateAsync,
+    isPending,
+  };
+};
+export const useUpdateUserOnboardingStatus = () => {
+  const query = useQueryClient();
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (hasCompletedOnboarding: boolean) => updateUserOnboardingStatus(hasCompletedOnboarding),
     onSuccess: () => {
       query.invalidateQueries({ queryKey: ["current-user"] });
     },

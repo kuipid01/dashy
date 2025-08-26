@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Cookies from 'js-cookie'
 import { User } from "@/constants/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 export function useHandleGoogleLogin() {
   const [state, setState] = useState({
     loading: false,
@@ -24,7 +24,7 @@ export function useHandleGoogleLogin() {
         result: response.data,
         error: null,
       });
-    } catch (error:any) {
+    } catch (error: any) {
       setState({
         loading: false,
         result: null,
@@ -41,7 +41,7 @@ export function useHandleGoogleLogin() {
 export function useHandleLogout() {
 
 
-  const router =  useRouter()
+  const router = useRouter()
   const [state, setState] = useState({
     loading: false,
     result: null,
@@ -59,13 +59,13 @@ export function useHandleLogout() {
         error: null,
       });
       // Clear frontend cookies manually with the same path if set
-    Cookies.remove('access_token', { path: '/' });  // Use the correct path
-    Cookies.remove('refresh_token', { path: '/' }); // Use the correct path
+      Cookies.remove('access_token', { path: '/' });  // Use the correct path
+      Cookies.remove('refresh_token', { path: '/' }); // Use the correct path
 
 
       toast.success("Logout succesful")
       router.push('/login')
-    } catch (error:any) {
+    } catch (error: any) {
       setState({
         loading: false,
         result: null,
@@ -87,11 +87,51 @@ const fetchUser = async (): Promise<User> => {
   const response = await api.get(`/users/me`)
   return response.data.user
 }
+
+// 2️⃣Register User
+export const useRegisterUser = () => {
+
+
+  return useMutation({
+    mutationFn: registerUser,
+
+  });
+};
+// 2️⃣Register User
+export const useVerifyCode = () => {
+
+
+  return useMutation({
+    mutationFn: verifyCode,
+
+  });
+};
+export const useLoginUserMail = () => {
+
+
+  return useMutation({
+    mutationFn: loginUserMail,
+
+  });
+};
+const registerUser = async (data: { email: string, password: string , name:string}): Promise<User> => {
+  const response = await api.post(`/users/register`, data)
+  return response.data.user
+}
+const loginUserMail = async (data: { email: string, password: string }): Promise<User> => {
+  const response = await api.post(`/users/login-mail`, data)
+  return response.data.user
+}
+const verifyCode = async (data: { code: string}): Promise<any> => {
+  const response = await api.post(`/users/verify-code`, data)
+  return response.data.user
+}
+
 const fetchUserStore = async (): Promise<any> => {
   console.log("got here")
   const response = await api.get(`mystore`)
   console.log("got here too")
-  
+
   return response.data
 }
 

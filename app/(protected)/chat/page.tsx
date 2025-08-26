@@ -13,16 +13,19 @@ const Page = () => {
 
   const { user, isLoading } = useFetchUser();
   const [activeChat, setActiveChat] = useState<Conversation | null>(null);
+  console.log(user);
   return (
     <div className=" flex gap-10">
       <MessagesComponent
         currentUserId={user?.ID ?? user?.id}
         setActiveChat={setActiveChat}
       />
-      <ChatComponent
-        currentUserId={user?.ID ?? user?.id}
-        conversation={activeChat}
-      />
+      {user?.ID && activeChat && (
+        <ChatComponent
+          currentUserId={user?.ID ?? user?.id}
+          conversation={activeChat}
+        />
+      )}
       {/* {showDetails && <Profile setShowDetails={setShowDetails} />} */}
     </div>
   );

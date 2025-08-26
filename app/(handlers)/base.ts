@@ -5,37 +5,48 @@ export const api = axios.create({
   withCredentials: true, // Ensure cookies are sent with requests
 });
 
-// Response interceptor for handling token refresh
+// Flag to avoid infinite refresh loops
+let isRefreshing = false;
+
 api.interceptors.response.use(
-  (response) => response, // Pass through successful responses
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Initialize retry count if not set
+    // Ensure retry count
     if (!originalRequest._retryCount) {
       originalRequest._retryCount = 0;
     }
 
-    // Check for 401 and allow up to 1 retry
-    if (error.response?.status === 401 && originalRequest._retryCount < 3) {
-      originalRequest._retryCount += 1;
-      console.log("here ran");
+    // Only handle 401 errors (excluding refresh endpoint itself!)
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/users/refresh")
+    ) {
+      if (isRefreshing) {
+        // Prevent multiple refresh attempts if many requests fail at once
+        return Promise.reject(error);
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
         // Attempt to refresh token
         await api.post("/users/refresh");
-        return api(originalRequest); // Retry original request
+        isRefreshing = false;
+
+        // Retry original request
+        return api(originalRequest);
       } catch (refreshError) {
+        isRefreshing = false;
         console.error("Token refresh failed:", refreshError);
+
         // Redirect to login if refresh fails
-        window.location.href = "/login";
+        // window.location.href = "/login";
         return Promise.reject(refreshError);
       }
-    }
-
-    // Redirect to login if exceeded retry limit
-    if (originalRequest._retryCount >= 1) {
-      console.warn("Too many retry attempts, redirecting to login.");
-      window.location.href = "/login";
     }
 
     return Promise.reject(error);

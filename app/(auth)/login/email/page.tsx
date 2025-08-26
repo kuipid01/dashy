@@ -5,21 +5,17 @@ import { InputField } from "@/app/components/reusables/inputfield";
 import { ChevronDown, Eye, Globe } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import { PasswordStrengthUi } from "./components/password-strength";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useRegisterUser } from "@/app/(handlers)/auth-handlers/auth";
+import { useLoginUserMail } from "@/app/(handlers)/auth-handlers/auth";
 
 const Page = () => {
-  const { mutateAsync, isPending } = useRegisterUser();
+  const { mutateAsync, isPending } = useLoginUserMail();
   const router = useRouter();
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formDetails, setFormDetails] = useState({
     email: "",
-    password: "",
-    name: "",
-    passwordConfirm: ""
+    password: ""
   });
 
   const passwordValid = () => {
@@ -49,13 +45,10 @@ const Page = () => {
     try {
       await mutateAsync({
         email: formDetails.email,
-        password: formDetails.password,
-        name: formDetails.name
+        password: formDetails.password
       });
-      toast.success("Account created successfully");
-      router.push(
-        `/verify-mail?email=${encodeURIComponent(formDetails.email)}`
-      );
+      toast.success("Get In !!!!");
+      router.push("/dashboard");
     } catch (error: any) {
       console.log("got here");
       console.log(error);
@@ -74,12 +67,12 @@ const Page = () => {
           <ChevronDown size={20} className=" text-zinc-300" />
         </div>
         <div className=" flex items-center gap-4 text-zinc-500">
-          Already have an account?
+          Dont have an account?
           <Link
-            href="/login"
+            href="/signup"
             className=" px-3 text-sm text-zinc-500 font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400"
           >
-            Log In
+            Sign Up
           </Link>
         </div>
       </div>
@@ -93,17 +86,9 @@ const Page = () => {
           </h1>
 
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">
-            Sell smarter with HubSell—your store, sales, and growth in one
-            place.
+            Lets get kicking once again ,money must be made....
           </p>
           <div className="flex flex-col gap-5 mb-5">
-            <InputField
-              type="text"
-              placeholder="Enter Full Name"
-              onChange={(e) => {
-                setFormDetails({ ...formDetails, name: e.target.value });
-              }}
-            />
             <InputField
               type="email"
               placeholder="Enter Email"
@@ -124,67 +109,17 @@ const Page = () => {
                 className=" absolute top-1/2 -translate-y-1/2 right-4"
               />
             </div>
-
-            {formDetails.password && passwordValid() && (
-              <div className=" relative">
-                <InputField
-                  type={confirmPasswordVisible ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  onChange={(e) => {
-                    setFormDetails({
-                      ...formDetails,
-                      passwordConfirm: e.target.value
-                    });
-                  }}
-                />
-                <Eye
-                  onClick={() =>
-                    setConfirmPasswordVisible(!confirmPasswordVisible)
-                  }
-                  className=" absolute top-1/2 -translate-y-1/2 right-4"
-                />
-              </div>
-            )}
-            <PasswordStrengthUi
-              password={formDetails.password}
-              passwordConfirmed={formDetails.passwordConfirm}
-            />
-            <div className=" flex  max-w-[400px] gap-3">
-              <input
-                className=" bg-white accent-primary size-5 border-zinc-300 border"
-                type="checkbox"
-                name=""
-                id=""
-              />
-              <p className=" text-sm leading-[1.2] font-light ">
-                I agree to Hubsell&apos;s{" "}
-                <Link href="" className=" underline ">
-                  Terms of Service
-                </Link>{" "}
-                ,{" "}
-                <Link href="" className=" underline ">
-                  Privacy Policy
-                </Link>{" "}
-                and
-                <Link href="" className=" ml-1 underline ">
-                  Data Processing Agreement.
-                </Link>{" "}
-              </p>
-            </div>
           </div>
 
           <button
             type="button"
             onClick={handleCreateAccount}
             disabled={
-              !passwordValid() ||
-              !isValidEmail(formDetails.email) ||
-              isPending ||
-              formDetails.password !== formDetails.passwordConfirm
+              !passwordValid() || !isValidEmail(formDetails.email) || isPending
             }
             className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
-            {isPending ? "Creating...." : " Create my account"}
+            {isPending ? "Entering...." : " Enter"}
           </button>
           {/* <p className=" max-w-[400px] mt-6 text-sm leading-[1.2] font-light ">
             This site is protected by reCAPTCHA and the Google

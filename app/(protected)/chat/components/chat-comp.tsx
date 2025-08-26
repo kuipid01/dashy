@@ -5,7 +5,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,9 @@ import WebcamRecorder from "./video-recorder";
 import AttachmentPreview from "./attachments";
 import AttachmentComp from "./attachments-render";
 import { isNull } from "util";
+import UserDetailsChat from "./user-details";
+import AttachmentsIncoming from "./attachments-incoming";
+import TypingIndicator from "./typing-indicator";
 
 interface ChatComponentProps {
   conversation: Conversation | null;
@@ -76,13 +79,29 @@ export default function ChatComponent({
   conversation,
   currentUserId,
 }: ChatComponentProps) {
+  const otherUser =
+    conversation?.SenderID === currentUserId
+      ? conversation?.Receiver
+      : conversation?.Sender;
   // --- Refs ---
+  const ws = useRef<WebSocket | null>(null);
+  const [isOnline, setIsOnline] = useState(false);
   const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
+  const [sendingAttachments, setSendingAttachments] = useState<{
+    active: boolean;
+    type: string;
+    amount: number | null;
+  }>({
+    active: true,
+    type: "",
+    amount: null,
+  });
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const previousScrollHeightRef = useRef<number | null>(null);
   const [showUserDetails, setShowUserDetails] = useState(false);
   // --- State ---
-  const [messagesState, setMessagesState] = useState<Message[]>([]);
+  type MessageWithDeleted = Message & { deleted?: boolean };
+  const [messagesState, setMessagesState] = useState<MessageWithDeleted[]>([]);
   const [isIncomingMessage, setIsIncomingMessage] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [voiceRecording, setVoiceRecording] = useState<{
@@ -101,7 +120,13 @@ export default function ChatComponent({
   });
   const [showRecordingStudio, setShowRecordingStudio] =
     useState<boolean>(false);
-
+  const [isTyping, setIsTyping] = useState<{
+    value: boolean;
+    id: null | number;
+  }>({
+    value: false,
+    id: null,
+  });
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -122,8 +147,155 @@ export default function ChatComponent({
   const { data: initialMessages, isLoading: isFetchingInitial } =
     useFetchConversationMessages(conversation?.ID ?? "");
   const { upload } = useUploadImage();
-  // console.log(initialMessages, "gethh,mmes");
+
   // --- Effects ---
+  useEffect(() => {
+    if (!currentUserId || !conversation?.ID) {
+      console.log("OMO NO USERID OR COVO");
+      return;
+    }
+
+    const connect = () => {
+      console.log(currentUserId, "This Ran");
+      if (!currentUserId) {
+        console.log("OMO NO USERID");
+        return;
+      }
+      ws.current = new WebSocket(
+        `ws://localhost:4000/v1/api/chat-ws/ws?user_id=${currentUserId}`
+      );
+
+      ws.current.onopen = () => {
+        console.log("WebSocket connected");
+      };
+
+      ws.current.onmessage = (event) => {
+        console.log(conversation?.ID, "gethh,mmes");
+        console.log("Raw event received", event.data);
+        try {
+          const parsedData = JSON.parse(event.data);
+          const { type, data } = parsedData;
+          // console.log(type, "TYPE AND DATA");
+          console.log(parsedData);
+          // console.log(data?.ConversationID, " CONVERSATON ID");
+          // console.log(conversation?.ID, " CONVERSATON ID COMPONENT");
+
+          if (
+            (type === "new_message" || type === "message_sent") &&
+            data?.ConversationID === conversation?.ID
+          ) {
+            console.log("GOT TO MESSAGE PART");
+            setIsIncomingMessage(true);
+            setMessagesState((prev) => [...prev, data]);
+          }
+          if (
+            type === "message_deleted" &&
+            parsedData?.conversationId === conversation?.ID
+          ) {
+            if (parsedData.receiver_id) {
+              console.log(["That person deleted"]);
+              // receiver: show 'message deleted' text
+              const updatedForReceiver = messagesState.map((message) =>
+                message.ID === parsedData.message_id
+                  ? {
+                      ...message,
+                      deleted: true,
+                      content: "", // hide original content
+                    }
+                  : message
+              );
+              setMessagesState(updatedForReceiver);
+            } else {
+              console.log(["I deleted"]);
+              // sender: remove message entirely
+              const updatedMessages = messagesState.filter(
+                (message) => message.ID !== parsedData.message_id
+              );
+              setMessagesState(updatedMessages);
+            }
+          }
+
+          if (
+            (type === "awaiting_attachments" ||
+              type === "attachments_scheduler_sent") &&
+            data?.conversationId === conversation?.ID
+          ) {
+            console.log("we are here for a minute");
+            setIsIncomingMessage(true);
+
+            const lengthNum =
+              typeof data.length === "string"
+                ? parseInt(data.length)
+                : Number(data.length);
+
+            setSendingAttachments({
+              active: true,
+              amount: lengthNum,
+              type: "", // optionally pass type from the original message
+            });
+          }
+          if (
+            type === "attachments_uploaded" &&
+            data?.conversationId === conversation?.ID
+          ) {
+            // hide spinner, show attachments
+            setSendingAttachments({
+              active: false,
+              type: "",
+              amount: null,
+            });
+          }
+          if (
+            type === "message_incoming" &&
+            data?.conversationId === conversation?.ID
+          ) {
+            console.log("Partner is typing...");
+            setIsTyping({
+              value: true,
+              id: data.receiverId,
+            });
+            console.log("[WE TRIGGERED TYPING STATE]", isTyping);
+          }
+          if (
+            type === "stopped_typing" &&
+            data?.conversationId === conversation?.ID
+          ) {
+            console.log("Partner stopped typing.");
+            setIsTyping({
+              value: false,
+              id: null,
+            });
+            console.log("[WE TRIGGERED STOPPED TYPING STATE]", isTyping);
+          }
+          if (type === "online_status") {
+            setIsOnline(parsedData.online);
+          }
+          if (data.type === "user_online") {
+            // Example: update your UI state to mark this user as online
+            setIsOnline(data.userId === (otherUser?.ID ?? otherUser?.id));
+          }
+        } catch (err) {
+          console.error("Failed to parse WS message", err);
+        }
+      };
+
+      ws.current.onclose = () => {
+        console.log("WebSocket disconnected, retrying in 3s...");
+        setTimeout(connect, 3000);
+      };
+
+      ws.current.onerror = (err) => {
+        console.error("WebSocket error:", err);
+        ws.current?.close();
+      };
+    };
+
+    connect();
+
+    return () => {
+      ws.current?.close();
+    };
+  }, [currentUserId, conversation?.ID]);
 
   // Effect to reset state and load initial messages when the conversation changes
   useEffect(() => {
@@ -141,7 +313,7 @@ export default function ChatComponent({
     }
     // FIX: Simplified and more stable dependency array
   }, [initialMessages, conversation?.ID]);
-  console.log(messagesState, "message state");
+  // console.log(messagesState, "message state");
   // This layout effect is the key to maintaining scroll position.
   // It runs synchronously after the DOM is updated but before the browser paints.
   useLayoutEffect(() => {
@@ -198,14 +370,22 @@ export default function ChatComponent({
   };
 
   const handleSendMessage = async () => {
+    // console.log("got here before check");
     if (
-      (!newMessage.trim() && !voiceRecording.blob && !videoRecording.blob) ||
+      (!newMessage.trim() &&
+        attachments.length === 0 &&
+        !voiceRecording.blob &&
+        !videoRecording.blob) ||
       !conversation ||
-      !currentUserId
+      !currentUserId ||
+      !ws.current ||
+      ws.current.readyState !== WebSocket.OPEN
     ) {
+      console.log(ws?.current?.readyState);
+      toast.error("WebSocket not connected");
       return;
     }
-
+    // console.log("got here after check");
     const localMessageContent = newMessage;
     setNewMessage(""); // Clear input immediately
     setAttachments([]);
@@ -214,15 +394,49 @@ export default function ChatComponent({
 
     const uploadFiles = async (files: File[]) => {
       try {
+        const receiverId = String(otherUser?.ID ?? otherUser?.id);
+
+        // 1. Notify receiver that attachments are being uploaded
+        const sendingPayload: Record<string, any> = {
+          receiver_id: receiverId,
+          conversation_id: conversation.ID,
+          length: files.length.toString(),
+          type: "sending_attachments",
+        };
+
+        ws?.current?.send(JSON.stringify(sendingPayload));
+
+        // 2. Perform the upload
         const res = await upload(files);
         if (!res?.urls || !Array.isArray(res.urls)) {
           toast.error("Invalid upload response");
           return undefined;
         }
+
+        // 3. Notify receiver that upload is done and send the URLs
+        const uploadedPayload: Record<string, any> = {
+          receiver_id: receiverId,
+          conversation_id: conversation.ID,
+          length: files.length.toString(),
+          type: "attachments_uploaded",
+        };
+
+        ws?.current?.send(JSON.stringify(uploadedPayload));
+        console.log("[GOT TO ATTACHMENTS UPLODADE SECTION]");
+        setSendingAttachments({
+          active: false,
+          type: "",
+          amount: null,
+        });
         return res.urls;
       } catch (err) {
         toast.error("Upload failed");
         console.error(err);
+        setSendingAttachments({
+          active: false,
+          type: "",
+          amount: null,
+        });
         return undefined;
       }
     };
@@ -271,24 +485,26 @@ export default function ChatComponent({
       Sender: { ID: currentUserId, Name: "You", id: currentUserId } as User,
     };
 
-    setMessagesState((prev) => [...prev, optimisticMessage]);
-    setIsIncomingMessage(true);
+    // setMessagesState((prev) => [...prev, optimisticMessage]);
+    // setIsIncomingMessage(true);
 
     try {
-      const payload: SendMessageDTO = {
+      const payload: Record<string, any> = {
         content:
           voiceRecording.blob && videoRecording.blob && !localMessageContent
             ? ""
             : localMessageContent,
-        receiver_id: String(otherUser.ID ?? otherUser.id),
-        conversationId: conversation.ID,
+        receiver_id: String(otherUser?.ID ?? otherUser?.id),
+        conversation_id: conversation.ID,
+        type: "send_message",
       };
 
       if (attachmentUrls) {
         payload.attachments = stringUrl;
       }
-
-      await sendMessage(payload);
+      // console.log("got here", payload);
+      ws.current.send(JSON.stringify(payload));
+      // await sendMessage(payload);
 
       // Clear recording and attachments after successful send
       setAttachments([]);
@@ -303,6 +519,71 @@ export default function ChatComponent({
     }
   };
 
+  let typingTimeout: NodeJS.Timeout | null = null;
+
+  const TYPING_INDICATOR_DEBOUNCE_TIME = 500; // milliseconds
+
+  let isTypingSent = false;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewMessage(value);
+    const receiverId = String(otherUser?.ID ?? otherUser?.id);
+    if (value.length > 0) {
+      // If the typing indicator hasn't been sent yet, or if the timeout has expired,
+      // send the "typing" event.
+      if (!isTypingSent) {
+        // ws?.current?.send(
+        //   JSON.stringify({
+        //     type: "typing",
+        //     conversation_id: conversation?.ID,
+        //   })
+        // );
+
+        const typingPayload: Record<string, any> = {
+          receiver_id: receiverId,
+          conversation_id: conversation?.ID,
+          type: "typing",
+        };
+
+        ws?.current?.send(JSON.stringify(typingPayload));
+        console.log("[TypingPayload],", typingPayload);
+        isTypingSent = true;
+      }
+
+      // Clear any previous stopped_typing timeout
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+
+      // Set a new timeout to send "stopped_typing" after a period of inactivity
+      typingTimeout = setTimeout(() => {
+        const typingPayload: Record<string, any> = {
+          receiver_id: receiverId,
+          conversation_id: conversation?.ID,
+          type: "stopped_typing",
+        };
+
+        ws?.current?.send(JSON.stringify(typingPayload));
+        console.log("[StoppedTypingPayload],", typingPayload);
+
+        isTypingSent = false; // Reset the flag
+      }, 2000); // 2 seconds of inactivity = stopped typing
+    } else {
+      // If the input is empty, immediately send stopped_typing
+      ws?.current?.send(
+        JSON.stringify({
+          type: "stopped_typing",
+          conversation_id: conversation?.ID,
+        })
+      );
+      isTypingSent = false;
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+    }
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -310,6 +591,31 @@ export default function ChatComponent({
     }
   };
   const scrollRef = useRef<HTMLDivElement>(null);
+  const receiverId = String(otherUser?.ID ?? otherUser?.id);
+  //check if user is online
+  useEffect(() => {
+    if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+      console.log(
+        "WebSocket not connected. ReadyState:",
+        ws?.current?.readyState
+      );
+      // toast.error("WebSocket not connected");
+      return;
+    }
+
+    if (!receiverId || !conversation?.ID) {
+      console.warn("Missing receiverId or conversation ID");
+      return;
+    }
+    console.log("We ran");
+    const checkOnlinePayload = {
+      userId: Number(receiverId),
+      conversation_id: conversation.ID,
+      type: "check_online",
+    };
+
+    ws.current.send(JSON.stringify(checkOnlinePayload));
+  }, [receiverId, conversation?.ID, ws.current]);
 
   useEffect(() => {
     if (isIncomingMessage) {
@@ -351,7 +657,7 @@ export default function ChatComponent({
       fileInputRef.current.value = "";
     }
   };
-  console.log(messageDialog);
+  // console.log(messageDialog);
   // --- Render Logic ---
 
   if (!conversation) {
@@ -362,18 +668,26 @@ export default function ChatComponent({
     );
   }
 
-  const otherUser =
-    conversation.SenderID === currentUserId
-      ? conversation.Receiver
-      : conversation.Sender;
-
   if (!currentUserId) return null;
 
   return (
     <div className="flex-1 h-[80vh] bgblur relative overflow-hidden flex flex-col  rounded-xl shadow-lg border border-gray-200">
       {/* Chat Header */}
       <div className="p-4 border-b sticky top-0 z-20 bg-white border-gray-200 flex items-center gap-3">
-        <Avatar className="size-10 cursor-pointer">
+        <Avatar
+          onClick={() => {
+            setShowUserDetails(true);
+          }}
+          className="size-10 cursor-pointer"
+        >
+          <AvatarImage
+            src={
+              otherUser?.avatar ??
+              otherUser?.avatar_url ??
+              otherUser?.AvatarURL ??
+              ""
+            }
+          />
           <AvatarFallback className="bg-black  text-white font-semibold">
             {otherUser?.Name?.split(" ")
               .map((n) => n[0])
@@ -383,11 +697,15 @@ export default function ChatComponent({
         </Avatar>
         <div>
           <h2 className="text-lg font-bold text-gray-800">{otherUser?.Name}</h2>
-          <p className="text-sm font-medium text-gray-600">Online</p>
+          <p className="text-sm font-medium text-gray-600">
+            {isOnline ? "Online" : "Offline"}
+          </p>
         </div>
       </div>
 
-      {showUserDetails && <UserDetailsChat user={otherUser} />}
+      {showUserDetails && otherUser && (
+        <UserDetailsChat user={otherUser} setShowDetails={setShowUserDetails} />
+      )}
       {/* Chat Messages */}
       <div
         onClick={(e) => {
@@ -408,7 +726,7 @@ export default function ChatComponent({
             </div>
           )}
 
-          {messagesState.map((message: Message) => (
+          {messagesState.map((message: MessageWithDeleted) => (
             <div
               key={message.id}
               className={`flex  relative ${
@@ -416,15 +734,6 @@ export default function ChatComponent({
                   ? "justify-end"
                   : "justify-start"
               }`}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                console.log("i dey here", message.ID);
-
-                setMessageDialog({
-                  active: true,
-                  id: message.ID,
-                });
-              }}
             >
               <div className={`max-w-[70%] flex items-end gap-2`}>
                 {message.SenderID !== currentUserId && (
@@ -435,6 +744,15 @@ export default function ChatComponent({
                   </Avatar>
                 )}
                 <div
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    console.log("i dey here", message.ID);
+
+                    setMessageDialog({
+                      active: true,
+                      id: message.ID,
+                    });
+                  }}
                   className={`p-3 relative w-fit flex flex-col justify-end items-end rounded-lg ${
                     message.SenderID === currentUserId
                       ? "bg-black text-white rounded-br-none"
@@ -459,10 +777,14 @@ export default function ChatComponent({
                               return;
                             }
 
-                            setMessagesState((prev) =>
-                              prev.filter((m) => m.ID !== message.ID)
-                            );
-                            await deleteMessage({ conversationId: message.ID });
+                            const delPayload = {
+                              message_id: message.ID,
+                              conversation_id: Number(conversation.ID),
+                              type: "delete_message",
+                            };
+
+                            ws?.current?.send(JSON.stringify(delPayload));
+                            // await deleteMessage({ conversationId: message.ID });
                             setMessageDialog({ active: false, id: null });
                           }}
                         >
@@ -471,13 +793,23 @@ export default function ChatComponent({
                       )}
                     </div>
                   )}
-
                   <AttachmentComp attachments={message.Attachments} />
-                  {message.Content}
+                  {message?.deleted ? (
+                    <p className=" italic font-medium text-gray-500 ">
+                      This Message has been Deleted{" "}
+                    </p>
+                  ) : (
+                    message.Content
+                  )}
                 </div>
               </div>
             </div>
           ))}
+          {currentUserId === isTyping.id && (
+            <TypingIndicator isTyping={isTyping.value} />
+          )}
+          <AttachmentsIncoming state={sendingAttachments} />
+
           <div ref={scrollRef} />
         </div>
       </div>
@@ -494,6 +826,7 @@ export default function ChatComponent({
           setIsRecording={setIsRecording}
           isRecording={isRecording}
           setVoiceRecord={setVoiceRecording}
+          sendMessage={handleSendMessage}
           // src={voiceRecording.local}
           setShowRecordingStudio={setShowRecordingStudio}
         />
@@ -520,7 +853,7 @@ export default function ChatComponent({
           /> */}
             <Input
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={handleKeyPress}
               placeholder="Write a message..."
               className="flex-1 h-[50px] rounded-full border-gray-300 focus:ring-2 focus:ring-blue-500"
@@ -540,6 +873,7 @@ export default function ChatComponent({
             onClick={handleSendMessage}
             disabled={
               (!newMessage.trim() &&
+                attachments.length === 0 &&
                 !voiceRecording.blob &&
                 !videoRecording.blob) ||
               isFetchingMore
