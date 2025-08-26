@@ -72,7 +72,7 @@ export const Landing = () => {
             simplifies e-commerce.
           </p>
 
-          <div className="flex items-center  flex-col lg:flex-row md:gap-5">
+          <div className="flex items-center  flex-col gap-3 lg:flex-row md:gap-5">
             {/* <Button
               text="See Pricing"
               icon={<ArrowRight size={18} color="white" />}

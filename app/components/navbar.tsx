@@ -14,15 +14,15 @@ export const Navbar = () => {
         staggerChildren: 0.1,
         when: "afterChildren",
 
-        duration: 0.2,
-      },
-    },
+        duration: 0.2
+      }
+    }
   };
 
   const item = {
     hidden: { opacity: 0.9, x: -100, y: 0 },
     exit: { opacity: 0, x: -10, y: 0 },
-    show: { opacity: 1, x: 0, y: 0 },
+    show: { opacity: 1, x: 0, y: 0 }
   };
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const router = useRouter();
@@ -47,17 +47,17 @@ export const Navbar = () => {
         />
         <div
           onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className=" flex lg:hidden flex-col text-black gap-1"
+          className=" flex lg:hidden cursor-pointer flex-col text-black gap-1"
         >
           <motion.div
             animate={{
-              rotate: showMobileMenu ? 45 : 0,
+              rotate: showMobileMenu ? 45 : 0
             }}
             className=" w-[25px] shrink-0 border-b-[2px] border-black"
           ></motion.div>
           <motion.div
             animate={{
-              rotate: showMobileMenu ? -45 : 0,
+              rotate: showMobileMenu ? -45 : 0
             }}
             className=" w-[25px] border-b-[2px] shrink-0 border-black"
           ></motion.div>
@@ -74,10 +74,10 @@ export const Navbar = () => {
               top: `7vh`,
               left: 0,
               right: 0,
-              height: `93vh`,
+              height: `93vh`
             }}
             transition={{
-              duration: 0.7,
+              duration: 0.7
             }}
             className="w-full lg:hidden absolute bg-primary"
           >
