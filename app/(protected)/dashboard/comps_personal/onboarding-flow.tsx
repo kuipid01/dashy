@@ -554,7 +554,16 @@ export function OnboardingFlow() {
                 </Button>
                 <Button
                   className="w-full cursor-pointer bg-[#f8f5ed] hover:bg-[#f8f5ed]/60 border-black border text-black"
-                  onClick={skipStep}
+                  onClick={async () => {
+                    try {
+                      await updateStatus(true);
+                      triggerConfetti();
+                      router.push("/dashboard");
+                    } catch (error) {
+                      console.log(error);
+                      toast.error("Couldnt toggle status");
+                    }
+                  }}
                   variant="ghost"
                 >
                   Skip
