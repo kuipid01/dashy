@@ -14,6 +14,7 @@ export interface Product {
     storeId: number;
     store_id: number;
     live:boolean;
+    createdAt?: string; // ISO date string for when product was created
     store?: {
       id: number;
       name: string;

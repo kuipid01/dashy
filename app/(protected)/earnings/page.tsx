@@ -16,7 +16,7 @@ const Page = () => {
   const chartData =
     earnings?.monthly_earnings?.map((month) => ({
       earnings: month.amount ?? 0,
-      month: month.month,
+      month: month.month
     })) ?? [];
 
   const earningsDirection =
@@ -63,16 +63,19 @@ const Page = () => {
               </div>
 
               <div className="grid grid-cols-4 gap-3">
-                {topProducts?.map((product, idx) => (
-                  <Image
-                    key={idx}
-                    src={(product.image[0] as string) || "/placeholder.png"}
-                    alt={`product-${idx}`}
-                    width={100}
-                    height={70}
-                    className="rounded-md h-[70px] object-cover shadow hover:scale-105 transition-transform cursor-pointer"
-                  />
-                ))}
+                {topProducts?.map((product, idx) => {
+                  // console.log(product);
+                  return (
+                    <Image
+                      key={idx}
+                      src={"/placeholder.png"}
+                      alt={`product-${idx}`}
+                      width={100}
+                      height={70}
+                      className="rounded-md h-[70px] object-cover shadow hover:scale-105 transition-transform cursor-pointer"
+                    />
+                  );
+                })}
               </div>
             </div>
           )}

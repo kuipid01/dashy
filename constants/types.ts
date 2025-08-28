@@ -13,8 +13,8 @@ export type Product = {
 
 export interface User {
   id: number;
-  name:string
-  
+  name: string
+
 }
 
 export interface Payment {
@@ -70,12 +70,12 @@ export interface Order {
   id: number;
   total: number;
   status:
-    | "pending"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | string; // Gorm default 'pending'
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | string; // Gorm default 'pending'
 
   userId: number;
   user: User;
@@ -106,7 +106,10 @@ export interface Order {
   addressId?: string;
   address?: Address;
   orderStatus: string;
+  sales_means: "ONLINE" | "STORE"
+
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
+  placed_at: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   updatedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   deletedAt?: string; // gorm.DeletedAt is a pointer, so optional. Maps to string for timestamp or null.
 }
@@ -146,8 +149,8 @@ export interface User {
   ClientIDStr: string | null;
 
   security?: Security;
-  hasCompletedOnboarding:boolean;
-  
+  hasCompletedOnboarding: boolean;
+
 }
 
 // Assuming you have a corresponding Go struct for Store

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -58,7 +59,7 @@ const Page = () => {
   // console.log(formDetails);
   return (
     <div className=" flex flex-col bg-white h-full p-3 rounded-l-xl">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <div className=" rounded-md border-zinc-300 border items-center flex gap-5 p-1">
           {" "}
           <div className=" flex items-center text-xs gap-1">
@@ -75,7 +76,7 @@ const Page = () => {
             Sign Up
           </Link>
         </div>
-      </div>
+      </div> */}
       <div className="flex  justify-center items-center flex-1">
         <form
           className=" max-w-[70%]  lg:max-w-md mx-auto b flex flex-col items-center"

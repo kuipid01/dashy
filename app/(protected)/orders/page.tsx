@@ -9,7 +9,6 @@ import OrderSkeletonLoader from "../_components/order-skelton";
 
 const Page = () => {
   const { data, isLoading } = useFetchStoreOrders();
-  console.log(data);
 
   return (
     <div className=" flex flex-col gap-5 p-5 rounded-xl min-h-screen h-full w-full">
