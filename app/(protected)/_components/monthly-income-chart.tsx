@@ -4,7 +4,6 @@ import {
   ChevronDown,
   Download,
   TrendingUp,
-  TrendingDown,
   DollarSign
 } from "lucide-react";
 import {
@@ -24,46 +23,122 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { Order } from "@/constants/types";
+import { format } from "date-fns";
+
+/**
+ * Aggregates order data into a monthly income format for the chart.
+ * @param {Array<Order>} orders - The array of order objects.
+ * @returns {Array<MonthlyIncomeData>}
+ */
+export const processOrdersToMonthlyData = (orders: Order[]) => {
+  console.log(orders);
+  const monthlyDataMap = new Map();
+
+  orders.forEach((order) => {
+    // Safely get the date from the order.
+    const orderDate =
+      order.placedAt || order.placed_at || new Date().toISOString();
+    const month = format(new Date(orderDate), "MMM");
+
+    // Calculate values for the current order
+    const revenue = order.total || 0;
+    const netTotal = order.commision || 0;
+    // For simplicity, profit is assumed to be equal to revenue since there are no expenses
+    const income = revenue - netTotal;
+
+    if (monthlyDataMap.has(month)) {
+      const existingData = monthlyDataMap.get(month);
+      existingData.revenue += revenue;
+      existingData.income += income;
+    } else {
+      monthlyDataMap.set(month, {
+        month,
+        revenue,
+        income
+      });
+    }
+  });
+
+  // Convert the map values back to an array
+  const monthlyData = Array.from(monthlyDataMap.values()).sort((a, b) => {
+    const monthsOrder = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    return monthsOrder.indexOf(a.month) - monthsOrder.indexOf(b.month);
+  });
+
+  return monthlyData;
+};
 
 export interface MonthlyIncomeData {
   month: string;
   revenue: number;
-  expenses: number;
-  profit: number;
-}
-
-export interface MonthlyIncomeChartProps {
-  data: MonthlyIncomeData[];
-  selectedMetric?: "revenue" | "expenses" | "profit";
-  onMetricChange?: (metric: "revenue" | "expenses" | "profit") => void;
-  onExport?: () => void;
-  onSortChange?: (sortBy: string) => void;
+  income: number;
 }
 
 const COLORS = {
   revenue: "#10B981", // Green
-  expenses: "#F59E0B", // Orange
-  profit: "#8B5CF6", // Purple
+  income: "#8B5CF6", // Purple
   inactive: "#E5E7EB" // Light gray
 };
 
-const SAMPLE_DATA: MonthlyIncomeData[] = [
-  { month: "Jan", revenue: 45, expenses: 20, profit: 25 },
-  { month: "Feb", revenue: 65, expenses: 30, profit: 35 },
-  { month: "Mar", revenue: 48, expenses: 25, profit: 23 },
-  { month: "Apr", revenue: 85, expenses: 35, profit: 50 },
-  { month: "May", revenue: 52, expenses: 28, profit: 24 },
-  { month: "Jun", revenue: 68, expenses: 32, profit: 36 }
-];
+export interface MonthlyIncomeChartProps {
+  orders: Order[];
+  selectedMetric?: "revenue" | "income"; // Removed 'expenses'
+  onMetricChange?: (metric: "revenue" | "income") => void;
+  onExport?: () => void;
+  onSortChange?: (sortBy: string) => void;
+}
+
+const getBarColor = (month: string, metric: string, selectedMetric: string) => {
+  if (month === format(new Date(), "MMM") && metric === selectedMetric) {
+    return COLORS[metric as keyof typeof COLORS];
+  }
+  return COLORS.inactive;
+};
+
+const formatYAxis = (value: number) => {
+  return value.toString();
+};
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+        <p className="font-medium text-gray-900">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} style={{ color: entry.color }} className="text-sm">
+            {entry.name}: ₦{entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function MonthlyIncomeChart({
-  data = SAMPLE_DATA,
-  selectedMetric = "profit",
+  orders,
+  selectedMetric = "income",
   onMetricChange,
   onExport,
   onSortChange
 }: MonthlyIncomeChartProps) {
-  const handleMetricChange = (metric: "revenue" | "expenses" | "profit") => {
+  const chartData = processOrdersToMonthlyData(orders);
+
+  const handleMetricChange = (metric: "revenue" | "income") => {
     onMetricChange?.(metric);
   };
 
@@ -73,35 +148,6 @@ export default function MonthlyIncomeChart({
 
   const handleSortChange = (sortBy: string) => {
     onSortChange?.(sortBy);
-  };
-
-  const getBarColor = (month: string, metric: string) => {
-    // Highlight the selected metric for the current month (April in this case)
-    if (month === "Apr" && metric === selectedMetric) {
-      return COLORS[metric as keyof typeof COLORS];
-    }
-    // Inactive bars for other months/metrics
-    return COLORS.inactive;
-  };
-
-  const formatYAxis = (value: number) => {
-    return value.toString();
-  };
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: ${entry.value}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
@@ -128,10 +174,6 @@ export default function MonthlyIncomeChart({
               <DropdownMenuItem onClick={() => handleSortChange("revenue")}>
                 <TrendingUp size={14} className="mr-2" />
                 Revenue
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange("expenses")}>
-                <TrendingDown size={14} className="mr-2" />
-                Expenses
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleSortChange("profit")}>
                 <DollarSign size={14} className="mr-2" />
@@ -161,19 +203,13 @@ export default function MonthlyIncomeChart({
           />
           <span className="text-sm font-medium text-gray-700">Revenue</span>
         </div>
+
         <div className="flex items-center gap-2">
           <div
             className="size-3 rounded-full"
-            style={{ backgroundColor: COLORS.expenses }}
+            style={{ backgroundColor: COLORS.income }}
           />
-          <span className="text-sm font-medium text-gray-700">Expenses</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="size-3 rounded-full"
-            style={{ backgroundColor: COLORS.profit }}
-          />
-          <span className="text-sm font-medium text-gray-700">Profit</span>
+          <span className="text-sm font-medium text-gray-700">Income</span>
         </div>
       </div>
 
@@ -181,7 +217,7 @@ export default function MonthlyIncomeChart({
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={data}
+            data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid
@@ -201,8 +237,7 @@ export default function MonthlyIncomeChart({
               tickLine={false}
               tick={{ fontSize: 12, fill: "#6B7280" }}
               tickFormatter={formatYAxis}
-              domain={[0, 80]}
-              ticks={[0, 20, 40, 60, 80]}
+              domain={[0, "auto"]}
             />
             <Tooltip content={<CustomTooltip />} />
 
@@ -213,40 +248,25 @@ export default function MonthlyIncomeChart({
               onClick={() => handleMetricChange("revenue")}
               cursor="pointer"
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell
                   key={`revenue-${index}`}
-                  fill={getBarColor(entry.month, "revenue")}
-                />
-              ))}
-            </Bar>
-
-            {/* Expenses Bars */}
-            <Bar
-              dataKey="expenses"
-              radius={[50, 50, 50, 50]}
-              onClick={() => handleMetricChange("expenses")}
-              cursor="pointer"
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`expenses-${index}`}
-                  fill={getBarColor(entry.month, "expenses")}
+                  fill={getBarColor(entry.month, "revenue", selectedMetric)}
                 />
               ))}
             </Bar>
 
             {/* Profit Bars */}
             <Bar
-              dataKey="profit"
+              dataKey="income"
               radius={[50, 50, 50, 50]}
-              onClick={() => handleMetricChange("profit")}
+              onClick={() => handleMetricChange("income")}
               cursor="pointer"
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell
-                  key={`profit-${index}`}
-                  fill={getBarColor(entry.month, "profit")}
+                  key={`income-${index}`}
+                  fill={getBarColor(entry.month, "income", selectedMetric)}
                 />
               ))}
             </Bar>

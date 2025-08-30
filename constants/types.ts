@@ -3,9 +3,14 @@ import { Security } from "@/types/security";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Product = {
   name: string;
+  Name: string;
   rating: number;
   image: string;
+  Image: string;
   price: number;
+  Category:string;
+  Stock:number | null;
+  ID:number;
 };
 
 // Placeholder types for related models (assuming common fields)
@@ -30,6 +35,11 @@ export interface OrderItem {
   quantity: number;
   price: number;
   name: string;
+  Product: Product;
+  UnitPrice: number;
+  TotalPrice: number;
+  CreatedAt : Date;
+  Quantity:number
   // ... other order item fields
 }
 
@@ -79,7 +89,8 @@ export interface Order {
 
   userId: number;
   user: User;
-
+  net_total: number;
+  commision: number;
   storeId?: number; // Nullable in Go, so optional in TS
   store?: Store;
 

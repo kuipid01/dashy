@@ -35,7 +35,19 @@ export const ArrowDiv = ({ value }: { value: number }) => {
     </div>
   );
 };
+export const getPercentageChange = (newValue: number, prevValue: number) => {
+  if (prevValue === 0) {
+    if (newValue === 0) {
+      // If both values are zero, there is no change.
+      return 0;
+    } else {
+      // If the value increased from zero, the percentage change is infinite.
+      return Infinity;
+    }
+  }
 
+  return ((newValue - prevValue) / prevValue) * 100;
+};
 export const ArrowDivNew = ({
   newValue,
   prevValue
@@ -44,10 +56,31 @@ export const ArrowDivNew = ({
   prevValue: number;
 }) => {
   // Calculate percentage change
-  const percentageChange =
-    prevValue !== 0 ? ((newValue - prevValue) / prevValue) * 100 : 0;
-
+  const percentageChange = getPercentageChange(newValue, prevValue);
   const isNegative = percentageChange < 0;
+  const isFromZero = percentageChange === Infinity;
+  // Conditional rendering based on the type of change
+  const content = () => {
+    if (isFromZero) {
+      return (
+        <span className="flex items-center gap-1">
+          <ArrowUpRight className="w-4 h-4" />
+          Up from zero
+        </span>
+      );
+    }
+
+    return (
+      <span className="flex items-center gap-1">
+        {isNegative ? (
+          <ArrowDownRight className="w-4 h-4" />
+        ) : (
+          <ArrowUpRight className="w-4 h-4" />
+        )}
+        {percentageChange.toFixed(2)}%
+      </span>
+    );
+  };
 
   return (
     <div className="flex items-center gap-1">
@@ -56,14 +89,9 @@ export const ArrowDivNew = ({
           background: isNegative ? "#cc5069" : "#b9f8cf",
           color: isNegative ? "white" : "black"
         }}
-        className="flex items-center font-medium rounded-md text-[12px] px-2 py-1 text-xs gap-1"
+        className="flex items-center font-medium rounded-md text-[12px] px-2 py-1 text-xs"
       >
-        {isNegative ? (
-          <ArrowDownRight className="w-4 h-4" />
-        ) : (
-          <ArrowUpRight className="w-4 h-4" />
-        )}
-        {percentageChange.toFixed(2)}%
+        {content()}
       </div>
     </div>
   );

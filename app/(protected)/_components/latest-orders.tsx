@@ -11,7 +11,8 @@ import {
   Truck,
   CheckCircle,
   XCircle,
-  Clock
+  Clock,
+  ChevronRight
 } from "lucide-react";
 import Image from "next/image";
 import {
@@ -30,14 +31,55 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Order } from "@/constants/types";
+import Link from "next/link";
 
 export interface LatestOrdersProps {
   orders: Order[];
   onViewOrder?: (order: Order) => void;
   onUpdateStatus?: (orderId: number, newStatus: string) => void;
   onEditOrder?: (order: Order) => void;
+  isLoading: boolean;
 }
 
+export const LatestOrdersSkeletonRow = () => {
+  return (
+    <TableRow className="animate-pulse">
+      <TableCell className="py-4 px-2">
+        <div className="h-4 w-10 bg-gray-200 rounded-md"></div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="flex flex-col gap-1">
+          <div className="h-4 w-28 bg-gray-200 rounded-md"></div>
+          <div className="h-3 w-36 bg-gray-200 rounded-md"></div>
+        </div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="flex items-center gap-2">
+          <div className="size-8 rounded-md bg-gray-200"></div>
+          <div className="flex flex-col gap-1">
+            <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
+            <div className="h-3 w-16 bg-gray-200 rounded-md"></div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="h-4 w-16 bg-gray-200 rounded-md"></div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="h-4 w-20 bg-gray-200 rounded-md"></div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="h-4 w-16 bg-gray-200 rounded-md"></div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+      </TableCell>
+      <TableCell className="py-4 px-2">
+        <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+      </TableCell>
+    </TableRow>
+  );
+};
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "pending":
@@ -85,19 +127,14 @@ export default function LatestOrders({
   orders,
   onViewOrder,
   onUpdateStatus,
-  onEditOrder
+  onEditOrder,
+  isLoading
 }: LatestOrdersProps) {
+  const SKELETON_ROW_COUNT = 5; // You can adjust this number
+
   const handleStatusUpdate = (orderId: number, newStatus: string) => {
     onUpdateStatus?.(orderId, newStatus);
   };
-
-  const statusOptions = [
-    { value: "pending", label: "Pending" },
-    { value: "processing", label: "Processing" },
-    { value: "shipped", label: "Shipped" },
-    { value: "delivered", label: "Delivered" },
-    { value: "cancelled", label: "Cancelled" }
-  ];
 
   return (
     <div className="bgblur p-6 rounded-xl shadow-sm">
@@ -110,7 +147,13 @@ export default function LatestOrders({
           <h2 className="text-xl font-bold text-black">Latest Orders</h2>
         </div>
 
-        <div className="text-sm text-gray-500">{orders.length} orders</div>
+        <div className="text-sm text-gray-500">
+          {isLoading ? (
+            <div className="h-4 w-16 bg-gray-200 rounded-md animate-pulse"></div>
+          ) : (
+            `${orders.length} orders`
+          )}
+        </div>
       </div>
 
       {/* Table */}
@@ -165,141 +208,162 @@ export default function LatestOrders({
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="">
-          {orders.map((order, index) => (
-            <TableRow key={order.id || index} className="transition-colors">
-              <TableCell className="py-4 px-2">
-                <span className="text-sm font-medium text-gray-900">
-                  #{order.id}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <div className="flex flex-col">
+        <TableBody>
+          {isLoading ? (
+            // Render skeletons when loading is true
+            Array.from({ length: SKELETON_ROW_COUNT }).map((_, index) => (
+              <LatestOrdersSkeletonRow key={index} />
+            ))
+          ) : orders.length > 0 ? (
+            // Render actual data when not loading and orders exist
+            orders.map((order, index) => (
+              <TableRow key={order.id || index} className="transition-colors">
+                <TableCell className="py-4 px-2">
                   <span className="text-sm font-medium text-gray-900">
-                    {order.contact?.name || "N/A"}
+                    #{order.id}
                   </span>
-                  <span className="text-xs text-gray-500">
-                    {order.contact?.email ||
-                      order.contact?.phone ||
-                      "No contact info"}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <div className="flex items-center gap-2">
-                  {order.orderItems && order.orderItems.length > 0 && (
-                    <Image
-                      src="/assets/login.jpg" // Default image, you can use order.orderItems[0].image if available
-                      alt={order.orderItems[0].name}
-                      width={32}
-                      height={32}
-                      className="size-8 rounded-md object-cover"
-                    />
-                  )}
+                </TableCell>
+                <TableCell className="py-4 px-2">
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-gray-900">
-                      {order.orderItems && order.orderItems.length > 0
-                        ? order.orderItems[0].name
-                        : "No items"}
+                      {order?.user?.Name || "N/A"}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {order.orderItems?.length || 0} items
+                      {order.user?.Email || "No contact info"}
                     </span>
                   </div>
-                </div>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <span className="text-sm font-semibold text-gray-900">
-                  ₦{order.total?.toFixed(2) || "0.00"}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <span className="text-sm text-gray-600 capitalize">
-                  {order.deliveryMode || "N/A"}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <span className="text-sm text-gray-600">
-                  {formatDate(
-                    order.placedAt ||
-                      order.placed_at ||
-                      new Date().toISOString()
-                  )}
-                </span>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(order.status)}
-                  <span
-                    className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      order.status
-                    )}`}
-                  >
-                    {order.status}
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <div className="flex items-center gap-2">
+                    {order.orderItems && order.orderItems.length > 0 && (
+                      <Image
+                        src="/assets/login.jpg"
+                        alt={order.orderItems[0].name}
+                        width={32}
+                        height={32}
+                        className="size-8 rounded-md object-cover"
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-gray-900">
+                        {order.orderItems && order.orderItems.length > 0
+                          ? order.orderItems[0].name
+                          : "No items"}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {order.orderItems?.length || 0} items
+                      </span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <span className="text-sm font-semibold text-gray-900">
+                    ₦{order.total?.toFixed(2) || "0.00"}
                   </span>
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <span className="text-sm text-gray-600 capitalize">
+                    {order.deliveryMode || "N/A"}
+                  </span>
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <span className="text-sm text-gray-600">
+                    {formatDate(
+                      order.placedAt ||
+                        order.placed_at ||
+                        new Date().toISOString()
+                    )}
+                  </span>
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(order.status)}
+                    <span
+                      className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        order.status
+                      )}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="py-4 px-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal size={16} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => onViewOrder?.(order)}>
+                        <Eye size={14} className="mr-2" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEditOrder?.(order)}>
+                        <Edit size={14} className="mr-2" />
+                        Edit Order
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleStatusUpdate(order.id, "processing")
+                        }
+                        disabled={order.status === "processing"}
+                      >
+                        <Edit size={14} className="mr-2" />
+                        Mark Processing
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusUpdate(order.id, "shipped")}
+                        disabled={order.status === "shipped"}
+                      >
+                        <Truck size={14} className="mr-2" />
+                        Mark Shipped
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleStatusUpdate(order.id, "delivered")
+                        }
+                        disabled={order.status === "delivered"}
+                      >
+                        <CheckCircle size={14} className="mr-2" />
+                        Mark Delivered
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleStatusUpdate(order.id, "cancelled")
+                        }
+                        disabled={order.status === "cancelled"}
+                      >
+                        <XCircle size={14} className="mr-2" />
+                        Cancel Order
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            // Render empty state if no products are found after loading
+            <TableRow>
+              <TableCell colSpan={8} className="text-center py-12">
+                <div className="size-16 rounded-full bg-gray-100 grid place-items-center mx-auto mb-4">
+                  <Package size={24} className="text-gray-400" />
                 </div>
-              </TableCell>
-              <TableCell className="py-4 px-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreHorizontal size={16} />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onViewOrder?.(order)}>
-                      <Eye size={14} className="mr-2" />
-                      View Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onEditOrder?.(order)}>
-                      <Edit size={14} className="mr-2" />
-                      Edit Order
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleStatusUpdate(order.id, "processing")}
-                      disabled={order.status === "processing"}
-                    >
-                      <Edit size={14} className="mr-2" />
-                      Mark Processing
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleStatusUpdate(order.id, "shipped")}
-                      disabled={order.status === "shipped"}
-                    >
-                      <Truck size={14} className="mr-2" />
-                      Mark Shipped
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleStatusUpdate(order.id, "delivered")}
-                      disabled={order.status === "delivered"}
-                    >
-                      <CheckCircle size={14} className="mr-2" />
-                      Mark Delivered
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleStatusUpdate(order.id, "cancelled")}
-                      disabled={order.status === "cancelled"}
-                    >
-                      <XCircle size={14} className="mr-2" />
-                      Cancel Order
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <p className="text-gray-500 text-sm">No orders found</p>
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
 
-      {/* Empty State */}
-      {orders.length === 0 && (
-        <div className="text-center py-12">
-          <div className="size-16 rounded-full bg-gray-100 grid place-items-center mx-auto mb-4">
-            <Package size={24} className="text-gray-400" />
-          </div>
-          <p className="text-gray-500 text-sm">No orders found</p>
-        </div>
-      )}
+      <div className="flex mt-5 justify-center items-center">
+        <Link
+          className=" px-3 py-1 rounded-md border border-black flex gap-2"
+          href="/orders"
+        >
+          See More Orders <ChevronRight />{" "}
+        </Link>
+      </div>
     </div>
   );
 }
