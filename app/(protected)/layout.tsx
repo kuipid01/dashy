@@ -11,7 +11,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Toaster richColors />
-      <body>
+      <body style={{ fontFamily: "MilanesaSerif" }}>
         <div
           className={`lg:px-15 pt-[calc(40px+7vh)] lg:pt-[calc(40px+10vh)] flex flex-col gap-5  md:px-8 px-5  bg-primary min-h-screen antialiased`}
         >

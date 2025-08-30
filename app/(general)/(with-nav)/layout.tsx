@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Poiret_One } from "next/font/google";
+import { Inter } from "next/font/google";
 import "../../globals.css";
 import { Navbar } from "@/app/components/navbar";
 import Footer from "@/app/components/footer";
 
-const poiretOne = Poiret_One({
-  variable: "--font-poiret-one",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400"]
+  weight: ["400", "300", "500", "600", "900", "800", "700"]
 });
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={` ${poiretOne.variable}  antialiased`}>
+      <body className={`  bg-primary ${inter.variable}  antialiased`}>
         <Navbar />
         {children}
         <Footer />

@@ -7,7 +7,7 @@ import VariantsCorner from "@/app/(general)/_compoenents/variants-corner";
 import YouMightLike from "@/app/(general)/_compoenents/you-might-like";
 import {
   useFetchProduct,
-  UseFetchProductVariants,
+  UseFetchProductVariants
 } from "@/app/(handlers)/general/general";
 import { Pill } from "@/app/components/pill";
 import Back from "@/app/components/reusables/back";
@@ -19,7 +19,7 @@ import {
   ChevronUp,
   Heart,
   PackageOpen,
-  Percent,
+  Percent
 } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -60,7 +60,7 @@ const Page = () => {
   }
 
   return (
-    <div className="min-h-screen w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+    <div className="min-h-screen  bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
       <div className="flex gap-1 items-center">
         <Back />
         <h1 className="text-zinc-600 font-medium">Product Details</h1>
@@ -128,7 +128,7 @@ const Page = () => {
             <button
               disabled={isOutOfStock}
               className={cn(
-                "w-full px-10 py-3 rounded-[30px] font-medium transition-all",
+                "w-full px-10 cursor-pointer py-3 rounded-[30px] font-medium transition-all",
                 isOutOfStock
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-black text-white hover:bg-gray-800"
@@ -195,19 +195,19 @@ const Page = () => {
                             product.price) *
                             100
                         )}%`
-                      : "No Discount",
+                      : "No Discount"
                 },
                 {
                   icon: <PackageOpen />,
                   label: "Package",
-                  value: "Regular Packaging",
+                  value: "Regular Packaging"
                 },
                 {
                   icon: <CalendarHeart />,
                   label: "Delivery Time",
-                  value: "4–5 Working Days",
+                  value: "4–5 Working Days"
                 },
-                { icon: <div />, label: "Product Details", value: "" },
+                { icon: <div />, label: "Product Details", value: "" }
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div className="size-12 rounded-full bg-zinc-100 grid place-items-center">

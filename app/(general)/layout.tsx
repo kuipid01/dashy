@@ -24,18 +24,18 @@ export const metadata: Metadata = {
       "Your Hubsell account has been successfully verified. Welcome aboard! Hubsell ❤",
     url: "https://www.hubsell.com/verification-success",
     siteName: "Hubsell",
-    type: "website",
+    type: "website"
   },
   twitter: {
     card: "summary_large_image",
     title: "Hubsell Verification Success",
     description:
-      "Account verification completed successfully. Get started with Hubsell today! ❤",
-  },
+      "Account verification completed successfully. Get started with Hubsell today! ❤"
+  }
 };
 
 export default async function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -43,7 +43,7 @@ export default async function RootLayout({
 
   await queryClient.prefetchQuery({
     queryKey: ["discovery-contents"],
-    queryFn: getDiscoveryContent,
+    queryFn: getDiscoveryContent
   });
 
   const dehydratedState = dehydrate(queryClient);
