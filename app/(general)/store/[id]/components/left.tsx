@@ -9,7 +9,7 @@ export const LeftSection = () => {
     searchTerm: "",
     ratings: null,
     priceRange: null,
-    category: "",
+    category: ""
   });
   return (
     <div className="p-4 md:p-6 _mt-[10vh] lg:p-8 min-h-screen">

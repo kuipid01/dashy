@@ -8,7 +8,7 @@ import Skeleton from "@/app/(general)/_compoenents/skeleton";
 import ProductLoadingSkeleton from "@/app/(general)/_compoenents/product-loading-skeleton";
 
 export const ProductGrid = ({
-  filters,
+  filters
 }: {
   filters: {
     searchTerm: string;
@@ -28,7 +28,17 @@ export const ProductGrid = ({
   return (
     <div className="grid grid-cols-1 bgblur py-8 px-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {isLoading ? (
-        <ProductLoadingSkeleton number={6} />
+        <>
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+          <ProductLoadingSkeleton />
+        </>
       ) : (
         fetchedProducts?.map((product) => (
           <ProductCard isAdmin={false} key={product.id} product={product} />

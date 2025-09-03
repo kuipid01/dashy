@@ -2,16 +2,36 @@ import { Security } from "@/types/security";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Product = {
+  id: number;
   name: string;
-  Name: string;
-  rating: number;
-  image: string;
-  Image: string;
+  category: string;
+  image: string[] | File[]; // Comma-separated string from backend
+  videos?: string[] | File[] | null;
+  description?: string | null;
+  stock?: number | null;
   price: number;
-  Category:string;
-  Stock:number | null;
-  ID:number;
-};
+  discountedPrice?: number | null;
+  discounted_price?: number | null;
+  rating: number;
+  storeId: number;
+  store_id: number;
+  live: boolean;
+  createdAt?: string; // ISO date string for when product was created
+  store?: {
+    id: number;
+    name: string;
+    // Add other store fields as needed
+  };
+  tweets?: { id: number; content: string }[]; // Simplified Tweet type
+
+  Name: string;
+
+  Image: string;
+
+  Category: string;
+  Stock: number | null;
+  ID: number;
+}
 
 // Placeholder types for related models (assuming common fields)
 // You should replace these with your actual definitions if available.
@@ -38,8 +58,8 @@ export interface OrderItem {
   Product: Product;
   UnitPrice: number;
   TotalPrice: number;
-  CreatedAt : Date;
-  Quantity:number
+  CreatedAt: Date;
+  Quantity: number
   // ... other order item fields
 }
 
@@ -98,6 +118,7 @@ export interface Order {
   payment?: Payment;
 
   orderItems: OrderItem[];
+  order_items: OrderItem[];
 
   // --- Delivery Information ---
   deliveryMode: "store" | "agent" | "external" | string;
@@ -205,6 +226,224 @@ export interface ProductVariant {
   UpdatedAt?: string;
 
   [key: string]: any; // Allow extra properties for flexibility
+}
+
+// Temporal User Types
+export interface TemporalUser {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  status: "active" | "pending" | "inactive";
+  createdAt: string;
+  updatedAt: string;
+  orders?: Order[];
+}
+
+export interface CreateTemporalUserRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+}
+
+export interface UpdateTemporalUserRequest {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  status?: "active" | "pending" | "inactive";
+}
+
+export interface LinkOrderToTemporalUserRequest {
+  temporalUserId: number;
+  orderId: number;
+}
+
+export interface TemporalUserWithOrders extends TemporalUser {
+  orders: Order[];
+}
+
+// Order API Request/Response Types
+export interface CreateOrderRequest {
+  userId?: number;
+  temporalUserId?: number;
+  store_id: number;
+  order_items: {
+    product_id: number;
+    quantity: number;
+    price: number;
+  }[];
+  deliveryMode: "store" | "agent" | "external";
+  deliveryId?: string;
+  agentId?: number;
+  thirdPartyProvider?: string;
+  contact?: {
+    id:string
+  };
+  paymentstatus:boolean,
+  address?: {
+    id:string
+  };
+  sales_means: "ONLINE" | "STORE";
+  notes?: string;
+}
+export interface CreateTemporalOrderRequest {
+
+  store_id: number;
+  order_items: {
+    product_id: number;
+    quantity: number;
+    price: number;
+  }[];
+  deliveryMode: "store" | "agent" | "external";
+  deliveryId?: string;
+  agentId?: number;
+  thirdPartyProvider?: string;
+  contact?: {
+    id?:string;
+    first_name?:string;
+    last_name?:string;
+    email?:string;
+    phone?:string;
+    sub_contact_phone?:string;
+    sub_contact_email?:string;
+  };
+  paymentstatus:boolean,
+  address?: {
+    id?:string;
+    street?:string;
+    city?:string;
+    state?:string;
+    postal_code?:string;
+    country?:string;
+    description?:string;
+  };
+  sales_means: "ONLINE" | "STORE";
+  notes?: string;
+  temporal_user:{
+    email:string,
+    first_name:string,
+    last_name:string,
+    phone:string
+  }
+}
+
+export interface UpdateOrderRequest {
+  status?: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  deliveryMode?: "store" | "agent" | "external";
+  deliveryId?: string;
+  agentId?: number;
+  thirdPartyProvider?: string;
+  thirdPartyTrackingId?: string;
+  contactId?: string;
+  addressId?: string;
+  notes?: string;
+}
+
+export interface LinkOrderToDeliveryOptionRequest {
+  deliveryId: string;
+  deliveryMode: "store" | "agent" | "external";
+  agentId?: number;
+  thirdPartyProvider?: string;
+  thirdPartyTrackingId?: string;
+}
+
+export interface OrderWithProducts extends Order {
+  orderItems: (OrderItem & {
+    Product: Product;
+  })[];
+}
+
+export interface OrderWithStore extends Order {
+  store: Store;
+}
+
+export interface OrderResponse {
+  success: boolean;
+  data: Order;
+  message?: string;
+}
+
+export interface OrdersListResponse {
+  success: boolean;
+  data: {
+    orders: Order[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  message?: string;
+}
+
+// Contact Types
+export interface Contact {
+  ID: string;
+  FirstName: string;
+  LastName: string;
+  Email: string;
+  Phone: string;
+  SubContactPhone: string;
+  SubContactEmail: string;
+  UserID: number;
+  CreatedAt?: string;
+  UpdatedAt?: string;
+  DeletedAt?: string | null;
+}
+
+// Contact API Request/Response Types
+export interface CreateContactRequest {
+  FirstName: string;
+  LastName: string;
+  Email: string;
+  Phone: string;
+  SubContactPhone?: string;
+  SubContactEmail?: string;
+}
+
+export interface UpdateContactRequest {
+  FirstName?: string;
+  LastName?: string;
+  Email?: string;
+  Phone?: string;
+  SubContactPhone?: string;
+  SubContactEmail?: string;
+}
+
+export interface CreatePublicContactRequest extends CreateContactRequest {
+  user_email: string;
+}
+
+export interface UpdatePublicContactRequest extends UpdateContactRequest {
+  user_email: string;
+}
+
+export interface ContactResponse {
+  success: boolean;
+  data: Contact;
+  message?: string;
+}
+
+export interface ContactsListResponse {
+  success: boolean;
+  data: {
+    contacts: Contact[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  message?: string;
+}
+
+export interface ContactSearchResponse {
+  success: boolean;
+  data: {
+    contacts: Contact[];
+    query: string;
+    total: number;
+  };
+  message?: string;
 }
 
 

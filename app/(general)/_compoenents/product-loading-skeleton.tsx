@@ -1,17 +1,13 @@
 import React from "react";
 import Skeleton from "./skeleton";
 
-const ProductLoadingSkeleton = ({ number }: { number: number }) => {
-    return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: number || 5 }).map((_, index) => (
-                <div className="flex flex-col gap-3" key={index}>
-                    <Skeleton className="w-[350px] h-[250px]" />
-                    <Skeleton className="w-[350px] h-[50px]" />
-                </div>
-            ))}
-        </div>
-    );
+const ProductLoadingSkeleton = () => {
+  return (
+    <div className=" hover:border relative hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3">
+      <Skeleton className="w-full h-[250px]   " />
+      <Skeleton className="w-full h-[50px]" />
+    </div>
+  );
 };
 
 export default ProductLoadingSkeleton;

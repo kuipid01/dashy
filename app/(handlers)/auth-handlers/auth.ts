@@ -114,6 +114,44 @@ export const useLoginUserMail = () => {
 
   });
 };
+
+// Checkout email verification hooks
+export const useCheckUserExists = () => {
+  return useMutation({
+    mutationFn: checkUserExists,
+  });
+};
+
+export const useCreatePendingUser = () => {
+  return useMutation({
+    mutationFn: createPendingUser,
+  });
+};
+
+export const useResendOTP = () => {
+  return useMutation({
+    mutationFn: resendOTP,
+  });
+};
+
+export const useVerifyOTP = () => {
+  return useMutation({
+    mutationFn: verifyOTP,
+  });
+};
+
+// Address management hooks
+export const useFetchUserAddresses = () => {
+  return useMutation({
+    mutationFn: fetchUserAddresses,
+  });
+};
+
+export const useAddUserAddress = () => {
+  return useMutation({
+    mutationFn: addUserAddress,
+  });
+};
 const registerUser = async (data: { email: string, password: string , name:string}): Promise<User> => {
   const response = await api.post(`/users/register`, data)
   return response.data.user
@@ -125,6 +163,58 @@ const loginUserMail = async (data: { email: string, password: string }): Promise
 const verifyCode = async (data: { code: string}): Promise<any> => {
   const response = await api.post(`/users/verify-code`, data)
   return response.data.user
+}
+
+// Checkout email verification handlers
+const checkUserExists = async (email: string): Promise<{ exists: boolean; verified: boolean; user?: User }> => {
+  try {
+    const response = await api.get(`/users/check-email?email=${encodeURIComponent(email)}`)
+    return response.data
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      return { exists: false, verified: false }
+    }
+    throw error
+  }
+}
+
+const createPendingUser = async (data: { email: string; firstName: string; lastName: string }): Promise<User> => {
+  const response = await api.post(`/users/create-pending`, {
+    ...data,
+    status: "pending_verification"
+  })
+  return response.data
+}
+
+const resendOTP = async (email: string): Promise<User> => {
+  const response = await api.post(`/users/resend-otp`, { email })
+  return response.data
+}
+
+const verifyOTP = async (data: { email: string; code: string }): Promise<any> => {
+  const response = await api.post(`/users/verify-otp`, data)
+  return response.data
+}
+
+// Address management handlers
+const fetchUserAddresses = async (email: string): Promise<any> => {
+  const response = await api.get(`/users/addresses?email=${encodeURIComponent(email)}`)
+  return response.data
+}
+
+const addUserAddress = async (data: { 
+  email: string; 
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    addressDescription?: string;
+  }
+}): Promise<any> => {
+  const response = await api.post(`/users/addresses`, data)
+  return response.data
 }
 
 const fetchUserStore = async (): Promise<any> => {

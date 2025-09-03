@@ -5,17 +5,28 @@ import { LeftSection } from "./components/left";
 import { RightSection } from "./components/right";
 import Back from "@/app/components/reusables/back";
 import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { ShoppingCart } from "lucide-react";
+
+import { Button as Btnshad } from "@/components/ui/button";
+import { useCartStore } from "@/stores/cart-store";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { store } = useFetchUserStore();
-
+  const { items } = useCartStore();
   const userStore = store?.store;
-  console.log(userStore);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const storeItems = Object.values(items).filter(
+    (item) => item.storeId === userStore?.id
+  );
+  console.log(storeItems, "items");
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-primary">
       <div
@@ -26,7 +37,23 @@ const Page = () => {
         <div className=" px-4 md:px-6 lg:px-8 pt-5 justify-between  flex items-center gap-2">
           <Back />
 
-          <p className="uppercase font-bold">{userStore?.name}</p>
+          <div className="flex items-center gap-2">
+            <p className="uppercase font-bold text-lg">{userStore?.name}</p>
+
+            <Link href={`/cart?store=${userStore?.id}`}>
+              <Btnshad
+                variant="outline"
+                size="sm"
+                className={cn("relative hover:bg-primary")}
+              >
+                <ShoppingCart className="w-4 h-4" />
+
+                <Badge className="absolute  text-black bg-white border border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  {storeItems.reduce((acc, item) => acc + item.quantity, 0)}
+                </Badge>
+              </Btnshad>
+            </Link>
+          </div>
         </div>
         <LeftSection />
       </div>

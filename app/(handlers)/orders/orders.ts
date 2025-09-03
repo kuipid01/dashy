@@ -3,6 +3,7 @@ import { EarningsResponse, Order } from "@/constants/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../base";
 
+// Legacy functions - keeping for backward compatibility
 const fetchOrders = async (): Promise<Order[]> => {
   console.log("here before")
   const response = await api.get(`/orders/me`);
@@ -25,6 +26,7 @@ const updateOrderStatus = async ({ orderId, status }: { orderId: number; status:
   return response.data.data;
 };
 
+// Legacy hooks - keeping for backward compatibility
 export const useFetchStoreOrders = (id: string) => {
   const { data, isLoading, error, isError } = useQuery<Order[], Error>({
     queryKey: ["orders"],
@@ -70,3 +72,18 @@ export const useUpdateOrderStatus = () => {
     },
   });
 };
+
+// Re-export new hooks from queries.ts for convenience
+export {
+  useCreateOrder,
+  useGetMyOrders,
+  useGetOrderById,
+  useGetOrdersByStoreId,
+  useGetOrderProducts,
+  useUpdateOrder,
+  useDeleteOrder,
+  useLinkOrderToDeliveryOption,
+} from "./queries";
+
+// Re-export API functions for direct use
+export { orderAPI } from "./api";

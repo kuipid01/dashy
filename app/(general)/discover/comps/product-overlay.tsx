@@ -3,7 +3,18 @@ import { Product } from "@/app/(handlers)/types/product";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Eye, ShoppingCart } from "lucide-react";
+import { useCartStore } from "@/stores/cart-store";
+import Link from "next/link";
+
 const ProductOverlay = ({ product }: { product: Partial<Product> }) => {
+  const { addItem } = useCartStore();
+
+  const handleAddToCart = () => {
+    if (product) {
+      addItem(product as Product, 1);
+    }
+  };
+
   return (
     <div>
       {/* Product Info Overlay */}
@@ -43,17 +54,22 @@ const ProductOverlay = ({ product }: { product: Partial<Product> }) => {
 
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
-          <Button className="flex-1 bg-white text-black hover:bg-gray-100 font-semibold py-3 transition-all duration-200 hover:scale-105">
+          <Button
+            onClick={handleAddToCart}
+            className="flex-1 bg-white text-black hover:bg-gray-100 font-semibold py-3 transition-all duration-200 hover:scale-105"
+          >
             <ShoppingCart className="w-5 h-5 mr-2" />
             Add to Cart
           </Button>
-          <Button
-            variant="outline"
-            className="border-white/30 text-white hover:bg-white/10 py-3 transition-all duration-200 hover:scale-105 bg-transparent"
-          >
-            <Eye className="w-5 h-5 mr-2" />
-            Details
-          </Button>
+          <Link href={`/product-details/${product.id}`}>
+            <Button
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 py-3 transition-all duration-200 hover:scale-105 bg-transparent"
+            >
+              <Eye className="w-5 h-5 mr-2" />
+              Details
+            </Button>
+          </Link>
           {/* <Button
                   variant="ghost"
                   size="icon"

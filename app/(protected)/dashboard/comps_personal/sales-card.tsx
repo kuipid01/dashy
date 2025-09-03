@@ -147,14 +147,14 @@ export default function SalesCard({ orders }: SalesCardProps) {
           <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:gap-5 mt-5">
             <div className="animate-in slide-in-from-left-2 duration-500 delay-600">
               <Pill
-                upperText="In Store"
+                upperText="Online"
                 valueDirection={onlineSales ?? 0}
                 value={onlineSales ?? 0}
               />
             </div>
             <div className="animate-in slide-in-from-left-2 duration-500 delay-700">
               <Pill
-                upperText="Online"
+                upperText="In Store"
                 valueDirection={storeSales ?? 0}
                 value={storeSales ?? 0}
               />

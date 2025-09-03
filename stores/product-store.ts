@@ -14,6 +14,7 @@ export const useProductStore = create<ProductStore>()(
     (set) => ({
       product: {
         id: 0,
+        ID:0,
         storeId: 0,
         name: "",
         category: "",

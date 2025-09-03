@@ -122,7 +122,10 @@
   --accent: #ffc91c;
   --darker-primary: #e7e3d6;
   --general: #b53a53;
+  --general-primary: #b53a53;
+  --general-primary-foreground: #fff;
   --input: #f7f7f8;
+ 
 }
 
 .dark {
@@ -157,6 +160,9 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
+  --general-primary: #b53a53;
+  --general-primary-foreground: #fff; 
+  --general: #b53a53;
   --sidebar-ring: oklch(0.439 0 0);
 }
 

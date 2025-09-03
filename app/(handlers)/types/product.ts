@@ -1,6 +1,7 @@
 // types/product.ts
 export interface Product {
     id: number;
+    ID: number;
     name: string;
     category: string;
     image: string[] | File[] ; // Comma-separated string from backend

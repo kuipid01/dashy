@@ -50,7 +50,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body style={{ fontFamily: "MilanesaSerif" }} className={`antialiased`}>
+      <body
+        style={{ fontFamily: "MilanesaSerif" }}
+        className={`antialiased bg-primary`}
+      >
         <Toaster />
         <ReactQueryProviders initialState={dehydratedState}>
           {children}

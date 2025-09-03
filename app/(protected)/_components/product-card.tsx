@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function ProductCard({
   product,
-  isAdmin,
+  isAdmin
 }: {
   isAdmin?: boolean;
   product: Product;
@@ -52,7 +52,7 @@ export default function ProductCard({
           </div>
         </div>
 
-        <p>${product?.price}</p>
+        <p>₦{product?.price}</p>
       </div>
     </Link>
   );
