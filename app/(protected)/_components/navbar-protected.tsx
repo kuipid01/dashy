@@ -11,7 +11,7 @@ import {
   Search,
   Settings,
   Store,
-  X,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,17 +22,17 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   useFetchUser,
   useFetchUserStore,
-  useHandleLogout,
+  useHandleLogout
 } from "@/app/(handlers)/auth-handlers/auth";
 
 const NavbarProtected = () => {
   const { user, isLoading } = useFetchUser();
-  const { store } = useFetchUserStore();
+  const { store, isLoading: storeLoading } = useFetchUserStore();
   const { handleLogout, loading } = useHandleLogout();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -45,7 +45,7 @@ const NavbarProtected = () => {
     { href: "earnings" },
     { href: "orders" },
     { href: "settings" },
-    { href: "contents" },
+    { href: "contents" }
   ];
 
   return (
@@ -92,7 +92,7 @@ const NavbarProtected = () => {
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="size-[40px] cursor-pointer overflow-hidden ml-3 rounded-full relative">
+              <div className="size-[40px] bg-gray-400 border border-gray-600 cursor-pointer overflow-hidden ml-3 rounded-full relative">
                 <Image
                   alt="user profile picture"
                   fill
@@ -134,14 +134,21 @@ const NavbarProtected = () => {
               )}
 
               <DropdownMenuSeparator className="mb-3" />
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/store/${userStore?.id}`}
-                  className="flex items-center py-3 hover:bg-gray-200 gap-3"
-                >
-                  <Store size={24} /> Store
-                </Link>
-              </DropdownMenuItem>
+              {storeLoading ? (
+                <DropdownMenuItem className="flex items-center py-3 gap-3 cursor-not-allowed opacity-50">
+                  <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+                  <div className="w-16 h-4 bg-gray-300 rounded animate-pulse" />
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/store/${userStore?.id}`}
+                    className="flex items-center py-3 hover:bg-gray-200 gap-3"
+                  >
+                    <Store size={24} /> Store
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem className="flex items-center py-3 hover:bg-gray-200 gap-3">
                 <LayoutDashboard size={24} /> Dashboard
               </DropdownMenuItem>

@@ -13,19 +13,20 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Ensure retry count
     if (!originalRequest._retryCount) {
       originalRequest._retryCount = 0;
     }
 
-    // Only handle 401 errors (excluding refresh endpoint itself!)
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/users/refresh")
     ) {
+      if (window.location.pathname === "/login") {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
-        // Prevent multiple refresh attempts if many requests fail at once
         return Promise.reject(error);
       }
 
@@ -43,8 +44,18 @@ api.interceptors.response.use(
         isRefreshing = false;
         console.error("Token refresh failed:", refreshError);
 
-        // Redirect to login if refresh fails
-        //  window.location.href = "/login";
+        // ✅ Call backend to clear cookies
+        try {
+          await api.post("/users/logout");
+        } catch (logoutError) {
+          console.warn("Logout request failed:", logoutError);
+        }
+
+        // Redirect to login
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+
         return Promise.reject(refreshError);
       }
     }

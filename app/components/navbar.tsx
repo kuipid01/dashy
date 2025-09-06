@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
 import path from "path";
 import { useFetchProduct } from "../(handlers)/general/general";
+import { useFetchUser } from "../(handlers)/auth-handlers/auth";
 
 interface Product {
   id: number;
@@ -40,6 +41,7 @@ export const Navbar = () => {
   const [animatingCart, setAnimatingCart] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [progress, setProgress] = useState(0);
+  const { user, isLoading: userLoading } = useFetchUser();
 
   const { data: product, isLoading: productLoading } = useFetchProduct(
     pathname.split("/")[2] ?? undefined
@@ -154,16 +156,20 @@ export const Navbar = () => {
 
         <div className="flex">
           <div className="flex items-center gap-4">
-            <Button
-              onClick={() => router.push("/login")}
-              className=" hidden cursor-pointer lg:block !bg-white text-black"
-              text="Login"
-            />
-            <Button
-              onClick={() => router.push("/signup")}
-              className=" hidden cursor-pointer lg:block !bg-black text-white"
-              text="Get Started"
-            />
+            {!userLoading && !user && (
+              <>
+                <Button
+                  onClick={() => router.push("/login")}
+                  className=" hidden cursor-pointer lg:block !bg-white text-black"
+                  text="Login"
+                />
+                <Button
+                  onClick={() => router.push("/signup")}
+                  className=" hidden cursor-pointer lg:block !bg-black text-white"
+                  text="Get Started"
+                />
+              </>
+            )}
 
             {/* //TODO */}
             {/* Reward Points */}
@@ -309,11 +315,20 @@ export const Navbar = () => {
                     transition={{ duration: 0.1 }}
                     className="flex bg-primary gap-5 px-5"
                   >
-                    <Button className="!rounded-[5px]" text="Log In" />
-                    <Button
-                      className="!bg-black text-white !rounded-[5px]"
-                      text="Sign Up"
-                    />
+                    {!userLoading && !user && (
+                      <>
+                        <Button
+                          onClick={() => router.push("/login")}
+                          className="!rounded-[5px]"
+                          text="Log In"
+                        />
+                        <Button
+                          onClick={() => router.push("/signup")}
+                          className="!bg-black text-white !rounded-[5px]"
+                          text="Sign Up"
+                        />
+                      </>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

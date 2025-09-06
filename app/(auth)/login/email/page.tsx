@@ -44,18 +44,29 @@ const Page = () => {
 
   const handleCreateAccount = async () => {
     try {
+      // ✅ Check for redirect param in URL
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectPath = searchParams.get("redirect");
+
       await mutateAsync({
         email: formDetails.email,
         password: formDetails.password
       });
+
       toast.success("Get In !!!!");
-      router.push("/dashboard");
+
+      if (redirectPath) {
+        router.push(redirectPath);
+      } else {
+        router.push("/dashboard"); // fallback
+      }
     } catch (error: any) {
       console.log("got here");
       console.log(error);
-      toast.error(error.response.data.error || "Account created successfully");
+      toast.error(error.response?.data?.error || "Account Login failed");
     }
   };
+
   // console.log(formDetails);
   return (
     <div className=" flex flex-col bg-white h-full p-3 rounded-l-xl">
