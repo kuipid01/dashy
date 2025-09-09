@@ -2,18 +2,39 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
 import { useFetchUser } from "@/app/(handlers)/auth-handlers/auth";
-import { useUpdateUserSecurity } from "@/app/(handlers)/user/user";
+import {
+  useGetUserSecurity,
+  useUpdateUserSecurity
+} from "@/app/(handlers)/user/user";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const Security = () => {
+  const { data: userSecurity, isLoading: fetchingSecutrity } =
+    useGetUserSecurity();
   const [backUpCodes, setBackUpCodes] = useState<string[]>([]);
   const [securityData, setSecurityData] = useState<Record<string, any>>({});
   const { user: userData, isLoading: isUserLoading } = useFetchUser();
   const { mutateAsync, isPending } = useUpdateUserSecurity();
+
+  console.log(userSecurity);
+  // Populate form fields with fetched data on initial load
+  useEffect(() => {
+    if (userSecurity) {
+      setSecurityData({
+        recovery_email: userSecurity.security_settings.recovery_email || "",
+        backup_phone: userSecurity.security_settings.backup_phone || "",
+        security_question:
+          userSecurity.security_settings.security_question || "",
+        security_answer: userSecurity.security_settings.security_answer || ""
+      });
+      // Optionally, set the backup codes here if they exist
+      setBackUpCodes(userSecurity.security_settings.backup_codes || []);
+    }
+  }, [userSecurity]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +54,7 @@ const Security = () => {
     }
 
     await mutateAsync(securityData);
+    // Reset form after successful submission
     setSecurityData({});
     toast.success("Security settings updated successfully.");
   };
@@ -58,11 +80,11 @@ const Security = () => {
   const displayBackupCodes =
     backUpCodes.length > 0
       ? backUpCodes
-      : userData?.security?.backup_codes || [];
+      : userSecurity?.security_settings.backup_codes || [];
 
   const shouldShowPasswordSettings =
     !userData?.Provider || userData.Provider === "";
-
+  console.log(userData?.Provider);
   return (
     <div className="pb-20 pt-10">
       <form onSubmit={handleSubmit}>
@@ -75,10 +97,11 @@ const Security = () => {
                 placeholder="Current Password"
                 label="Current Password"
                 name="currentPassword"
+                type="password"
                 onChange={(e) =>
                   setSecurityData({
                     ...securityData,
-                    currentPassword: e.target.value,
+                    currentPassword: e.target.value
                   })
                 }
               />
@@ -86,10 +109,11 @@ const Security = () => {
                 placeholder="New Password"
                 label="New Password"
                 name="newPassword"
+                type="password"
                 onChange={(e) =>
                   setSecurityData({
                     ...securityData,
-                    newPassword: e.target.value,
+                    newPassword: e.target.value
                   })
                 }
               />
@@ -97,6 +121,7 @@ const Security = () => {
                 placeholder="Confirm Password"
                 label="Confirm Password"
                 name="confirmPassword"
+                type="password"
               />
             </div>
           )}
@@ -109,11 +134,11 @@ const Security = () => {
             onChange={(e) =>
               setSecurityData({
                 ...securityData,
-                security_question: e.target.value,
+                security_question: e.target.value
               })
             }
-            className="border h-[45px] mb-3 p-2 rounded-md w-full"
-            defaultValue=""
+            className="border border-gray-500 h-[45px] mb-3 p-2 rounded-md w-full"
+            value={securityData.security_question || ""}
           >
             <option value="" disabled>
               Select a question
@@ -132,49 +157,14 @@ const Security = () => {
             placeholder="Answer"
             label="Your Answer"
             name="securityAnswer"
+            value={securityData.security_answer || ""}
             onChange={(e) =>
               setSecurityData({
                 ...securityData,
-                security_answer: e.target.value,
+                security_answer: e.target.value
               })
             }
           />
-
-          {/* Backup Codes */}
-          {/* <h2 className="text-xl font-semibold mt-10 mb-5">Backup Codes</h2>
-          <button
-            type="button"
-            onClick={handleGenerateBackupCodes}
-            className="bg-black cursor-pointer text-white py-2 px-5 rounded-md mb-3"
-          >
-            {displayBackupCodes.length > 0
-              ? "Regenerate Backup Codes"
-              : "Generate Backup Codes"}
-          </button> */}
-
-          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {displayBackupCodes.length > 0 ? (
-              displayBackupCodes.map((code, index) => (
-                <div
-                  key={index}
-                  onClick={() => {
-                    navigator.clipboard.writeText(code);
-                    toast.success(
-                      "Backup code copied to clipboard. Please save it in a secure location."
-                    );
-                  }}
-                  className="border cursor-pointer hover:bg-gray-300 p-3 rounded-md mb-2 bg-gray-100"
-                >
-                  {code}
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 col-span-full">
-                No backup codes generated yet. Click the button above to
-                generate.
-              </p>
-            )}
-          </div> */}
 
           {/* Account Recovery */}
           <h2 className="text-xl font-semibold mt-10 mb-5">Account Recovery</h2>
@@ -183,10 +173,11 @@ const Security = () => {
               placeholder="Recovery Email"
               label="Recovery Email"
               name="recoveryEmail"
+              value={securityData.recovery_email || ""}
               onChange={(e) =>
                 setSecurityData({
                   ...securityData,
-                  recovery_email: e.target.value,
+                  recovery_email: e.target.value
                 })
               }
             />
@@ -194,10 +185,11 @@ const Security = () => {
               placeholder="Recovery Phone Number"
               label="Recovery Phone"
               name="recoveryPhone"
+              value={securityData.backup_phone || ""}
               onChange={(e) =>
                 setSecurityData({
                   ...securityData,
-                  backup_phone: e.target.value,
+                  backup_phone: e.target.value
                 })
               }
             />

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
 import clsx from "clsx";
@@ -8,7 +9,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
-  Search,
+  // Search,
   Settings,
   Store,
   X
@@ -44,8 +45,8 @@ const NavbarProtected = () => {
     { href: "products" },
     { href: "earnings" },
     { href: "orders" },
-    { href: "settings" },
-    { href: "contents" }
+    { href: "settings" }
+    // { href: "contents" }
   ];
 
   return (
@@ -78,18 +79,18 @@ const NavbarProtected = () => {
         </div>
 
         <div className="lg:flex relative hidden items-center gap-2">
-          <div className="rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
+          {/* <div className="rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
             <Search size={18} className="text-zinc-600" />
           </div>
           <div className="rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]">
             <Bell size={18} className="text-zinc-600" />
-          </div>
-          <Link
+          </div> */}
+          {/* <Link
             href="/chat"
             className="rounded-full grid place-items-center size-[30px] bg-[#F7F7F8]"
           >
             <MessageSquare size={18} className="text-zinc-600" />
-          </Link>
+          </Link> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="size-[40px] bg-gray-400 border border-gray-600 cursor-pointer overflow-hidden ml-3 rounded-full relative">

@@ -20,23 +20,33 @@ interface ButtonLikePillProps {
   icon: ReactNode;
   text?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  disabled?: boolean;
 }
 
 export const ButtonLikePill: React.FC<ButtonLikePillProps> = ({
   icon,
   text,
-  onClick
+  onClick,
+  disabled
 }) => {
   return (
     <div
-      className="flex items-center gap-2 bg-[#fffffff0] hover:bg-[#ffffffae] cursor-pointer  backdrop-blur-3xl shadow shadow-gray-300 text-gray-800 font-medium rounded-[40px] px-4 py-2 transition"
+      className="flex relative items-center gap-2 _bg-[#fffffff0]  hover:bg-[#ffffffae] cursor-pointer  backdrop-blur-3xl shadow shadow-gray-300 text-gray-800 font-medium rounded-[40px] px-4 py-2 transition"
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
-      style={{ cursor: onClick ? "pointer" : undefined }}
+      style={{
+        cursor: onClick ? "pointer" : undefined,
+        background: disabled ? "#9f9999f0" : "#fffffff0"
+      }}
     >
       {icon}
       <span className=" font-medium text-[14px]">{text}</span>
+      {disabled && (
+        <div className=" absolute bg-red-500 text-white px-2 py-1 text-[10px] font-medium rounded-md -top-5 right-0">
+          UPCOMING
+        </div>
+      )}
     </div>
   );
 };

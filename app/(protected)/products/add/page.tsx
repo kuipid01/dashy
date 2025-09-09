@@ -14,43 +14,46 @@ import ProductSample from "./_compoenents/product-sample";
 import { useRouter } from "next/navigation";
 import {
   usePublishProducts,
-  useUploadImage,
+  useUploadImage
 } from "@/app/(handlers)/product/product";
+import { useFetchCategories } from "@/app/(handlers)/product/product";
 import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
 import { Loader2 } from "lucide-react";
 const steps = [
   {
     header: "Basic Information",
-    subheader: "Enter essential product details",
+    subheader: "Enter essential product details"
   },
   {
     header: "Media ",
-    subheader: "Add visuals ",
+    subheader: "Add visuals "
   },
   {
     header: "Description of product ",
-    subheader: "Add description to help buyers",
+    subheader: "Add description to help buyers"
   },
   {
     header: "Inventory",
-    subheader: "Set stock quantities",
+    subheader: "Set stock quantities"
   },
   {
     header: "Pricing",
-    subheader: "Define product pricing",
+    subheader: "Define product pricing"
   },
   {
     header: "Review",
-    subheader: "Confirm all details",
-  },
+    subheader: "Confirm all details"
+  }
 ];
 
 export default function ProductAddition() {
   const [addingProduct, setAddingProduct] = useState(false);
   const [step, setStep] = useState(0);
   const product = useProductStore((state) => state.product);
+  const clearProductData = useProductStore((state) => state.clearProductData);
   const updateProduct = useProductStore((state) => state.updateProduct);
-
+  const { categories, isLoading: loadingCategories } = useFetchCategories();
+  console.log(categories, "categories");
   const nextStep = () => {
     if (
       (step === 3 && product.image.length === 0) ||
@@ -105,7 +108,7 @@ export default function ProductAddition() {
         product.price,
         product.image,
         product.description,
-        product.category,
+        product.category
       ];
 
       if (
@@ -148,10 +151,11 @@ export default function ProductAddition() {
         await mutateAsync({
           ...product,
           storeId: store.store.id,
-          image: imageUrls,
+          image: imageUrls
         });
-        toast.success("Product published successfully");
         localStorage.removeItem("product-storage");
+        toast.success("Product published successfully");
+        clearProductData();
         router.push("/products");
       } catch (err) {
         toast.error("Publishing failed");
@@ -215,6 +219,31 @@ export default function ProductAddition() {
                   className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
                   onChange={(e) => updateProduct({ category: e.target.value })}
                 />
+
+                {/* Scrollable quick-pick categories from API */}
+                {loadingCategories ? null : (
+                  <div className="flex gap-2  overflow-x-auto pb-2 -mb-2">
+                    {Array.isArray(categories) &&
+                      categories.slice(0, 50).map((cat) => {
+                        const isActive = product.category === cat;
+                        return (
+                          <Button
+                            key={cat}
+                            type="button"
+                            variant={isActive ? "default" : "outline"}
+                            className={
+                              isActive
+                                ? "h-8 px-3 bg-black text-white hover:bg-black/80"
+                                : "h-8 px-3 border-accent hover:bg-gray-100"
+                            }
+                            onClick={() => updateProduct({ category: cat })}
+                          >
+                            {cat}
+                          </Button>
+                        );
+                      })}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -300,11 +329,22 @@ export default function ProductAddition() {
                   placeholder="Enter discounted price"
                   value={product.discounted_price || ""}
                   className="h-12 border-[#ffc91c] !focus:border-[#ffc91c]"
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    if (!product.price) {
+                      toast.error(
+                        "Only when price is set can it be discounted "
+                      );
+                      return;
+                    }
+                    if (product.price !== undefined && value > product.price) {
+                      toast.error("Value must be less than price");
+                      return;
+                    }
                     updateProduct({
-                      discounted_price: parseFloat(e.target.value) || 0,
-                    })
-                  }
+                      discounted_price: parseFloat(e.target.value) || 0
+                    });
+                  }}
                 />
               </div>
             </div>

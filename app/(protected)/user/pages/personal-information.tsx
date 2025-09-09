@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useUploadImage } from "@/app/(handlers)/product/product";
 import {
   useFetchUser,
-  useFetchUserStore,
+  useFetchUserStore
 } from "@/app/(handlers)/auth-handlers/auth";
 import { useUpdateStore } from "@/app/(handlers)/store/store";
 import Btn from "../../_components/btn";
@@ -49,13 +49,13 @@ const PersonalInformation = () => {
     const { name, value } = event.target;
     setUpdateData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      toast.error("Invalid email format");
-    }
+    // if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    //   toast.error("Invalid email format");
+    // }
 
-    if (name === "phone_number" && !/^\+?[1-9]\d{1,14}$/.test(value)) {
-      toast.error("Invalid phone number format");
-    }
+    // if (name === "phone_number" && !/^\+?[1-9]\d{1,14}$/.test(value)) {
+    //   toast.error("Invalid phone number format");
+    // }
   };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const PersonalInformation = () => {
         const res = await upload([file]);
         await updateUser({
           ...userData,
-          avatar_url: res.urls[0],
+          avatar_url: res.urls[0]
         });
 
         setFile(null);
@@ -96,26 +96,39 @@ const PersonalInformation = () => {
           ...userData,
           avatar_url:
             userData?.AvatarURL || userData?.avatar || userData?.avatar,
-          Name: updateData.name,
+          Name: updateData.name
         });
       }
 
       // Prepare store update payload
       const { name, ...rest } = updateData;
+
       console.log(name);
-      const payload = {
+      const rawPayload = {
         ...userStore?.store,
         ...rest,
-
-        ...(updateData.storeName ? { name: updateData.storeName } : {}),
+        ...(updateData.storeName ? { name: updateData.storeName } : {})
       };
-
+      const payload = Object.fromEntries(
+        Object.entries(rawPayload).filter(
+          ([_, value]) => value !== null && value !== undefined && value !== ""
+        )
+      );
       await updateStore(payload);
       await updateStore(payload);
       toast.success("Store updated successfully");
       setUpdateData({});
     } catch (error: any) {
       toast.error(error.message || "Validation failed");
+    }
+  };
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      toast.error("Invalid email format");
+    }
+    if (name === "phone_number" && !/^\+?[1-9]\d{1,14}$/.test(value)) {
+      toast.error("Invalid phone number format");
     }
   };
 
@@ -133,6 +146,23 @@ const PersonalInformation = () => {
       throw new Error("Invalid phone number");
   };
 
+  useEffect(() => {
+    if (userData || userStore) {
+      setUpdateData({
+        name: userData?.Name || "",
+        storeName: userStore?.store?.name || "",
+        email: userStore?.store?.email || "",
+        phone_number: userStore?.store?.phone_number || "",
+        address: userStore?.store?.address || "",
+        city: userStore?.store?.city || "",
+        state: userStore?.store?.state || "",
+        zip_code: userStore?.store?.zip_code || "",
+        country: userStore?.store?.country || ""
+      });
+    }
+  }, [userData, userStore]);
+
+  console.log(updateData);
   const Skeleton = () => (
     <div className="h-[52px] w-full bg-gray-200 animate-pulse rounded-md" />
   );
@@ -144,10 +174,10 @@ const PersonalInformation = () => {
           {/* PROFILE PICTURE */}
           <label
             htmlFor="profile-picture"
-            className="rounded-full cursor-pointer relative grid place-items-center size-[200px] bg-gray-300 self-center mb-10"
+            className="rounded-full cursor-pointer relative grid place-items-center w-[200px] h-[200px] bg-gray-300 self-center mb-10"
           >
             {isLoading ? (
-              <div className="rounded-full bg-gray-200 animate-pulse size-[200px]" />
+              <div className="rounded-full bg-gray-200 animate-pulse w-[200px] h-[200px]" />
             ) : (
               <>
                 <Image
@@ -158,7 +188,7 @@ const PersonalInformation = () => {
                     "/placeholder.png"
                   }
                   alt="Profile"
-                  className="rounded-full object-cover size-[200px]"
+                  className="rounded-full object-cover w-[200px] h-[200px]"
                   width={200}
                   height={200}
                 />
@@ -169,6 +199,7 @@ const PersonalInformation = () => {
             )}
           </label>
           <input
+            disabled={uploadingImage}
             onChange={handleFileChange}
             className="hidden"
             type="file"
@@ -179,19 +210,14 @@ const PersonalInformation = () => {
 
           {/* FORM FIELDS */}
           <div className="grid w-full grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
-            <div className="grid w-full grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
+            <div>
               {isLoading ? (
-                <>
-                  {[1, 2, 4, 5].map((i) => (
-                    <Skeleton key={i} />
-                  ))}
-                </>
+                <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userData?.Name || "Full Name"}
                   label="Name"
                   name="name"
-                  value={updateData.name || userData?.Name || ""}
+                  value={updateData.name || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -201,10 +227,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.name || "Store Name"}
                   label="Store Name"
                   name="storeName"
-                  value={updateData.storeName || userStore?.store?.name || ""}
+                  value={updateData.storeName || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -217,10 +242,10 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.email || "Email"}
                   label="Email"
+                  onBlur={handleBlur}
                   name="email"
-                  value={updateData.email || userStore?.store?.email || ""}
+                  value={updateData.email || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -230,14 +255,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.phone_number || "Phone Number"}
                   label="Phone Number"
                   name="phone_number"
-                  value={
-                    updateData.phone_number ||
-                    userStore?.store?.phone_number ||
-                    ""
-                  }
+                  value={updateData.phone_number || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -250,10 +270,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.address || "Address"}
                   label="Address"
                   name="address"
-                  value={updateData.address || userStore?.store?.address || ""}
+                  value={updateData.address || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -263,10 +282,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.city || "City"}
                   label="City"
                   name="city"
-                  value={updateData.city || userStore?.store?.city || ""}
+                  value={updateData.city || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -279,10 +297,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.state || "State"}
                   label="State"
                   name="state"
-                  value={updateData.state || userStore?.store?.state || ""}
+                  value={updateData.state || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -292,12 +309,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.zip_code || "Zip Code"}
                   label="Zip Code"
                   name="zip_code"
-                  value={
-                    updateData.zip_code || userStore?.store?.zip_code || ""
-                  }
+                  value={updateData.zip_code || ""}
                   onChange={handleInputChange}
                 />
               )}
@@ -310,10 +324,9 @@ const PersonalInformation = () => {
                 <Skeleton />
               ) : (
                 <InputComponent
-                  placeholder={userStore?.store?.country || "Country"}
                   label="Country"
                   name="country"
-                  value={updateData.country || userStore?.store?.country || ""}
+                  value={updateData.country || ""}
                   onChange={handleInputChange}
                 />
               )}

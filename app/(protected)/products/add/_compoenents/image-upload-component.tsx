@@ -1,24 +1,17 @@
 "use client";
 
-import clsx from "clsx";
 import { Label } from "@/components/ui/label";
-import { CloudUpload, Trash2, GripVertical } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import { CloudUpload, Trash2 } from "lucide-react";
+import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useProductStore } from "@/stores/product-store";
 import { getImageSrc } from "@/app/utils/image";
 import { toast } from "sonner";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
+// react-beautiful-dnd removed to isolate rendering from DnD
 
 export const ImageSection = () => {
   const { updateProduct, product } = useProductStore();
-  const [activeImage, setActiveImage] = useState<number | null>(null);
 
   const images = React.useMemo(
     () => (Array.isArray(product.image) ? product.image : []),
@@ -71,21 +64,13 @@ export const ImageSection = () => {
     [videos, updateProduct]
   );
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const reordered = Array.from<File>(
-      images.filter((img): img is File => img instanceof File)
-    );
-    const [moved] = reordered.splice(result.source.index, 1);
-    reordered.splice(result.destination.index, 0, moved);
-    updateProduct({ image: reordered });
-  };
+  // DnD functionality removed for a simpler, more stable image list
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     maxSize: 3 * 1024 * 1024,
-    maxFiles: 4 - images.length,
+    maxFiles: 4 - images.length
   });
 
   const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
@@ -93,7 +78,7 @@ export const ImageSection = () => {
       onDrop: onVideoDrop,
       accept: { "video/*": [] },
       maxSize: 10 * 1024 * 1024,
-      maxFiles: 1,
+      maxFiles: 1
     });
 
   return (
@@ -115,72 +100,41 @@ export const ImageSection = () => {
         </div>
 
         {images.length > 0 && (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="images" direction="horizontal">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3"
-                >
-                  {images.map((file, index) => (
-                    <Draggable
-                      key={index.toString()}
-                      draggableId={index.toString()}
-                      index={index}
-                    >
-                      {(draggableProvided) => (
-                        <div
-                          ref={draggableProvided.innerRef}
-                          {...draggableProvided.draggableProps}
-                          {...draggableProvided.dragHandleProps}
-                          className="relative w-full h-[150px] border-4 border-gray-200 rounded-md shadow-sm"
-                          onMouseEnter={() => setActiveImage(index)}
-                          onMouseLeave={() => setActiveImage(null)}
-                        >
-                          <Image
-                            src={getImageSrc(file)}
-                            alt="Preview"
-                            width={100}
-                            height={100}
-                            unoptimized
-                            className="w-full h-full object-cover rounded-md"
-                          />
-                          <div
-                            className={clsx(
-                              "absolute inset-0 flex transition-opacity duration-200 justify-center items-center bg-black/50 rounded-md",
-                              activeImage === index
-                                ? "opacity-100"
-                                : "opacity-0 pointer-events-none"
-                            )}
-                          >
-                            <button className="text-white font-medium text-xs capitalize">
-                              Make thumbnail
-                            </button>
-                            <Trash2
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const updated = images
-                                  .filter((_, i) => i !== index)
-                                  .filter(
-                                    (img): img is File => img instanceof File
-                                  );
-                                updateProduct({ image: updated });
-                                toast.success("Image removed successfully");
-                              }}
-                              className="absolute right-3 top-3 cursor-pointer text-white w-5 h-5"
-                            />
-                            <GripVertical className="absolute left-3 top-3 text-white w-4 h-4" />
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            {images.map((file, index) => (
+              <div
+                key={index}
+                className="relative w-full h-[150px] border-4 border-gray-200 rounded-md shadow-sm group"
+              >
+                <Image
+                  src={getImageSrc(file)}
+                  alt="Preview"
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="w-full h-full object-cover rounded-md"
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 flex justify-center items-center bg-black/70 opacity-0 rounded-md transition-opacity duration-200 group-hover:opacity-100">
+                  {/* <button className="text-white font-medium text-xs capitalize">
+                    Make thumbnail
+                  </button> */}
+                  <Trash2
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const updated = images
+                        .filter((_, i) => i !== index)
+                        .filter((img): img is File => img instanceof File);
+                      updateProduct({ image: updated });
+                      toast.success("Image removed successfully");
+                    }}
+                    className="absolute hover:text-red-400 right-3 top-3 cursor-pointer text-white w-5 h-5"
+                  />
                 </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 

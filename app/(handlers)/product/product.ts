@@ -8,6 +8,10 @@ const fetchProducts = async (): Promise<Product[]> => {
   const response = await api.get(`/products`);
   return response.data;
 };
+const fetchCategories = async (): Promise<string[]> => {
+  const response = await api.get(`/products/categories`);
+  return response.data?.categories ?? response.data;
+};
 const fetchTopProducts = async (): Promise<ProductWithSales[]> => {
   const response = await api.get(`/top/products `);
   console.log("Top Products Response:", response.data);
@@ -70,6 +74,20 @@ export const useFetchTopProducts = () => {
 
   return {
     data,
+    isLoading,
+    error,
+    isError,
+  };
+};
+export const useFetchCategories = () => {
+  const { data, isLoading, error, isError } = useQuery<string[], Error>({
+    queryKey: ["product-categories"],
+    queryFn: fetchCategories,
+    retry: 1,
+  });
+
+  return {
+    categories: data ?? [],
     isLoading,
     error,
     isError,

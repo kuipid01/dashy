@@ -19,6 +19,10 @@ const updateUserSecurity = async (security_settings: Partial<Security>): Promise
   const response = await api.put(`/users/security`, security_settings);
   return response.data;
 };
+const getUserSecurity = async ( ): Promise<{security_settings:Security}> => {
+  const response = await api.get(`/users/security`);
+  return response.data;
+};
 
 export const useUpdateUser = () => {
   const query = useQueryClient();
@@ -70,5 +74,13 @@ export const useSearchUserStores = (query:string) => {
     queryKey: ["user-stores", query],
     queryFn: () => getUsersStores(query),
     enabled:query!==""
+  });
+};
+
+export const useGetUserSecurity = () => {
+  return useQuery({
+    queryKey: ["current-user-security"],
+    queryFn: () => getUserSecurity(),
+    
   });
 };

@@ -184,6 +184,7 @@ export default function MonthlyIncomeChart({
 
           {/* Export Button */}
           <Button
+            customDisabled={true}
             variant="outline"
             onClick={handleExport}
             className="flex items-center gap-2"

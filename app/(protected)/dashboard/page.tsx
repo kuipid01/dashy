@@ -35,6 +35,7 @@ import {
 } from "@/app/(handlers)/auth-handlers/auth";
 import {
   useFetchStoreOrders,
+  useUpdateOrder,
   useUpdateOrderStatus
 } from "@/app/(handlers)/orders/orders";
 import SalesCard from "./comps_personal/sales-card";
@@ -236,7 +237,7 @@ const Page = () => {
   const { data: orders, isLoading: ordersLoading } = useFetchStoreOrders(
     store?.store?.id ?? undefined
   );
-  const updateOrderStatus = useUpdateOrderStatus();
+  const updateOrder = useUpdateOrder();
 
   // Analytics
   const analytics = useOrderAnalytics(orders);
@@ -260,9 +261,20 @@ const Page = () => {
 
   const handleUpdateStatus = useCallback(
     (orderId: number, newStatus: string) => {
-      updateOrderStatus.mutate({ orderId, status: newStatus });
+      updateOrder.mutateAsync({
+        id: orderId,
+        data: {
+          status: newStatus as
+            | "pending"
+            | "processing"
+            | "shipped"
+            | "delivered"
+            | "cancelled"
+            | undefined
+        }
+      });
     },
-    [updateOrderStatus]
+    [updateOrder]
   );
 
   const handleEditOrder = useCallback((order: any) => {
@@ -312,7 +324,11 @@ const Page = () => {
         {/* Header Actions */}
         <div className="justify-end flex gap-5">
           <ButtonLikePill icon={<Flower />} text="Plan Upgrade" />
-          <ButtonLikePill icon={<Download />} text="Export Report" />
+          <ButtonLikePill
+            disabled={true}
+            icon={<Download />}
+            text="Export Report"
+          />
         </div>
 
         {/* Top Stats Grid */}
@@ -495,7 +511,6 @@ const Page = () => {
             orders={orders?.slice(0, 10) || []}
             onViewOrder={handleViewOrder}
             onUpdateStatus={handleUpdateStatus}
-            onEditOrder={handleEditOrder}
             isLoading={isLoading}
           />
         </div>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Filter, LayoutDashboard, Loader, Plus, Search } from "lucide-react";
+import { Loader, Plus, Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/app/components/button";
@@ -59,12 +59,12 @@ const Page = () => {
             icon={<Plus size={16} />}
             className="!bg-black !hover:bg-black/50 cursor-pointer hover:backdrop-blur-3xl text-white px-4 py-2 rounded-[10px] flex items-center gap-1"
           />
-          <div className="rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
+          {/* <div className="rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
             <Filter className="text-zinc-500 w-5 h-5" />
-          </div>
-          <div className="rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
+          </div> */}
+          {/* <div className="rounded-md size-[40px] bg-[var(--input)] grid place-items-center">
             <LayoutDashboard className="text-zinc-500 w-5 h-5" />
-          </div>
+          </div> */}
         </div>
       </div>
 

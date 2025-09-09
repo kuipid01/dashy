@@ -40,19 +40,30 @@ function Button({
   variant,
   size,
   asChild = false,
+  customDisabled,
+  disabled = customDisabled,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    customDisabled?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
 
   return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
+    <div className=" relative">
+      <Comp
+        disabled={disabled}
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+      {customDisabled && (
+        <div className=" absolute bg-red-500 text-white px-2 py-1 text-[10px] font-medium rounded-md -top-5 right-0">
+          UPCOMING
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import React from "react";
 import {
   Package,
   Calendar,
@@ -7,7 +8,6 @@ import {
   DollarSign,
   MoreHorizontal,
   Eye,
-  Edit,
   Truck,
   CheckCircle,
   XCircle,
@@ -30,6 +30,8 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import OrderDetails from "./order-details";
+import UpdateOrderDialog from "./update-order-dialog";
 import { Order } from "@/constants/types";
 import Link from "next/link";
 
@@ -37,7 +39,6 @@ export interface LatestOrdersProps {
   orders: Order[];
   onViewOrder?: (order: Order) => void;
   onUpdateStatus?: (orderId: number, newStatus: string) => void;
-  onEditOrder?: (order: Order) => void;
   isLoading: boolean;
 }
 
@@ -102,7 +103,7 @@ const getStatusIcon = (status: string) => {
     case "pending":
       return <Clock size={14} />;
     case "processing":
-      return <Edit size={14} />;
+      return <Package size={14} />;
     case "shipped":
       return <Truck size={14} />;
     case "delivered":
@@ -127,10 +128,13 @@ export default function LatestOrders({
   orders,
   onViewOrder,
   onUpdateStatus,
-  onEditOrder,
   isLoading
 }: LatestOrdersProps) {
   const SKELETON_ROW_COUNT = 5; // You can adjust this number
+  const [detailsOrderId, setDetailsOrderId] = React.useState<number | null>(
+    null
+  );
+  const [updateOrderId, setUpdateOrderId] = React.useState<number | null>(null);
 
   const handleStatusUpdate = (orderId: number, newStatus: string) => {
     onUpdateStatus?.(orderId, newStatus);
@@ -295,13 +299,17 @@ export default function LatestOrders({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => onViewOrder?.(order)}>
+                      <DropdownMenuItem
+                        onClick={() => setDetailsOrderId(order.id)}
+                      >
                         <Eye size={14} className="mr-2" />
                         View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onEditOrder?.(order)}>
-                        <Edit size={14} className="mr-2" />
-                        Edit Order
+                      <DropdownMenuItem
+                        onClick={() => setUpdateOrderId(order.id)}
+                      >
+                        <Calendar size={14} className="mr-2" />
+                        Update Status
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
@@ -309,7 +317,7 @@ export default function LatestOrders({
                         }
                         disabled={order.status === "processing"}
                       >
-                        <Edit size={14} className="mr-2" />
+                        <Clock size={14} className="mr-2" />
                         Mark Processing
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -339,6 +347,20 @@ export default function LatestOrders({
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  {detailsOrderId === order.id && (
+                    <OrderDetails
+                      order={order}
+                      isOpen={true}
+                      setIsOpen={() => setDetailsOrderId(null)}
+                    />
+                  )}
+                  {updateOrderId === order.id && (
+                    <UpdateOrderDialog
+                      order={order}
+                      isOpen={true}
+                      onOpenChange={() => setUpdateOrderId(null)}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             ))
