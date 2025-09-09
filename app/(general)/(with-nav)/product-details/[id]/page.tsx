@@ -28,7 +28,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Moon } from "lucide-react";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,14 +59,20 @@ const Page = () => {
 
   if (productLoading || variantsLoading || !product) {
     return (
-      <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+      <div className="min-h-screen bg-primary dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+        <button
+          aria-label="Toggle dark mode"
+          className="fixed top-5 right-5 z-50 p-2 rounded-full border border-gray-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800 backdrop-blur hover:bg-white dark:hover:bg-zinc-700 transition-colors"
+        >
+          <Moon className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
+        </button>
         <ProductDetailSkeleton />
       </div>
     );
   }
   const productIsInCart = items[product.id] ? items[product.id] : null;
   return (
-    <div className="min-h-screen  bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+    <div className="min-h-screen  bg-primary dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
       {productLoading ? (
         <Skeleton className="w-full h-[50px] mb-5" />
       ) : (
@@ -77,7 +84,9 @@ const Page = () => {
         </Link>
       )}
       <div className="flex gap-1 items-center">
-        <h1 className="text-zinc-600 font-medium">Product Details</h1>
+        <h1 className="text-zinc-600 dark:text-zinc-200 font-medium">
+          Product Details
+        </h1>
       </div>
 
       <div className="flex my-10 flex-col w-full lg:flex-row gap-10">
@@ -89,7 +98,9 @@ const Page = () => {
                 onClick={() => setActiveIndex(index)}
                 className={cn(
                   "h-[5px] rounded flex-1 cursor-pointer",
-                  activeIndex === index ? "bg-white" : "bg-gray-300"
+                  activeIndex === index
+                    ? "bg-white dark:bg-white"
+                    : "bg-gray-300 dark:bg-zinc-600"
                 )}
               />
             ))}
@@ -112,7 +123,9 @@ const Page = () => {
                   onClick={() => setActiveIndex(index)}
                   className={cn(
                     "relative cursor-pointer h-[150px] border-3 rounded-xl overflow-hidden",
-                    activeIndex === index ? "border-black" : "border-gray-300"
+                    activeIndex === index
+                      ? "border-black dark:border-white"
+                      : "border-gray-300 dark:border-zinc-600"
                   )}
                 >
                   <Image
@@ -130,17 +143,21 @@ const Page = () => {
 
         <div className="w-full lg:w-[45%] flex flex-col gap-3">
           <Pill text={product?.category || ""} />
-          <h1 className="font-bold text-4xl mt-5">{product?.name}</h1>
+          <h1 className="font-bold text-4xl mt-5 dark:text-white">
+            {product?.name}
+          </h1>
           <div className="flex items-center gap-3">
-            <p className="font-bold text-lg">₦{currentPrice}</p>
-            <p className="text-sm text-zinc-500">
+            <p className="font-bold text-lg dark:text-zinc-200">
+              ₦{currentPrice}
+            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
               {isOutOfStock ? "Out of stock" : `${currentStock} in stock`}
             </p>
           </div>
 
           <div className="flex items-center gap-3 mt-4">
             {productIsInCart ? (
-              <div className="flex items-center justify-between rounded-full bg-gray-100 px-2 py-1.5 w-[150px] shadow-sm">
+              <div className="flex items-center justify-between rounded-full bg-gray-100 dark:bg-zinc-800 px-2 py-1.5 w-[150px] shadow-sm">
                 <button
                   onClick={() =>
                     updateItemQuantity(
@@ -148,7 +165,7 @@ const Page = () => {
                       productIsInCart.quantity - 1
                     )
                   }
-                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   aria-label="Decrease quantity"
                 >
                   <Minus size={20} />
@@ -162,7 +179,7 @@ const Page = () => {
                       updateItemQuantity(String(product.id), newQuantity);
                     }
                   }}
-                  className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none"
+                  className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none dark:text-zinc-200"
                   min="0"
                 />
                 <button
@@ -172,7 +189,7 @@ const Page = () => {
                       productIsInCart.quantity + 1
                     )
                   }
-                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   aria-label="Increase quantity"
                 >
                   <Plus size={20} />
@@ -185,15 +202,15 @@ const Page = () => {
                 className={cn(
                   "w-full px-10 cursor-pointer py-3 rounded-[30px] font-medium transition-all",
                   isOutOfStock
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-400"
                     : "bg-black text-white hover:bg-gray-800"
                 )}
               >
                 {isOutOfStock ? "Out of Stock" : "Add to Cart"}
               </button>
             )}
-            <button className="size-10 grid place-content-center shrink-0 rounded-full border border-gray-300">
-              <Heart className="text-zinc-500 w-5 h-5" />
+            <button className="size-10 grid place-content-center shrink-0 rounded-full border border-gray-300 dark:border-zinc-700">
+              <Heart className="text-zinc-500 dark:text-zinc-300 w-5 h-5" />
             </button>
           </div>
 
@@ -203,19 +220,21 @@ const Page = () => {
             variants={variants || []}
           />
 
-          <div className="p-3 border border-gray-300 rounded-xl flex flex-col">
+          <div className="p-3 border border-gray-300 dark:border-zinc-700 rounded-xl flex flex-col">
             <div className="flex justify-between items-center">
-              <p className="font-bold text-lg">Description</p>
+              <p className="font-bold text-lg dark:text-zinc-100">
+                Description
+              </p>
               <button
                 onClick={() => setShowDescription(!showDescription)}
-                className="size-8 grid cursor-pointer place-content-center shrink-0 rounded-full border border-gray-300"
+                className="size-8 grid cursor-pointer place-content-center shrink-0 rounded-full border border-gray-300 dark:border-zinc-700"
               >
                 {showDescription ? <ChevronUp /> : <ChevronDown />}
               </button>
             </div>
             <p
               className={cn(
-                "text-sm transition-all duration-500 ease-in-out text-zinc-500 overflow-hidden",
+                "text-sm transition-all duration-500 ease-in-out text-zinc-500 dark:text-zinc-300 overflow-hidden",
                 showDescription ? "max-h-[600px] mt-5" : "max-h-[0px]"
               )}
             >
@@ -223,12 +242,14 @@ const Page = () => {
             </p>
           </div>
 
-          <div className="p-3 border mt-5 border-gray-300 rounded-xl flex flex-col">
+          <div className="p-3 border mt-5 border-gray-300 dark:border-zinc-700 rounded-xl flex flex-col">
             <div className="flex justify-between items-center">
-              <p className="font-bold text-lg">Shipping Details</p>
+              <p className="font-bold text-lg dark:text-zinc-100">
+                Shipping Details
+              </p>
               <button
                 onClick={() => setShowShippingDetails(!showShippingDetails)}
-                className="size-8 grid cursor-pointer place-content-center shrink-0 rounded-full border border-gray-300"
+                className="size-8 grid cursor-pointer place-content-center shrink-0 rounded-full border border-gray-300 dark:border-zinc-700"
               >
                 {showShippingDetails ? <ChevronUp /> : <ChevronDown />}
               </button>
@@ -265,15 +286,17 @@ const Page = () => {
                 { icon: <div />, label: "Product Details", value: "" }
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="size-12 rounded-full bg-zinc-100 grid place-items-center">
+                  <div className="size-12 rounded-full bg-zinc-100 dark:bg-zinc-800 grid place-items-center">
                     {item.icon}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <small className="text-zinc-500 text-sm font-medium">
+                    <small className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
                       {item.label}
                     </small>
                     {item.value && (
-                      <p className="font-bold text-lg">{item.value}</p>
+                      <p className="font-bold text-lg dark:text-zinc-100">
+                        {item.value}
+                      </p>
                     )}
                   </div>
                 </div>

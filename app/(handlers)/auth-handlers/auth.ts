@@ -224,6 +224,13 @@ const fetchUserStore = async (): Promise<any> => {
 
   return response.data
 }
+const fetchSingleStore = async (storeId?:string): Promise<any> => {
+  console.log("got here")
+  const response = await api.get(`/stores/single/${storeId}`)
+  console.log("got here too")
+
+  return response.data
+}
 
 export const useFetchUser = () => {
   const {
@@ -254,6 +261,26 @@ export const useFetchUserStore = () => {
     queryKey: ['current-user-store-2'],
     queryFn: fetchUserStore,
     retry: 1,
+  })
+
+  return {
+    store: data,
+    isLoading,
+    error,
+    isError,
+  }
+}
+export const useFetchSingleStore = (name?:string) => {
+  const {
+    data,
+    isLoading,
+    error,
+    isError,
+  } = useQuery<any, Error>({
+    queryKey: [`${name}-store`],
+    queryFn: () => fetchSingleStore(name),
+    retry: 1,
+    enabled:!!name
   })
 
   return {

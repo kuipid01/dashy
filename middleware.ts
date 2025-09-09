@@ -9,7 +9,7 @@ const PROTECTED_ROUTES = [
   "/chat",
   "/contents",
   "/user",
-  "/store",
+  
 ];
 
 // Define auth routes that should redirect to dashboard if user is already authenticated

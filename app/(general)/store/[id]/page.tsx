@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { LeftSection } from "./components/left";
 import { RightSection } from "./components/right";
 import Back from "@/app/components/reusables/back";
-import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
+import { useFetchSingleStore } from "@/app/(handlers)/auth-handlers/auth";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -12,10 +12,13 @@ import { ShoppingCart } from "lucide-react";
 
 import { Button as Btnshad } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
+import { useParams } from "next/navigation";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { store } = useFetchUserStore();
+
+  const params = useParams();
+  const { store } = useFetchSingleStore((params.id as string) ?? undefined);
   const { items } = useCartStore();
   const userStore = store?.store;
 
@@ -55,7 +58,7 @@ const Page = () => {
             </Link>
           </div>
         </div>
-        <LeftSection />
+        <LeftSection userStore={userStore} />
       </div>
       <RightSection isOpen={sidebarOpen} toggle={toggleSidebar} />
     </div>

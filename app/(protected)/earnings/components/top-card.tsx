@@ -48,11 +48,11 @@ const TopCard = ({
   subText,
   direction,
   chartData,
-  percent,
+  percent
 }: TopcardProp) => {
   const formattedData = chartData?.map((data) => ({ value: data.earnings }));
   return (
-    <Card className="w-full max-w-md bgblur rounded-xl shadow-sm">
+    <Card className="w-full h-[415px] lg:max-w-md bgblur rounded-xl shadow-sm">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div>
@@ -60,7 +60,7 @@ const TopCard = ({
               {title}
             </CardTitle>
             <div className="flex items-center gap-3">
-              <div className="text-2xl font-bold">${amount} </div>
+              <div className="text-2xl font-bold">₦{amount} </div>
               <div
                 className={clsx(
                   "flex items-center   px-2 py-0.5 rounded-md text-xs font-semibold",

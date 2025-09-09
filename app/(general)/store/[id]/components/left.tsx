@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import ReviewsList from "./reviews/review-list";
 import SearchAndFilters from "./search/search-filter";
 import { ProductGrid } from "./products/product-grid";
 import TopUserVideos from "./top-feeds";
 
-export const LeftSection = () => {
+export const LeftSection = ({ userStore }: { userStore?: any }) => {
   const [filters, setFilters] = useState({
     searchTerm: "",
     ratings: null,
@@ -19,7 +20,9 @@ export const LeftSection = () => {
         <h1 className="text-2xl mt-7  font-bold text-gray-900 mb-6">
           Featured Products
         </h1>
-        <ProductGrid filters={filters} />
+        {userStore && userStore.id && (
+          <ProductGrid id={userStore.id} filters={filters} />
+        )}
       </main>
       <section className="mt-12  mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-6">

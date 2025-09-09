@@ -2,12 +2,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Product, ProductCreationShortDTO } from "../types/product";
 import { api } from "../base";
+import { ProductWithSales } from "@/app/(protected)/_components/top-selling-products-v2";
 
 const fetchProducts = async (): Promise<Product[]> => {
   const response = await api.get(`/products`);
   return response.data;
 };
-const fetchTopProducts = async (): Promise<Product[]> => {
+const fetchTopProducts = async (): Promise<ProductWithSales[]> => {
   const response = await api.get(`/top/products `);
   console.log("Top Products Response:", response.data);
   return response.data.products;
@@ -61,7 +62,7 @@ export const useFetchUserProducts = () => {
   };
 };
 export const useFetchTopProducts = () => {
-  const { data, isLoading, error, isError } = useQuery<Product[], Error>({
+  const { data, isLoading, error, isError } = useQuery<ProductWithSales[], Error>({
     queryKey: ["top-products"],
     queryFn: fetchTopProducts,
     retry: 1,

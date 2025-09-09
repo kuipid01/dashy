@@ -51,8 +51,15 @@ api.interceptors.response.use(
           console.warn("Logout request failed:", logoutError);
         }
 
-        // Redirect to login
-        if (window.location.pathname !== "/login") {
+        // Routes where we don't want to redirect even if auth fails
+        const allowedRoutes = ["/product-details", "/cart", "/checkout"];
+
+        const isAllowedRoute = allowedRoutes.some((route) =>
+          window.location.pathname.startsWith(route)
+        );
+
+        // Redirect to login only if NOT in allowed routes
+        if (window.location.pathname !== "/login" && !isAllowedRoute) {
           window.location.href = "/login";
         }
 

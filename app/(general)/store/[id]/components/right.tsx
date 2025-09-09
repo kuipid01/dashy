@@ -6,11 +6,11 @@ import {
   Store,
   Phone,
   Clock,
-  Shield,
+  Shield
 } from "lucide-react";
 import StoreInfo from "./store/store-info";
 import { useParams } from "next/navigation";
-import { useFetchStore } from "@/app/(handlers)/general/general";
+import { useFetchSingleStore } from "@/app/(handlers)/auth-handlers/auth";
 
 interface RightSectionProps {
   isOpen: boolean;
@@ -19,11 +19,14 @@ interface RightSectionProps {
 
 export const RightSection: React.FC<RightSectionProps> = ({
   isOpen,
-  toggle,
+  toggle
 }) => {
-  const { id } = useParams();
-  const { data, isLoading } = useFetchStore(id as string);
+  const params = useParams();
+  const { store, isLoading } = useFetchSingleStore(
+    (params.id as string) ?? undefined
+  );
 
+  const userStore = store?.store;
   const [dynamicWidth, setDynamicWidth] = useState(isOpen ? 320 : 80);
   const isResizing = useRef(false);
 
@@ -70,7 +73,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </button>
 
         <div className={`mt-16 px-6 ${!isOpen ? "opacity-0" : ""}`}>
-          <StoreInfo data={data} isLoading={isLoading} />
+          <StoreInfo data={userStore} isLoading={isLoading} />
         </div>
 
         {!isOpen && (
@@ -91,7 +94,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 };
 
 const SideResizer = ({
-  onMouseDown,
+  onMouseDown
 }: {
   onMouseDown: React.MouseEventHandler<HTMLDivElement>;
 }) => {

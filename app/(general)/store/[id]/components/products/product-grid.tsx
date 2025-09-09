@@ -8,7 +8,8 @@ import Skeleton from "@/app/(general)/_compoenents/skeleton";
 import ProductLoadingSkeleton from "@/app/(general)/_compoenents/product-loading-skeleton";
 
 export const ProductGrid = ({
-  filters
+  filters,
+  id
 }: {
   filters: {
     searchTerm: string;
@@ -16,9 +17,8 @@ export const ProductGrid = ({
     priceRange: null;
     category: string;
   };
+  id: string;
 }) => {
-  const { id } = useParams();
-
   const { data: fetchedProducts, isLoading } = useFetchStoreProducts(
     id as string
   );

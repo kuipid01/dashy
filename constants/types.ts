@@ -86,12 +86,18 @@ export interface Contact {
 }
 
 export interface Address {
-  id: string; // Assuming string ID based on AddressID in Order
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
+  id?: string; // Assuming string ID based on AddressID in Order
+  Id?: string; // Assuming string ID based on AddressID in Order
+  street?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+  Street?: string;
+  City?: string;
+  State?: string;
+  ZipCode?: string;
+  Country?: string;
   // ... other address fields
 }
 
@@ -139,7 +145,7 @@ export interface Order {
   address?: Address;
   orderStatus: string;
   sales_means: "ONLINE" | "STORE"
-
+  arrival_date:Date;
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   placed_at: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   updatedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
@@ -340,6 +346,7 @@ export interface UpdateOrderRequest {
   contactId?: string;
   addressId?: string;
   notes?: string;
+  arrival_date?:Date
 }
 
 export interface LinkOrderToDeliveryOptionRequest {

@@ -38,7 +38,7 @@ const NavbarProtected = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const userStore = store?.store;
-
+  console.log(userStore);
   const links = [
     { href: "dashboard" },
     { href: "products" },
@@ -142,7 +142,7 @@ const NavbarProtected = () => {
               ) : (
                 <DropdownMenuItem asChild>
                   <Link
-                    href={`/store/${userStore?.id}`}
+                    href={`/store/${userStore?.name}`}
                     className="flex items-center py-3 hover:bg-gray-200 gap-3"
                   >
                     <Store size={24} /> Store

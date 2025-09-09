@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { orderAPI } from "./api";
-import { 
-  UpdateOrderRequest, 
-  LinkOrderToDeliveryOptionRequest 
+import {
+  UpdateOrderRequest,
+  LinkOrderToDeliveryOptionRequest
 } from "@/constants/types";
+import { toast } from "sonner";
 
 // Query Keys
 export const orderKeys = {
@@ -19,7 +21,7 @@ export const orderKeys = {
 // React Query Hooks
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: orderAPI.create,
     onSuccess: (data) => {
@@ -37,7 +39,7 @@ export const useCreateOrder = () => {
 // React Query Hooks
 export const useCreateOrderWithTemporalUser = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: orderAPI.createTemporalUser,
     onSuccess: (data) => {
@@ -91,25 +93,35 @@ export const useGetOrderProducts = (id: number, enabled: boolean = true) => {
 
 export const useUpdateOrder = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateOrderRequest }) => 
+    mutationFn: ({ id, data }: { id: number; data: UpdateOrderRequest }) =>
       orderAPI.update(id, data),
     onSuccess: (data) => {
-      // Update cache for the specific order
+    
+      //@ts-expect-error
+      if (!data?.ID) return;
+      toast.success("Order updated")
+      // Update specific order cache
       queryClient.setQueryData(orderKeys.byId(data.id), data);
+
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: orderKeys.myOrders() });
+      queryClient.invalidateQueries({ queryKey: orderKeys.all }); // make sure it's an array
       if (data.storeId) {
         queryClient.invalidateQueries({ queryKey: orderKeys.byStoreId(data.storeId) });
       }
+    },
+    onError: (error: any) => {
+      console.error("Failed to update order:", error);
+      toast.error("Failed to update order");
     },
   });
 };
 
 export const useDeleteOrder = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: orderAPI.delete,
     onSuccess: (_, id) => {
@@ -124,9 +136,9 @@ export const useDeleteOrder = () => {
 
 export const useLinkOrderToDeliveryOption = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: LinkOrderToDeliveryOptionRequest }) => 
+    mutationFn: ({ id, data }: { id: number; data: LinkOrderToDeliveryOptionRequest }) =>
       orderAPI.linkToDeliveryOption(id, data),
     onSuccess: (data) => {
       // Update cache for the specific order
@@ -142,9 +154,9 @@ export const useLinkOrderToDeliveryOption = () => {
 
 export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ orderId, status }: { orderId: number; status: string }) => 
+    mutationFn: ({ orderId, status }: { orderId: number; status: string }) =>
       orderAPI.updateStatus(orderId, status),
     onSuccess: (data) => {
       // Update cache for the specific order

@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Label,
-  Tooltip,
+  Tooltip
 } from "recharts";
 
 // const data = [
@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     if (value > 0) {
       return (
         <div className="bg-white p-2 shadow-lg rounded-lg border border-gray-200">
-          <p className="text-sm font-semibold">${value.toLocaleString()}</p>
+          <p className="text-sm font-semibold">₦{value.toLocaleString()}</p>
         </div>
       );
     }
