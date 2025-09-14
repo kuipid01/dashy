@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import ReviewsList from "./reviews/review-list";
@@ -12,24 +13,25 @@ export const LeftSection = ({ userStore }: { userStore?: any }) => {
     priceRange: null,
     category: ""
   });
+
   return (
     <div className="p-4 md:p-6 _mt-[10vh] lg:p-8 min-h-screen">
-      <SearchAndFilters setFilters={setFilters} />
+      <SearchAndFilters filters={filters} setFilters={setFilters} />
       <main className="mt-8">
-        <TopUserVideos />
+        {/* <TopUserVideos /> */}
         <h1 className="text-2xl mt-7  font-bold text-gray-900 mb-6">
-          Featured Products
+          Store Products
         </h1>
         {userStore && userStore.id && (
           <ProductGrid id={userStore.id} filters={filters} />
         )}
       </main>
-      <section className="mt-12  mb-8">
+      {/* <section className="mt-12  mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-6">
           Customer Reviews
         </h2>
         <ReviewsList />
-      </section>
+      </section> */}
     </div>
   );
 };

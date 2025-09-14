@@ -43,10 +43,10 @@ import { CardContent } from "@/components/ui/card";
 import SalesCardSkeleton from "./comps_personal/sales-card-skeleton";
 import TotalOrdersSkeleton from "./comps_personal/order-card-skeleton";
 import HeatmapDashboard from "./comps_personal/heatmap-dashboard";
-import {
-  generateSampleOrders,
-  generateSampleProducts
-} from "./comps_personal/heatmap-utils";
+// import {
+//   generateSampleOrders,
+//   generateSampleProducts
+// } from "./comps_personal/heatmap-utils";
 import {
   ButtonLikePill,
   DashboardPill,
@@ -516,13 +516,15 @@ const Page = () => {
         </div>
 
         {/* Heatmap Dashboard */}
-        <div className="animate-in rounded-xl p-5 bg-[#e7e3d6] backdrop-blur-3xl shadow shadow-gray-300 slide-in-from-bottom-2 duration-500 delay-900">
-          <HeatmapDashboard
-            orders={orders || generateSampleOrders()}
-            products={products || generateSampleProducts()}
-            isLoading={isLoading}
-          />
-        </div>
+        {orders && products && (
+          <div className="animate-in rounded-xl p-5 bg-[#e7e3d6] backdrop-blur-3xl shadow shadow-gray-300 slide-in-from-bottom-2 duration-500 delay-900">
+            <HeatmapDashboard
+              orders={orders}
+              products={products}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
       </div>
 
       {/* Product Modal */}

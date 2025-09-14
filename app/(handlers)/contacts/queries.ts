@@ -1,11 +1,8 @@
 "use client"
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { contactAPI } from "./api";
 import { 
-  CreateContactRequest,
   UpdateContactRequest,
-  CreatePublicContactRequest,
   UpdatePublicContactRequest
 } from "@/constants/types";
 
@@ -131,12 +128,11 @@ export const useUpdatePublicContact = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePublicContactRequest }) => 
       contactAPI.updatePublic(id, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       // Update cache for the specific contact
       queryClient.setQueryData(contactKeys.publicById(data.ID), data);
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: contactKeys.public(variables.user_email) });
-    },
+       },
   });
 };
 

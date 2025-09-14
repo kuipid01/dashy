@@ -20,10 +20,11 @@ export const ProductGrid = ({
   id: string;
 }) => {
   const { data: fetchedProducts, isLoading } = useFetchStoreProducts(
-    id as string
+    id as string,
+    filters
   );
 
-  console.log(fetchedProducts);
+  console.log(filters, "filters it here");
 
   return (
     <div className="grid grid-cols-1 bgblur py-8 px-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">

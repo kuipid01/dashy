@@ -6,16 +6,21 @@ const Btn = ({
   isPending,
   disabled,
   text = "Submit",
+  onclick,
+  type = "submit"
 }: {
   disabled?: boolean;
   className?: string;
   isPending?: boolean;
   text?: string;
+  onclick?: () => void;
+  type?: "submit" | "reset" | "button" | undefined;
 }) => {
   return (
     <div>
       <button
-        type="submit"
+        onClick={onclick}
+        type={type}
         className={`cursor-pointer ${className}`}
         disabled={isPending || disabled}
       >

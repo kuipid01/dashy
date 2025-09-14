@@ -1,14 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../base";
 import { Product } from "../types/product";
 import { Store } from "@/types/store";
 import { ProductVariant } from "@/constants/types";
 
-const fetchStoreProducts = async (storeId: string): Promise<Product[]> => {
-  const response = await api.get(`/store/products/${storeId}`);
-  //   console.log(response)
+const fetchStoreProducts = async (
+  storeId: string,
+  filters?: {
+    searchTerm?: string;
+    ratings?: number | null;
+    priceRange?: [number, number] | null;
+    category?: string;
+  }
+): Promise<Product[]> => {
+  const params: Record<string, any> = {};
+
+  if (filters?.searchTerm) params.name = filters.searchTerm;
+  if (filters?.ratings) params.ratings = filters.ratings;
+  if (filters?.priceRange) {
+    params.minPrice = filters.priceRange[0];
+    params.maxPrice = filters.priceRange[1];
+  }
+  if (filters?.category) params.categories = filters.category;
+
+  const response = await api.get(`/store/products/${storeId}`, { params });
   return response.data;
 };
+
 const fetchProduct = async (productId: string): Promise<Product> => {
   const response = await api.get(`/products/${productId}`);
   //   console.log(response)
@@ -47,10 +66,21 @@ const fetchStore = async (storeId: string): Promise<Store> => {
   return response.data.store;
 };
 
-export const useFetchStoreProducts = (storeId: string) => {
+
+
+
+export const useFetchStoreProducts = (
+  storeId: string,
+  filters?: {
+    searchTerm?: string;
+    ratings?: number | null;
+    priceRange?: [number, number] | null;
+    category?: string;
+  }
+) => {
   const { data, isLoading, error, isError } = useQuery<Product[], Error>({
-    queryKey: ["store-products", storeId],
-    queryFn: () => fetchStoreProducts(storeId),
+    queryKey: ["store-products", storeId, filters], // include filters in key
+    queryFn: () => fetchStoreProducts(storeId, filters),
     retry: 1,
     enabled: !!storeId,
   });
@@ -62,6 +92,11 @@ export const useFetchStoreProducts = (storeId: string) => {
     isError,
   };
 };
+
+
+
+
+
 export const useFetchStore = (storeId: string) => {
   const { data, isLoading, error, isError } = useQuery<Store, Error>({
     queryKey: ["store", storeId],

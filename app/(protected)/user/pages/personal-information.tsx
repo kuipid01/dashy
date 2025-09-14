@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Pencil } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -11,17 +11,25 @@ import {
   useFetchUser,
   useFetchUserStore
 } from "@/app/(handlers)/auth-handlers/auth";
-import { useUpdateStore } from "@/app/(handlers)/store/store";
+import {
+  useUpdateStore,
+  useCheckStoreName
+} from "@/app/(handlers)/store/store";
 import Btn from "../../_components/btn";
 import { useUpdateUser } from "@/app/(handlers)/user/user";
+import clsx from "clsx";
 
 const PersonalInformation = () => {
+  const { mutateAsync: checkName, isPending: checking } = useCheckStoreName();
   const { store: userStore, isLoading: isStoreLoading } = useFetchUserStore();
   const { user: userData, isLoading: isUserLoading } = useFetchUser();
   const { mutateAsync: updateStore, isPending: updatingStore } =
     useUpdateStore();
   const { mutateAsync: updateUser, isPending: updatingUser } = useUpdateUser();
   const { upload, isPending: uploadingImage } = useUploadImage();
+  const [nameValid, setNameValid] = useState(false);
+  const [debouncedName, setdebouncedName] = useState("");
+  const initialStoreNameRef = useRef(""); // Keep track of the initial store name
 
   const isLoading = isUserLoading || isStoreLoading;
 
@@ -45,17 +53,60 @@ const PersonalInformation = () => {
     if (file) setFile(file);
   };
 
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setdebouncedName(updateData.storeName ?? "");
+    }, 500);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [updateData.storeName]);
+
+  // FIX: This useEffect now only runs if the store name has actually changed from its initial value.
+  useEffect(() => {
+    // Exit early if the debounced name is the same as the initial name
+    if (debouncedName === initialStoreNameRef.current) {
+      setNameValid(true); // Treat the initial name as valid
+      return;
+    }
+
+    // Perform checks only on a new store name
+    if (!debouncedName) {
+      setNameValid(false);
+      return;
+    }
+
+    if (debouncedName.length < 4) {
+      setNameValid(false);
+      return;
+    }
+
+    if (/\s/.test(debouncedName)) {
+      setNameValid(false);
+      toast.error("Store name cannot contain spaces");
+      return;
+    }
+
+    const check = async () => {
+      try {
+        const res: any = await checkName(debouncedName);
+        console.log(res, "ress");
+        setNameValid(true);
+      } catch (error: any) {
+        setNameValid(false);
+        toast.error(error?.response?.data?.error || "Validation failed");
+      }
+    };
+
+    check();
+  }, [debouncedName, checkName]);
+
+  console.log(nameValid);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUpdateData((prev) => ({ ...prev, [name]: value }));
-
-    // if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-    //   toast.error("Invalid email format");
-    // }
-
-    // if (name === "phone_number" && !/^\+?[1-9]\d{1,14}$/.test(value)) {
-    //   toast.error("Invalid phone number format");
-    // }
   };
 
   useEffect(() => {
@@ -84,9 +135,8 @@ const PersonalInformation = () => {
       handleUpload();
     }
   }, [file, upload, updateUser, userData]);
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
 
+  const handleSubmit = async () => {
     try {
       validateFields();
 
@@ -103,7 +153,6 @@ const PersonalInformation = () => {
       // Prepare store update payload
       const { name, ...rest } = updateData;
 
-      console.log(name);
       const rawPayload = {
         ...userStore?.store,
         ...rest,
@@ -114,14 +163,15 @@ const PersonalInformation = () => {
           ([_, value]) => value !== null && value !== undefined && value !== ""
         )
       );
-      await updateStore(payload);
+
       await updateStore(payload);
       toast.success("Store updated successfully");
-      setUpdateData({});
     } catch (error: any) {
-      toast.error(error.message || "Validation failed");
+      console.log(error);
+      toast.error(error.response.data.error || "Validation failed");
     }
   };
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
@@ -146,11 +196,13 @@ const PersonalInformation = () => {
       throw new Error("Invalid phone number");
   };
 
+  // FIX: Capture the initial store name and set nameValid to true
   useEffect(() => {
     if (userData || userStore) {
+      const initialStoreName = userStore?.store?.name || "";
       setUpdateData({
         name: userData?.Name || "",
-        storeName: userStore?.store?.name || "",
+        storeName: initialStoreName,
         email: userStore?.store?.email || "",
         phone_number: userStore?.store?.phone_number || "",
         address: userStore?.store?.address || "",
@@ -159,17 +211,18 @@ const PersonalInformation = () => {
         zip_code: userStore?.store?.zip_code || "",
         country: userStore?.store?.country || ""
       });
+      initialStoreNameRef.current = initialStoreName;
+      setNameValid(true); // The initial name is always considered valid
     }
   }, [userData, userStore]);
 
-  console.log(updateData);
   const Skeleton = () => (
     <div className="h-[52px] w-full bg-gray-200 animate-pulse rounded-md" />
   );
 
   return (
     <div className="pb-20 pt-10">
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="p-3 md:p-5 bgblur border rounded-lg _border-gray-300 max-w-full md:max-w-[80%] mx-auto md:px-10 flex flex-col">
           {/* PROFILE PICTURE */}
           <label
@@ -229,6 +282,12 @@ const PersonalInformation = () => {
                 <InputComponent
                   label="Store Name"
                   name="storeName"
+                  className={clsx(
+                    "border border-black",
+                    nameValid
+                      ? "!border !border-green-400 "
+                      : "!border !border-red-300"
+                  )}
                   value={updateData.storeName || ""}
                   onChange={handleInputChange}
                 />
@@ -335,7 +394,14 @@ const PersonalInformation = () => {
 
           <div className="flex justify-end mt-5 md:mt-10">
             <Btn
-              disabled={Object.keys(updateData).length === 0 && !file}
+              type="button"
+              onclick={() => {
+                console.log("here");
+                handleSubmit();
+              }}
+              disabled={
+                (Object.keys(updateData).length === 0 && !file) || !nameValid
+              }
               isPending={updatingStore || updatingUser}
               className="bg-black disabled:bg-black/50 disabled:cursor-none text-white py-2 px-8 rounded-md"
             />

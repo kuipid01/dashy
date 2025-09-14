@@ -15,7 +15,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useParams } from "next/navigation";
 
 const Page = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const params = useParams();
   const { store } = useFetchSingleStore((params.id as string) ?? undefined);
@@ -58,6 +58,7 @@ const Page = () => {
             </Link>
           </div>
         </div>
+
         <LeftSection userStore={userStore} />
       </div>
       <RightSection isOpen={sidebarOpen} toggle={toggleSidebar} />

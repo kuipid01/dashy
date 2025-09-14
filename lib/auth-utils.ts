@@ -1,7 +1,7 @@
-import { CookieConfig } from '@/types/auth';
+
 
 // Cookie configuration constants
-export const COOKIE_CONFIG: CookieConfig = {
+export const COOKIE_CONFIG = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax',
@@ -9,7 +9,7 @@ export const COOKIE_CONFIG: CookieConfig = {
   path: '/',
 };
 
-export const REFRESH_COOKIE_CONFIG: CookieConfig = {
+export const REFRESH_COOKIE_CONFIG = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax',
@@ -17,16 +17,7 @@ export const REFRESH_COOKIE_CONFIG: CookieConfig = {
   path: '/',
 };
 
-// Utility functions for cookie management
-export const setAuthCookies = (response: Response, accessToken: string, refreshToken: string) => {
-  // This would be used in API routes to set cookies
-  // The actual cookie setting is done in the API route handlers
-};
 
-export const clearAuthCookies = (response: Response) => {
-  // This would be used in API routes to clear cookies
-  // The actual cookie clearing is done in the API route handlers
-};
 
 // Check if we're in a browser environment
 export const isBrowser = typeof window !== 'undefined';

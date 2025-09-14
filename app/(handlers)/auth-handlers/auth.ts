@@ -258,7 +258,7 @@ export const useFetchUserStore = () => {
     error,
     isError,
   } = useQuery<any, Error>({
-    queryKey: ['current-user-store-2'],
+    queryKey: ['store'],
     queryFn: fetchUserStore,
     retry: 1,
   })
