@@ -1,11 +1,29 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
-  /* config options here */
+  productionBrowserSourceMaps: false,
+  experimental: {
+    serverSourceMaps: false,
+    webpackMemoryOptimizations: true,
+  },
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) => {
+    if (config.cache && !dev) {
+      config.cache = Object.freeze({
+        type: 'memory',
+      })
+    }
+    // Important: return the modified config
+    return config
+  },
   images: {
-    domains: ["images.unsplash.com",
+    domains: [
+      "images.unsplash.com",
       "www.istockphoto.com",
       "www.amazon.com",
       "www.poetryfashion.com",
