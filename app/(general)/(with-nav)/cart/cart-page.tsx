@@ -4,7 +4,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 
 import { useCartStore } from "@/stores/cart-store";
@@ -14,13 +14,14 @@ import {
   ShoppingCart,
   ChevronLeft,
   Store,
-  Grid3X3,
+  Grid3X3
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
+import ShippingDetailsOrder from "./components/shipping-dets";
 const CartPage = () => {
   const searchParams = useSearchParams();
   const activeStore = searchParams.get("store");
@@ -30,7 +31,7 @@ const CartPage = () => {
     removeItem,
     groupedByStore,
     toggleGroupByStore,
-    getItemsByStore,
+    getItemsByStore
   } = useCartStore();
 
   console.log(activeStore, "activeStore");
@@ -301,7 +302,7 @@ const CartPage = () => {
 
                   <div className="flex justify-between items-center">
                     <span className="text-lg">Shipping</span>
-                    <span className="text-green-600 font-semibold">Free</span>
+                    <ShippingDetailsOrder cart={cartItems} />
                   </div>
 
                   <div className="border-t pt-4">

@@ -455,3 +455,54 @@ export interface ContactSearchResponse {
 
 
 
+
+// ===================== Shipping & Delivery Types =====================
+export type ShippingPricingModel = "zones" | "distance";
+
+export interface ShippingConfig {
+  model: ShippingPricingModel;
+  base_fee?: number; // distance model
+  per_km?: number;   // distance model
+}
+
+export interface ShippingZone {
+  id: string;
+  name: string;
+  coverage_type: "radius" | "manual";
+  coverage_value: string; // e.g. "Within 10km radius" or "Lagos: Ikeja, Yaba"
+  flat_fee: number;
+  free_ship_min?: number | null;
+}
+
+export interface UpsertShippingConfigRequest {
+  model: ShippingPricingModel;
+  base_fee?: number;
+  per_km?: number;
+}
+
+export interface CreateShippingZoneRequest {
+  name: string;
+  coverage_type: "radius" | "manual";
+  coverage_value: string;
+  flat_fee: number;
+  free_ship_min?: number | null;
+}
+
+export type UpdateShippingZoneRequest = Partial<CreateShippingZoneRequest>;
+
+export interface DistanceQuoteQuery {
+  base_fee?: number;
+  per_km?: number;
+  distance_km: number;
+}
+
+export interface ZoneQuoteQuery {
+  zone_id: string;
+  order_amount?: number;
+}
+
+export interface ShippingQuoteResponse {
+  amount: number;
+  currency: string; // e.g., NGN
+  breakdown?: Record<string, number>;
+}

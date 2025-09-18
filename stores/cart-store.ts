@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 // Define the structure for an individual cart item
-interface CartItem {
+export interface CartItem {
     product: Product;
     quantity: number;
     storeId: number;
@@ -48,6 +48,7 @@ export const useCartStore = create<CartStore>()(
                         // Update quantity if item already exists
                         existingItem.quantity += quantity;
                     } else {
+                        
                         // Add a new item with store information
                         items[product.ID ?? product.id] = { 
                             product, 

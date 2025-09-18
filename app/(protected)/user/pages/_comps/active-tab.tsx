@@ -7,6 +7,7 @@ import Security from "../security";
 // import Integrations from "../integartion";
 import Modifications from "../modifications";
 import StoreDetails from "./store-details";
+import DeliverySettings from "../delivery-settings";
 
 const ActiveTabContent = () => {
   const searchParams = useSearchParams();
@@ -18,7 +19,8 @@ const ActiveTabContent = () => {
     Security: <Security />,
     // Integrations: <Integrations />,
     Modifications: <Modifications />,
-    Store: <StoreDetails />
+    Store: <StoreDetails />,
+    Delivery: <DeliverySettings />
   };
 
   return <>{componentMap[activeTab || ""] || <PersonalInformation />}</>;
