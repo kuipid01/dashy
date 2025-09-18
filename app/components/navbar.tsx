@@ -33,7 +33,7 @@ interface CartItem extends Product {
 
 export const Navbar = () => {
   const { totalItems } = useCartStore();
-  const [activeStore, setactiveStore] = useState<number | undefined>(undefined);
+  const [activeStore, setactiveStore] = useState<string | undefined>(undefined);
   const pathname = usePathname();
   const [currentStep, setCurrentStep] = useState<FlowStep>("products");
   const [showReward, setShowReward] = useState(false);
@@ -44,13 +44,14 @@ export const Navbar = () => {
   const { user, isLoading: userLoading } = useFetchUser();
 
   const { data: product, isLoading: productLoading } = useFetchProduct(
-    pathname.split("/")[2] ?? undefined
+    pathname.split("/")[4] ?? undefined
   );
-
+  console.log(pathname.split("/"));
   useEffect(() => {
     if (pathname.includes("/product-details")) {
-      console.log(product, "product");
-      setactiveStore(product?.store_id);
+      const storeName = pathname.split("/")[2];
+      console.log(storeName, "storeName");
+      setactiveStore(storeName);
     }
   }, [pathname, product]);
 

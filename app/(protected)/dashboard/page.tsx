@@ -11,15 +11,16 @@ import {
   Flower,
   Sparkles,
   UserRoundPlus,
-  Weight
+  Weight,
 } from "lucide-react";
+
 import {
+  Tooltip,
   LineChart,
   Line,
-  ResponsiveContainer,
   DotProps,
   Area,
-  Tooltip
+  ResponsiveContainer,
 } from "recharts";
 import ContainerDashboard from "../_components/container-dashboard";
 import { ArrowDivNew } from "../_components/small-comps";
@@ -31,12 +32,12 @@ import { useFetchUserProducts } from "@/app/(handlers)/product/product";
 import { OnboardingFlow } from "./comps_personal/onboarding-flow";
 import {
   useFetchUser,
-  useFetchUserStore
+  useFetchUserStore,
 } from "@/app/(handlers)/auth-handlers/auth";
 import {
   useFetchStoreOrders,
   useUpdateOrder,
-  useUpdateOrderStatus
+  useUpdateOrderStatus,
 } from "@/app/(handlers)/orders/orders";
 import SalesCard from "./comps_personal/sales-card";
 import { CardContent } from "@/components/ui/card";
@@ -53,14 +54,15 @@ import {
   DashboardPillSkeleton,
   ProductPillDahboard,
   ProductPillDahboardSkeleton,
-  ViewMoreBtnPillProps
+  ViewMoreBtnPillProps,
 } from "@/app/(general)/_compoenents/pill-round";
 import TopSellingProducts, {
-  TopSellingProduct
+  TopSellingProduct,
 } from "../_components/top-selling-products";
 import LatestOrders from "../_components/latest-orders";
 import MonthlyIncomeChart from "../_components/monthly-income-chart";
 import { Order, Product } from "@/constants/types";
+import Dashboardloader from "./comps_personal/dashboard-loader";
 
 interface CustomDotProps extends DotProps {
   index?: number;
@@ -79,7 +81,7 @@ const MONTH_NAMES = [
   "Sep",
   "Oct",
   "Nov",
-  "Dec"
+  "Dec",
 ];
 
 // Custom Components
@@ -116,7 +118,7 @@ const getCurrentMonthRange = () => {
   const now = new Date();
   return {
     start: startOfMonth(now),
-    end: endOfMonth(now)
+    end: endOfMonth(now),
   };
 };
 
@@ -142,7 +144,7 @@ const useOrderAnalytics = (orders: Order[] | undefined) => {
         totalRevenue: 0,
         formattedData: [],
         comparisonText: "No orders yet",
-        latestSales: []
+        latestSales: [],
       };
     }
 
@@ -220,7 +222,7 @@ const useOrderAnalytics = (orders: Order[] | undefined) => {
       formattedData,
       thisMonthOrders,
       comparisonText: getComparisonText(),
-      latestOrders
+      latestOrders,
     };
   }, [orders]);
 };
@@ -270,8 +272,8 @@ const Page = () => {
             | "shipped"
             | "delivered"
             | "cancelled"
-            | undefined
-        }
+            | undefined,
+        },
       });
     },
     [updateOrder]
@@ -300,7 +302,7 @@ const Page = () => {
       salesMap.set(id, {
         productId: id,
         quantity: item.quantity ?? 0,
-        product: item.Product
+        product: item.Product,
       });
     }
   });
@@ -318,6 +320,9 @@ const Page = () => {
     return <OnboardingFlow />;
   }
 
+  if (isLoading) {
+    return <Dashboardloader />;
+  }
   return (
     <>
       <div className="flex bg-primary flex-col gap-5 p-4 sm:p-6">
@@ -528,9 +533,9 @@ const Page = () => {
       </div>
 
       {/* Product Modal */}
-      {products?.length === 0 && user?.hasCompletedOnboarding && (
+      {/* {products?.length === 0 && user?.hasCompletedOnboarding && (
         <ProductModal setShowModal={setShowModal} showModal={showModal} />
-      )}
+      )} */}
     </>
   );
 };

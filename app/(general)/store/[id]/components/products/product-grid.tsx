@@ -13,12 +13,15 @@ export const ProductGrid = ({
 }: {
   filters: {
     searchTerm: string;
-    ratings: null;
-    priceRange: null;
+    ratings: number | null;
+    priceRange: [number, number] | null;
     category: string;
   };
   id: string;
 }) => {
+  const params = useParams();
+  const storeName = params.id;
+
   const { data: fetchedProducts, isLoading } = useFetchStoreProducts(
     id as string,
     filters
@@ -42,7 +45,12 @@ export const ProductGrid = ({
         </>
       ) : (
         fetchedProducts?.map((product) => (
-          <ProductCard isAdmin={false} key={product.id} product={product} />
+          <ProductCard
+            storeName={(storeName as string) ?? undefined}
+            isAdmin={false}
+            key={product.id}
+            product={product}
+          />
         ))
       )}
     </div>

@@ -6,14 +6,26 @@ import {
   TrendingUp,
   DollarSign
 } from "lucide-react";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   ResponsiveContainer,
+//   Cell
+// } from "recharts";
+
+// Instead of direct Recharts imports:
 import {
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   Cell
 } from "recharts";
 import { Button } from "@/components/ui/button";

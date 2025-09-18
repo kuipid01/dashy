@@ -52,7 +52,7 @@ api.interceptors.response.use(
         }
 
         // Routes where we don't want to redirect even if auth fails
-        const allowedRoutes = ["/product-details", "/cart", "/checkout"];
+        const allowedRoutes = ["/product-details", "/cart", "/checkout","/" ,""];
 
         const isAllowedRoute = allowedRoutes.some((route) =>
           window.location.pathname.startsWith(route)

@@ -12,6 +12,7 @@ export const VerifyEmailPage = () => {
       <div className="flex-1 bg-white min-h-screen flex justify-center items-center flex-col p-4">
         <div className="text-center flex flex-col items-center justify-center  max-w-md w-full">
           <Image
+            unoptimized
             alt="veify mail"
             src="/animated/email.gif"
             width={80}
@@ -32,9 +33,10 @@ export const VerifyEmailPage = () => {
           <div className="mt-6 w-full flex flex-col items-center gap-3">
             <button
               className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
-              onClick={() =>
-                router.push(`/verify-code?email=${encodeURIComponent(email)}`)
-              }
+              onClick={() => {
+                console.log("clckike");
+                router.push(`/verify-code?email=${encodeURIComponent(email)}`);
+              }}
             >
               Enter code
             </button>

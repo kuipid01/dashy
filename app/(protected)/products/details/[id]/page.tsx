@@ -6,12 +6,11 @@ import ProductVariantManager from "./components/variant-manger";
 import MediaSec from "./components/media-sec";
 import { useParams } from "next/navigation";
 
-
 const Page = () => {
-  const { id } = useParams()
+  const { id } = useParams();
   const [reviews] = useState([
     { user: "Jane Doe", rating: 4, comment: "Great product!" },
-    { user: "John Smith", rating: 5, comment: "Excellent quality." },
+    { user: "John Smith", rating: 5, comment: "Excellent quality." }
   ]);
 
   return (
@@ -22,10 +21,10 @@ const Page = () => {
           <PoductSec />
 
           {/* Orders */}
-          <div className="p-4 border rounded-lg shadow-md">
+          {/* <div className="p-4 border rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-4">Orders</h3>
             <p>No orders placed yet.</p>
-          </div>
+          </div> */}
 
           {/* Reviews */}
           <div className="p-4 border rounded-lg shadow-md">
@@ -54,10 +53,6 @@ const Page = () => {
           <MediaSec />
 
           {/* Inventory */}
-          <div className="p-4 border rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Inventory</h3>
-            <p>In stock: 20 units</p>
-          </div>
 
           {/* Performance */}
           <div className="p-4 border rounded-lg shadow-md">

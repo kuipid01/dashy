@@ -43,6 +43,7 @@ export function middleware(request: NextRequest) {
   // Handle protected routes
   if (isProtectedRoute) {
     if (!hasAuth) {
+      console.log("here ran")
       // Redirect to login if no auth cookie
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);

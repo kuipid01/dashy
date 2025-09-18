@@ -6,7 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer
-} from "recharts";
+} from "../../_components/dynamic-recharts";
 
 const data = [
   { time: "6AM", customers: 105 },

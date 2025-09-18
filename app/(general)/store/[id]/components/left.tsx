@@ -9,8 +9,8 @@ import TopUserVideos from "./top-feeds";
 export const LeftSection = ({ userStore }: { userStore?: any }) => {
   const [filters, setFilters] = useState({
     searchTerm: "",
-    ratings: null,
-    priceRange: null,
+    ratings: null as number | null,
+    priceRange: null as [number, number] | null,
     category: ""
   });
 

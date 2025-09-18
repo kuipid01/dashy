@@ -13,12 +13,17 @@ import { ShoppingCart } from "lucide-react";
 import { Button as Btnshad } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
 import { useParams } from "next/navigation";
+import StoreLoader from "./components/loader/store-loader";
+import StoreNotFound from "./components/not-found/store-not-found";
+import { motion } from "framer-motion";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const params = useParams();
-  const { store } = useFetchSingleStore((params.id as string) ?? undefined);
+  const { store, isLoading } = useFetchSingleStore(
+    (params.id as string) ?? undefined
+  );
   const { items } = useCartStore();
   const userStore = store?.store;
 
@@ -30,6 +35,25 @@ const Page = () => {
     (item) => item.storeId === userStore?.id
   );
   console.log(storeItems, "items");
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-primary">
+        {/* <div className="px-4 md:px-6 lg:px-8 pt-5">
+          <Back />
+        </div> */}
+        <StoreLoader />
+      </div>
+    );
+  }
+
+  if (!userStore) {
+    return (
+      <div className="min-h-screen bg-primary">
+        <StoreNotFound id={params.id as string} />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-primary">
       <div
@@ -37,7 +61,12 @@ const Page = () => {
           sidebarOpen ? "md:pr-[320px]" : "md:pr-[80px]"
         }`}
       >
-        <div className=" px-4 md:px-6 lg:px-8 pt-5 justify-between  flex items-center gap-2">
+        <motion.div
+          className=" px-4 md:px-6 lg:px-8 pt-5 justify-between  flex items-center gap-2"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+        >
           <Back />
 
           <div className="flex items-center gap-2">
@@ -57,9 +86,15 @@ const Page = () => {
               </Btnshad>
             </Link>
           </div>
-        </div>
+        </motion.div>
 
-        <LeftSection userStore={userStore} />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.05 }}
+        >
+          <LeftSection userStore={userStore} />
+        </motion.div>
       </div>
       <RightSection isOpen={sidebarOpen} toggle={toggleSidebar} />
     </div>

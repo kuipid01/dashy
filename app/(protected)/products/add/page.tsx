@@ -299,7 +299,7 @@ export default function ProductAddition() {
             <div className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="price" className="text-gray-700">
-                  Price ($) *
+                  Price (₦) *
                 </Label>
                 <Input
                   id="price"
@@ -316,7 +316,7 @@ export default function ProductAddition() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="price" className="text-gray-700">
-                  Discounted Price ($){" "}
+                  Discounted Price (₦){" "}
                   <span className="text-gray-500">
                     (This will be the price that product would be sold.)
                   </span>

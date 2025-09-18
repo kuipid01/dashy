@@ -49,7 +49,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       ) : (
-        <div className="flex h-screen bg-[#DBEEF5]">
+        <div className="flex h-screen  w-full bg-[#DBEEF5]">
           <div className="hidden w-[45%] lg:flex justify-center items-center flex-col h-full relative">
             <h1 className="text-white text-3xl leading-[1.4] font-medium text-center">
               Sign up <br /> and come on in

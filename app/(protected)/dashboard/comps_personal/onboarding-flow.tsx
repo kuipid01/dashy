@@ -298,13 +298,13 @@ export function OnboardingFlow() {
               >
                 Let&lsquo;s go
               </Button>
-              <Button
+              {/* <Button
                 className="w-full cursor-pointer bg-[#f8f5ed] hover:bg-[#f8f5ed]/60  border-black  border text-black"
                 onClick={skipStep}
                 variant="ghost"
               >
                 Skip
-              </Button>
+              </Button> */}
             </CardContent>
           </Card>
         );
@@ -422,13 +422,13 @@ export function OnboardingFlow() {
                 >
                   {addingProduct ? "Saving..." : "Save Product"}
                 </Button>
-                <Button
+                {/* <Button
                   className="w-full cursor-pointer bg-[#f8f5ed] hover:bg-[#f8f5ed]/60 border-black border text-black"
                   onClick={skipStep}
                   variant="ghost"
                 >
                   Skip
-                </Button>
+                </Button> */}
               </div>
             </CardContent>
           </Card>
@@ -479,13 +479,13 @@ export function OnboardingFlow() {
                 >
                   {addingProduct ? "Saving..." : "Update Store Name"}
                 </Button>
-                <Button
+                {/* <Button
                   className="w-full cursor-pointer bg-[#f8f5ed] hover:bg-[#f8f5ed]/60 border-black border text-black"
                   onClick={skipStep}
                   variant="ghost"
                 >
                   Skip
-                </Button>
+                </Button> */}
               </div>
             </CardContent>
           </Card>
@@ -552,7 +552,7 @@ export function OnboardingFlow() {
                 >
                   {updatingStore ? "Saving..." : "Update Store Logo"}
                 </Button>
-                <Button
+                {/* <Button
                   className="w-full cursor-pointer bg-[#f8f5ed] hover:bg-[#f8f5ed]/60 border-black border text-black"
                   onClick={async () => {
                     try {
@@ -567,7 +567,7 @@ export function OnboardingFlow() {
                   variant="ghost"
                 >
                   Skip
-                </Button>
+                </Button> */}
               </div>
             </CardContent>
           </Card>

@@ -1,38 +1,15 @@
 import React, { useState } from "react";
 import Filters from "./flters";
-import { filters as FakeFilters } from "../data/filter";
-import SearchBar from "./search-bar";
+import SearchBar, { FiltersState } from "./search-bar";
 
 const SearchAndFilters = ({
   setFilters,
   filters
 }: {
-  setFilters: React.Dispatch<
-    React.SetStateAction<{
-      searchTerm: string;
-      ratings: null;
-      priceRange: null;
-      category: string;
-    }>
-  >;
-  filters: {
-    searchTerm: string;
-    ratings: null;
-    priceRange: null;
-    category: string;
-  };
+  setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
+  filters: FiltersState;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string>
-  >({
-    category: "all",
-    price: "all",
-    rating: "all"
-  });
-
-  console.log(selectedFilters);
-
   console.log(searchQuery);
 
   return (
@@ -44,11 +21,7 @@ const SearchAndFilters = ({
           query={searchQuery}
           setQuery={setSearchQuery}
         />
-        <Filters
-          filters={FakeFilters}
-          selectedFilters={selectedFilters}
-          setSelectedFilters={setSelectedFilters}
-        />
+        <Filters filters={filters} setFilters={setFilters} />
       </div>
     </div>
   );

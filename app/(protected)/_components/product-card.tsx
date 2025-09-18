@@ -7,8 +7,10 @@ import Link from "next/link";
 
 export default function ProductCard({
   product,
-  isAdmin
+  isAdmin,
+  storeName
 }: {
+  storeName?: string;
   isAdmin?: boolean;
   product: Product;
 }) {
@@ -17,9 +19,9 @@ export default function ProductCard({
       href={
         isAdmin
           ? `/products/details/${product?.id}`
-          : `/product-details/${product?.id}`
+          : `/store/${storeName}/product-details/${product?.id}`
       }
-      className=" hover:border relative hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-200 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
+      className=" hover:border relative hover:scale-[1.02] transition-all duration-500 ease-in-out hover:border-gray-300 rounded-xl pb-3  overflow-hidden flex flex-col gap-3"
     >
       <div
         className={clsx(
@@ -47,7 +49,10 @@ export default function ProductCard({
         <div className=" flex flex-col items-start gap-1">
           <p className=" font-bold text-xl">{product?.name}</p>
           <div className=" flex items-center gap-1">
-            <Star fill="#71717b" className=" text-zinc-500 w-5 h-5" />
+            <Star
+              fill="oklch(85.2% 0.199 91.936)"
+              className="  text-yellow-400 w-5 h-5"
+            />
             <p className=" text-sm">{product?.rating}</p>
           </div>
         </div>

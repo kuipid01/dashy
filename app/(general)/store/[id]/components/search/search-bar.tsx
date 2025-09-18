@@ -3,23 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
+export type FiltersState = {
+  searchTerm: string;
+  ratings: number | null;
+  priceRange: [number, number] | null;
+  category: string;
+};
+
 interface SearchBarProps {
   query: string;
   setQuery: (query: string) => void;
-  setFilters: React.Dispatch<
-    React.SetStateAction<{
-      searchTerm: string;
-      ratings: null;
-      priceRange: null;
-      category: string;
-    }>
-  >;
-  filters: {
-    searchTerm: string;
-    ratings: null;
-    priceRange: null;
-    category: string;
-  };
+  setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
+  filters: FiltersState;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
