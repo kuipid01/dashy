@@ -16,7 +16,7 @@ export default function Layout({
       >
         <SettingsSidebar />
       </Suspense>
-      <div className="flex flex-col flex-1">{children}</div>
+      <div className="flex flex-col px-5 lg:px-10  flex-1">{children}</div>
     </div>
   );
 }

@@ -1,13 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  ChevronRight,
-  ChevronLeft,
-  Store,
-  Phone,
-  Clock,
-  Shield
-} from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import StoreInfo from "./store/store-info";
 import { useParams } from "next/navigation";
 import { useFetchSingleStore } from "@/app/(handlers)/auth-handlers/auth";
@@ -75,19 +68,6 @@ export const RightSection: React.FC<RightSectionProps> = ({
         <div className={`mt-16 px-6 ${!isOpen ? "opacity-0" : ""}`}>
           <StoreInfo data={userStore} isLoading={isLoading} />
         </div>
-
-        {!isOpen && (
-          <div className="flex flex-col items-center mt-16 space-y-8">
-            {[Store, Phone, Clock, Shield].map((Icon, index) => (
-              <div
-                key={index}
-                className="p-3 hover:bg-gray-100 rounded-full cursor-pointer"
-              >
-                <Icon size={24} />
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </aside>
   );

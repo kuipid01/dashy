@@ -140,7 +140,7 @@ const NavbarProtected = () => {
                   <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
                   <div className="w-16 h-4 bg-gray-300 rounded animate-pulse" />
                 </DropdownMenuItem>
-              ) : !userStore.name ? (
+              ) : !userStore?.name ? (
                 <div></div>
               ) : (
                 <DropdownMenuItem asChild>

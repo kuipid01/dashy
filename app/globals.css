@@ -193,3 +193,12 @@ body {
     @apply bg-[#e7e3d6] backdrop-blur-3xl  rounded-[15px] shadow shadow-gray-300;
   }
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

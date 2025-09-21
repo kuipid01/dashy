@@ -1,23 +1,45 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import { Star, MapPin, Phone, Clock, MessageSquare, Mail } from "lucide-react";
+import {
+  Star,
+  MapPin,
+  Phone,
+  Clock,
+  MessageSquare,
+  Mail,
+  CheckCircle2,
+  AlertTriangle
+} from "lucide-react";
 import { Store } from "@/types/store";
 import Skeleton from "@/app/(general)/_compoenents/skeleton";
+import { useStoreActivationFromStore } from "@/lib/hooks/use-store-activation";
 
-const StoreInfo = ({data,isLoading}:{data?:Store,isLoading:boolean}) => {
+const StoreInfo = ({
+  data,
+  isLoading
+}: {
+  data?: Store;
+  isLoading: boolean;
+}) => {
+  const storeActivation = useStoreActivationFromStore(data);
+
   // const storeRating = 4.8;
-  if (!data || isLoading ) return (
-    <div className=" flex flex-col gap-5">
-      <Skeleton className="w-full h-[50px] "/>
-      <Skeleton className="w-full h-[50px]"/>
-      <Skeleton className="w-full h-[50px]"/>
-      <Skeleton className="w-full h-[50px]"/>
-    </div>
-  )
+  if (!data || isLoading)
+    return (
+      <div className=" flex flex-col gap-5">
+        <Skeleton className="w-full h-[50px] " />
+        <Skeleton className="w-full h-[50px]" />
+        <Skeleton className="w-full h-[50px]" />
+        <Skeleton className="w-full h-[50px]" />
+      </div>
+    );
   return (
     <div className="space-y-8">
       <div className="text-center">
-        <h2 className="text-2xl uppercase font-bold text-gray-900">{data?.name}</h2>
+        <h2 className="text-2xl uppercase font-bold text-gray-900">
+          {data?.name}
+        </h2>
+
         {/* <div className="flex items-center justify-center mt-2">
           {[...Array(5)].map((_, index) => (
             <Star
@@ -43,9 +65,7 @@ const StoreInfo = ({data,isLoading}:{data?:Store,isLoading:boolean}) => {
           <MapPin size={18} className="text-black flex-shrink-0" />
           <div>
             <p className="font-medium">Location</p>
-            <p className="text-sm text-gray-500">
-              {data.address}
-            </p>
+            <p className="text-sm text-gray-500">{data.address}</p>
           </div>
         </div>
 

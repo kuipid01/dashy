@@ -34,4 +34,6 @@ export interface Store {
 
   created_at: string; // ISO string from `time.Time`
   updated_at: string;
+  lat: string;
+  lon: string;
 }

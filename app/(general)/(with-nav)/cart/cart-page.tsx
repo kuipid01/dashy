@@ -21,7 +21,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import ShippingDetailsOrder from "./components/shipping-dets";
 const CartPage = () => {
   const searchParams = useSearchParams();
   const activeStore = searchParams.get("store");
@@ -301,13 +300,14 @@ const CartPage = () => {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-lg">Shipping</span>
-                    <ShippingDetailsOrder cart={cartItems} />
+                    <span className="text-xs py-1  font-bold px-2 bg-green-700 text-white   rounded-md">
+                      Shipping calculated at checkout
+                    </span>
                   </div>
 
                   <div className="border-t pt-4">
-                    <div className="flex justify-between items-center font-bold text-2xl">
-                      <span>Total</span>
+                    <div className="flex justify-between items-center font-bold text-xl">
+                      <span>Subtotal (items only)</span>
                       <span>₦{getTotalPrice().toLocaleString()}</span>
                     </div>
                   </div>

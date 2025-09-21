@@ -62,7 +62,9 @@ type Zone = {
   coverageType: CoverageType;
   coverageValue: string; // e.g. "Within 10km" or "Lagos: Ikeja, Yaba"
   flatFee: number;
-  freeShipMin?: number; // order amount for free shipping
+  freeShipMin?: number;
+  estimatedDays?: number;
+  // order amount for free shipping
 };
 
 const currency = (n: number | undefined) =>
@@ -86,6 +88,7 @@ export default function DeliverySettings() {
   // Distance model state
   const [baseFee, setBaseFee] = useState<number>(0);
   const [perKm, setPerKm] = useState<number>(0);
+  const [estimatedDays, setEstimatedDays] = useState<number>(0);
 
   const suggestedRates = [50, 100, 200];
 
@@ -120,7 +123,8 @@ export default function DeliverySettings() {
           coverageType: z.coverage_type as CoverageType,
           coverageValue: z.coverage_value,
           flatFee: z.flat_fee,
-          freeShipMin: z.free_ship_min ?? undefined
+          freeShipMin: z.free_ship_min ?? undefined,
+          estimatedDays: z.estimatedDays ?? undefined
         }))
       );
     }
@@ -182,7 +186,8 @@ export default function DeliverySettings() {
       coverageType: "radius",
       coverageValue: "",
       flatFee: 0,
-      freeShipMin: undefined
+      freeShipMin: undefined,
+      estimatedDays: undefined
     });
     setZoneModalOpen(true);
   };
@@ -204,7 +209,8 @@ export default function DeliverySettings() {
             coverage_type: editingZone.coverageType,
             coverage_value: editingZone.coverageValue,
             flat_fee: editingZone.flatFee,
-            free_ship_min: editingZone.freeShipMin ?? null
+            free_ship_min: editingZone.freeShipMin ?? null,
+            estimatedDays: editingZone.estimatedDays
           }
         });
         setZones((prev) =>
@@ -227,7 +233,8 @@ export default function DeliverySettings() {
           coverage_type: editingZone.coverageType,
           coverage_value: editingZone.coverageValue,
           flat_fee: editingZone.flatFee,
-          free_ship_min: editingZone.freeShipMin ?? null
+          free_ship_min: editingZone.freeShipMin ?? null,
+          estimatedDays: editingZone.estimatedDays
         });
         setZones((prev) => [
           ...prev,
@@ -237,7 +244,8 @@ export default function DeliverySettings() {
             coverageType: created.coverage_type as CoverageType,
             coverageValue: created.coverage_value,
             flatFee: created.flat_fee,
-            freeShipMin: created.free_ship_min ?? undefined
+            freeShipMin: created.free_ship_min ?? undefined,
+            estimatedDays: created.estimatedDays
           }
         ]);
       }
@@ -368,6 +376,7 @@ export default function DeliverySettings() {
                   <TableHead>Coverage</TableHead>
                   <TableHead>Delivery Fee</TableHead>
                   <TableHead>Free Shipping Above</TableHead>
+                  <TableHead>EST Delivery (Days)</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -385,6 +394,7 @@ export default function DeliverySettings() {
                       <TableCell>{z.coverageValue}</TableCell>
                       <TableCell>{currency(z.flatFee)}</TableCell>
                       <TableCell>{currency(z.freeShipMin)}</TableCell>
+                      <TableCell>{z.estimatedDays}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button
@@ -553,7 +563,24 @@ export default function DeliverySettings() {
                       </div>
                     </TabsContent>
                   </Tabs>
-
+                  <div className="grid gap-2">
+                    <Label htmlFor="per-km">Estimated Days Of Delivery</Label>
+                    <Input
+                      required
+                      id="est-days"
+                      type="number"
+                      min={0}
+                      placeholder="e.g. 3"
+                      value={editingZone?.estimatedDays ?? ""}
+                      onChange={(e) =>
+                        setEditingZone((z) =>
+                          z
+                            ? { ...z, estimatedDays: Number(e.target.value) }
+                            : z
+                        )
+                      }
+                    />
+                  </div>
                   <div className="grid gap-2 mt-3">
                     <Label htmlFor="free-min">
                       Free Shipping Above (₦) - optional

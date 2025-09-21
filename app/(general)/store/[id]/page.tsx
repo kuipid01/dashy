@@ -16,6 +16,7 @@ import { useParams } from "next/navigation";
 import StoreLoader from "./components/loader/store-loader";
 import StoreNotFound from "./components/not-found/store-not-found";
 import { motion } from "framer-motion";
+import { useStoreReady } from "@/lib/hooks/use-store-activation";
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,6 +32,7 @@ const Page = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const isReady = useStoreReady(userStore);
   const storeItems = Object.values(items).filter(
     (item) => item.storeId === userStore?.id
   );
@@ -46,7 +48,7 @@ const Page = () => {
     );
   }
 
-  if (!userStore) {
+  if (!userStore || !isReady) {
     return (
       <div className="min-h-screen bg-primary">
         <StoreNotFound id={params.id as string} />

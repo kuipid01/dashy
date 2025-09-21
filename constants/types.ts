@@ -462,7 +462,14 @@ export type ShippingPricingModel = "zones" | "distance";
 export interface ShippingConfig {
   model: ShippingPricingModel;
   base_fee?: number; // distance model
-  per_km?: number;   // distance model
+  per_km?: number; 
+  store: Store;  // distance model
+  storeLocation?: {
+    lat: number
+    lng: number
+    address: string
+  };
+  zones?: ShippingZone[]
 }
 
 export interface ShippingZone {
@@ -472,6 +479,7 @@ export interface ShippingZone {
   coverage_value: string; // e.g. "Within 10km radius" or "Lagos: Ikeja, Yaba"
   flat_fee: number;
   free_ship_min?: number | null;
+  estimatedDays?:number 
 }
 
 export interface UpsertShippingConfigRequest {
@@ -486,6 +494,7 @@ export interface CreateShippingZoneRequest {
   coverage_value: string;
   flat_fee: number;
   free_ship_min?: number | null;
+  estimatedDays?: number ;
 }
 
 export type UpdateShippingZoneRequest = Partial<CreateShippingZoneRequest>;
@@ -505,4 +514,24 @@ export interface ShippingQuoteResponse {
   amount: number;
   currency: string; // e.g., NGN
   breakdown?: Record<string, number>;
+}
+
+
+
+export interface Location {
+  place_id: string;
+  licence: string;
+  boundingbox: [string, string, string, string];
+  lat: string;
+  lon: string;
+  display_name: string;
+  importance: number;
+  address: {
+    road?: string;
+    city?: string;
+    state?: string;
+    county?: string;
+    country: string;
+    country_code: string;
+  };
 }
