@@ -91,18 +91,19 @@ export default function DeliverySettings() {
   const [estimatedDays, setEstimatedDays] = useState<number>(0);
 
   const suggestedRates = [50, 100, 200];
-
+  console.log(model);
   // React Query: load config and zones
   const { data: cfg, isLoading: cfgLoading } = useGetMyShippingConfig();
   const { data: zns, isLoading: zonesLoading } = useGetMyShippingZones();
-
+  console.log(cfg, "store shipping config");
   useEffect(() => {
     if (cfg) {
-      setModel(
-        ((cfg as ShippingConfig).model as "zones" | "distance") ?? "zones"
-      );
-      setBaseFee((cfg as ShippingConfig).base_fee ?? 0);
-      setPerKm((cfg as ShippingConfig).per_km ?? 0);
+      const model =
+        cfg.model === "zones" || cfg.model === "distance" ? cfg.model : "zones"; // force fallback if anything else
+
+      setModel(model);
+      setBaseFee(cfg.base_fee ?? 0);
+      setPerKm(cfg.per_km ?? 0);
     }
   }, [cfg]);
 

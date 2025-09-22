@@ -87,7 +87,10 @@ const CheckoutPage = () => {
 
   // Contact selection state
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-
+  const [latLon, setLatLon] = useState({
+    lat: "",
+    lon: ""
+  });
   const { mutateAsync: createOrder, isPending: creatingOrder } =
     useCreateOrder();
   const { mutateAsync: createOrderTemp, isPending: creatingOrderTemp } =
@@ -377,6 +380,8 @@ const CheckoutPage = () => {
               handleNewAddressAdded={handleNewAddressAdded}
               addressManually={addressManually}
               setAddressManually={setAddressManually}
+              setLatLon={setLatLon}
+              latLon={latLon}
             />
           </div>
 

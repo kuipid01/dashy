@@ -15,6 +15,13 @@ export const shippingAPI = {
     const res = await api.post("/shipping/config", data);
     return res.data.data || res.data;
   },
+  upsertConfigLatLon: async (data: {
+    lat: number;
+    lng: number;
+}): Promise<ShippingConfig> => {
+    const res = await api.post("/shipping/config", data);
+    return res.data.data || res.data;
+  },
   getMyConfig: async (): Promise<ShippingConfig | null> => {
     const res = await api.get("/shipping/config");
     return res.data.data || res.data || null;

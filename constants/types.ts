@@ -467,7 +467,7 @@ export interface ShippingConfig {
   storeLocation?: {
     lat: number
     lng: number
-    address: string
+    address?: string
   };
   zones?: ShippingZone[]
 }

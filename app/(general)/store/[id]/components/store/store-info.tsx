@@ -43,7 +43,7 @@ const StoreInfo = ({
         {/* <div className="flex items-center justify-center mt-2">
           {[...Array(5)].map((_, index) => (
             <Star
-              key={index}
+              key={index}k
               size={18}
               className={
                 index < Math.floor(storeRating)

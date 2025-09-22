@@ -372,14 +372,8 @@ const PersonalInformation = () => {
     country: updateData.country || originalData.country,
     email: updateData.email || originalData.email,
     phone_number: updateData.phone_number || originalData.phone_number,
-    lat:
-      typeof originalData.lat === "string"
-        ? parseFloat(originalData.lat)
-        : originalData.lat,
-    lon:
-      typeof originalData.lon === "string"
-        ? parseFloat(originalData.lon)
-        : originalData.lon
+    lat: originalData.lat,
+    lon: originalData.lon
   };
 
   const storeStatus = useStoreActivation(storeData, nameValid);

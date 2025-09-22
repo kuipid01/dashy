@@ -42,6 +42,19 @@ export const useUpsertShippingConfig = () => {
     },
   });
 };
+export const useUpsertShippingConfigWithJustLatLon = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: {
+      lat: number,
+      lng: number
+    }) =>
+      shippingAPI.upsertConfigLatLon(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: shippingKeys.config() });
+    },
+  });
+};
 
 export const useCreateShippingZone = () => {
   const qc = useQueryClient();
