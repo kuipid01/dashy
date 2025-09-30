@@ -14,6 +14,7 @@ import { BookDown, ChevronRight, Truck } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import InvoiceGenerator from "./invoice-generator";
 import OrderTracking from "./order-tracking";
+import { imageToRenderImage } from "@/app/utils/get-image";
 
 interface OrderDetailsProps {
   order: Order;
@@ -107,7 +108,7 @@ export default function OrderDetails({
               <div className="flex gap-2 items-center">
                 <Image
                   src={
-                    (orderItem?.Product?.Image as string) ||
+                    (imageToRenderImage(orderItem?.Product?.Image) as string) ||
                     (orderItem?.Product?.image?.[0] as string) ||
                     "/assets/login.jpg"
                   }

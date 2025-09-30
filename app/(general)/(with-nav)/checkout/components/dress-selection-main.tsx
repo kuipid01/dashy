@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/select";
 import ShippingDetailsOrder from "../../cart/components/shipping-dets";
 import { COUNTRIES, NIGERIAN_STATES } from "@/constants/mock_data";
+import clsx from "clsx";
+import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/stores/cart-store";
 interface Address {
   id: string;
   street: string;
@@ -58,6 +61,9 @@ interface MainProps {
     lat: string;
     lon: string;
   };
+
+  setDistanceResults: Dispatch<SetStateAction<Record<string, any>>>;
+  distanceResults: Record<string, any>;
 }
 
 const AddressSelectionMain = ({
@@ -66,13 +72,16 @@ const AddressSelectionMain = ({
   addressManually,
   setAddressManually,
   setLatLon,
-  latLon
+  latLon,
+  setDistanceResults,
+  distanceResults
 }: MainProps) => {
+  const [zonePresent, setZonePresent] = useState(true);
   const [step, setSteps] = useState(1);
   // Session & details state
   const { user, isLoading: isUserLoading } = useFetchUser();
   console.log(latLon, "manual latLonk");
-
+  const { clearShippingFees } = useCartStore();
   return (
     <>
       <Card>
@@ -125,169 +134,212 @@ const AddressSelectionMain = ({
 
           {/* Case 2: Logged-in user choosing from saved addresses */}
           {user && !isUserLoading && (
-            <AddressSelection
-              email={(user as any).Email}
-              onAddressSelected={handleAddressSelected}
-              onNewAddressAdded={handleNewAddressAdded}
-            />
+            <>
+              <AddressSelection
+                email={(user as any).Email}
+                onAddressSelected={handleAddressSelected}
+                onNewAddressAdded={handleNewAddressAdded}
+              />
+              <ShippingDetailsOrder
+                setLatLon={setLatLon}
+                latLon={latLon}
+                setSteps={setSteps}
+                setAddressManually={setAddressManually}
+                addressManually={addressManually}
+                step={step}
+                setZonesPresent={setZonePresent}
+                zonesPresent={zonePresent}
+                setDistanceResults={setDistanceResults}
+                distanceResults={distanceResults}
+              />
+            </>
           )}
 
           {/* Case 3: Manual address form (guest or custom mode) */}
           {!user && !isUserLoading && (
             <>
-              {step === 1 ? (
-                <ShippingDetailsOrder
-                  setLatLon={setLatLon}
-                  latLon={latLon}
-                  setSteps={setSteps}
-                  setAddressManually={setAddressManually}
-                  addressManually={addressManually}
-                />
-              ) : (
-                <div className="space-y-4">
-                  <div className=" bg-blue-600 w-fit font-bold uppercase text-white rounded-md px-3 py-1 text-xs">
-                    Enter Street Address to help delivery drivers get to you
-                    easily
-                  </div>
+              <ShippingDetailsOrder
+                setLatLon={setLatLon}
+                latLon={latLon}
+                setSteps={setSteps}
+                setAddressManually={setAddressManually}
+                addressManually={addressManually}
+                step={step}
+                setZonesPresent={setZonePresent}
+                zonesPresent={zonePresent}
+                setDistanceResults={setDistanceResults}
+                distanceResults={distanceResults}
+              />
+
+              <div
+                className={clsx(
+                  "space-y-4",
+                  step === 2
+                    ? " translate-y-0 "
+                    : " invisible pointer-events-none translate-y-[100%] hidden"
+                )}
+              >
+                <div className=" bg-blue-600 w-fit font-bold uppercase text-white rounded-md px-3 py-1 text-xs">
+                  Enter Street Address to help delivery drivers get to you
+                  easily
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="street">Street Address</Label>
+                  <Input
+                    id="street"
+                    placeholder="123 Main St"
+                    value={addressManually.street}
+                    onChange={(e) =>
+                      setAddressManually({
+                        ...addressManually,
+                        street: e.target.value
+                      })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="street">Street Address</Label>
+                    <Label htmlFor="city">City</Label>
                     <Input
-                      id="street"
-                      placeholder="123 Main St"
-                      value={addressManually.street}
+                      id="city"
+                      placeholder="Lagos"
+                      value={addressManually.city}
                       onChange={(e) =>
                         setAddressManually({
                           ...addressManually,
-                          street: e.target.value
+                          city: e.target.value
                         })
                       }
                     />
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="city">City</Label>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="state">State</Label>
+                    {addressManually.state ? (
                       <Input
-                        id="city"
-                        placeholder="Lagos"
-                        value={addressManually.city}
-                        onChange={(e) =>
-                          setAddressManually({
-                            ...addressManually,
-                            city: e.target.value
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="state">State</Label>
-                      {addressManually.state ? (
-                        <Input
-                          disabled={true}
-                          id="state"
-                          placeholder="Lagos State"
-                          value={addressManually.state}
-                        />
-                      ) : (
-                        <Select
-                          onValueChange={(e) =>
-                            setAddressManually({
-                              ...addressManually,
-                              state: e
-                            })
-                          }
-                          value={addressManually.state}
-                        >
-                          <SelectTrigger className="h-12 px-4 focus:ring-2 focus:ring-blue-500 border border-gray-300 focus:border-blue-500 block w-full text-sm rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500">
-                            <SelectValue placeholder="Select a state" />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-lg border border-gray-200 dark:border-gray-700 max-h-60">
-                            {NIGERIAN_STATES.map((state) => (
-                              <SelectItem
-                                key={state}
-                                value={
-                                  addressManually.state
-                                    ? addressManually.state
-                                    : state
-                                }
-                                className="hover:bg-blue-50 dark:hover:bg-gray-700"
-                              >
-                                {state}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="postalCode">Postal Code</Label>
-                      <Input
-                        id="postalCode"
-                        placeholder="100001"
-                        value={addressManually.postalCode}
-                        onChange={(e) =>
-                          setAddressManually({
-                            ...addressManually,
-                            postalCode: e.target.value
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="country">Country</Label>
-
-                      <Select
                         disabled={true}
+                        id="state"
+                        placeholder="Lagos State"
+                        value={addressManually.state}
+                      />
+                    ) : (
+                      <Select
                         onValueChange={(e) =>
                           setAddressManually({
                             ...addressManually,
-                            country: addressManually.country
-                              ? addressManually.country
-                              : e
+                            state: e
                           })
                         }
-                        value={
-                          addressManually.country
-                            ? addressManually.country
-                            : COUNTRIES[0]
-                        }
+                        value={addressManually.state}
                       >
                         <SelectTrigger className="h-12 px-4 focus:ring-2 focus:ring-blue-500 border border-gray-300 focus:border-blue-500 block w-full text-sm rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500">
-                          <SelectValue placeholder="Select Country" />
+                          <SelectValue placeholder="Select a state" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-lg border border-gray-200 dark:border-gray-700">
-                          {COUNTRIES.map((country) => (
+                        <SelectContent className="rounded-lg border border-gray-200 dark:border-gray-700 max-h-60">
+                          {NIGERIAN_STATES.map((state) => (
                             <SelectItem
-                              key={country}
-                              value={country}
+                              key={state}
+                              value={
+                                addressManually.state
+                                  ? addressManually.state
+                                  : state
+                              }
                               className="hover:bg-blue-50 dark:hover:bg-gray-700"
                             >
-                              {country}
+                              {state}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                    </div>
+                    )}
                   </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="addressDescription">
-                      Address Description (Optional)
-                    </Label>
+                    <Label htmlFor="postalCode">Postal Code</Label>
                     <Input
-                      id="addressDescription"
-                      placeholder="e.g., Near the blue gate"
-                      value={addressManually.addressDescription}
+                      id="postalCode"
+                      placeholder="100001"
+                      value={addressManually.postalCode}
                       onChange={(e) =>
                         setAddressManually({
                           ...addressManually,
-                          addressDescription: e.target.value
+                          postalCode: e.target.value
                         })
                       }
                     />
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="country">Country</Label>
+
+                    <Select
+                      disabled={true}
+                      onValueChange={(e) =>
+                        setAddressManually({
+                          ...addressManually,
+                          country: addressManually.country
+                            ? addressManually.country
+                            : e
+                        })
+                      }
+                      value={
+                        addressManually.country
+                          ? addressManually.country
+                          : COUNTRIES[0]
+                      }
+                    >
+                      <SelectTrigger className="h-12 px-4 focus:ring-2 focus:ring-blue-500 border border-gray-300 focus:border-blue-500 block w-full text-sm rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500">
+                        <SelectValue placeholder="Select Country" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-lg border border-gray-200 dark:border-gray-700">
+                        {COUNTRIES.map((country) => (
+                          <SelectItem
+                            key={country}
+                            value={country}
+                            className="hover:bg-blue-50 dark:hover:bg-gray-700"
+                          >
+                            {country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              )}
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="addressDescription">
+                    Address Description (Optional)
+                  </Label>
+                  <Input
+                    id="addressDescription"
+                    placeholder="e.g., Near the blue gate"
+                    value={addressManually.addressDescription}
+                    onChange={(e) =>
+                      setAddressManually({
+                        ...addressManually,
+                        addressDescription: e.target.value
+                      })
+                    }
+                  />
+                </div>
+
+                <Button
+                  onClick={() => {
+                    setSteps(1);
+                    setZonePresent(true);
+                    clearShippingFees();
+                    setDistanceResults({});
+                    setAddressManually({
+                      addressDescription: "",
+                      city: "",
+                      country: "",
+                      postalCode: "",
+                      state: "",
+                      street: ""
+                    });
+                  }}
+                >
+                  Select New Address
+                </Button>
+              </div>
             </>
           )}
         </CardContent>

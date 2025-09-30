@@ -38,7 +38,10 @@ export default function OrderCard({
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
+  const imageToRender = order?.orderItems[0]?.Product.Image.includes(",")
+    ? order?.orderItems[0]?.Product.Image.split(",")
+    : order?.orderItems[0]?.Product.Image;
+  console.log(imageToRender[0], "image to redner");
   //
   return (
     <div className=" rounded-xl py-3 h-fit bgblur  overflow-hidden flex flex-col gap-3">
@@ -123,11 +126,7 @@ export default function OrderCard({
         <div className=" p-3 w-full flex items-center gap-3 rounded-md bg-[#F7F7F8]">
           <Image
             alt={""}
-            src={
-              order?.orderItems
-                ? order?.orderItems[0]?.Product.Image
-                : "/assets/login.jpg"
-            }
+            src={imageToRender[0] ?? "/assets/login.jpg"}
             width={100}
             height={100}
             className="w-[100px] h-[100px] rounded-md object-cover"

@@ -25,6 +25,8 @@ import { Switch } from "@/components/ui/switch";
 import Skeleton from "@/app/(general)/_compoenents/skeleton";
 import { useFetchLocations } from "@/app/(handlers)/externals/ng-data/ng-data";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
+import clsx from "clsx";
+import AbstractedLocationManager from "./abstracted-location-manager";
 
 interface StoreConfig {
   storeId: string | number;
@@ -43,7 +45,12 @@ const ShippingDetailsOrder = ({
   latLon,
   setLatLon,
   addressManually,
-  setAddressManually
+  setAddressManually,
+  step,
+  setZonesPresent,
+  zonesPresent,
+  setDistanceResults,
+  distanceResults
 }: {
   latLon: {
     lat: string;
@@ -73,10 +80,24 @@ const ShippingDetailsOrder = ({
     country: string;
     addressDescription: string;
   };
+  setZonesPresent: React.Dispatch<React.SetStateAction<boolean>>;
+  zonesPresent: boolean;
   setSteps: React.Dispatch<React.SetStateAction<number>>;
+  step: number;
+  setDistanceResults: Dispatch<SetStateAction<Record<string, any>>>;
+  distanceResults: Record<string, any>;
 }) => {
   const { items } = useCartStore();
-  const [zonePresent, setZonePresent] = useState(true);
+
+  const [zonesSelected, setZonesSelected] = useState<
+    {
+      storeId: string | number;
+      zoneSelectedId: string;
+      price?: number;
+    }[]
+  >([]);
+
+  console.log(zonesSelected, "ZONES ELECTED");
 
   const cart = Object.values(items);
 
@@ -91,9 +112,10 @@ const ShippingDetailsOrder = ({
   });
 
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  const [distanceResults, setDistanceResults] = useState<Record<string, any>>(
-    {}
-  );
+  const { setShippingFeeForStore, clearShippingFees, setShippingAddress } =
+    useCartStore();
+
+  console.log(distanceResults, "Distance Results");
 
   const handleSelectLocation = (location: Location) => {
     console.log(location, " LOCATION SELECTED");
@@ -105,6 +127,15 @@ const ShippingDetailsOrder = ({
     setLatLon({
       lat: location.lat,
       lon: location.lon
+    });
+    clearShippingFees();
+    // persist to store (for checkout summary and next steps)
+    setShippingAddress({
+      city: location.address.city ?? "",
+      state: location.address.state ?? "",
+      country: location.address.country ?? "",
+      lat: Number(location.lat),
+      lon: Number(location.lon)
     });
     localStorage.setItem(
       "location",
@@ -120,7 +151,7 @@ const ShippingDetailsOrder = ({
       country: location.address.country ?? "",
       city: location.address.city ?? ""
     });
-    // setSteps(2);
+    setSteps(2);
     // Note: this will log the **old state**, not the just-updated one
   };
 
@@ -129,6 +160,68 @@ const ShippingDetailsOrder = ({
     setAddress("");
     setDebouncedAddress("");
     // Set fallback coordinates when clearing
+  };
+  // Use browser geolocation and reverse geocode to state/country
+  const handleUseMyLocationNow = async () => {
+    if (!navigator.geolocation) {
+      console.warn("Geolocation is not supported by this browser.");
+      return;
+    }
+    setIsLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          setLatLon({ lat: String(latitude), lon: String(longitude) });
+
+          // Reverse geocode via OSM Nominatim
+          const url = `https://nominatim.openstreetmap.org/reverse?lat=${encodeURIComponent(
+            latitude
+          )}&lon=${encodeURIComponent(longitude)}&format=json&addressdetails=1`;
+          const res = await fetch(url, {
+            headers: { Accept: "application/json" }
+          });
+          const data = await res.json();
+          const state = data?.address?.state ?? "";
+          const country = data?.address?.country ?? "";
+          const city =
+            data?.address?.city ??
+            data?.address?.town ??
+            data?.address?.county ??
+            "";
+
+          setAddressManually({
+            ...addressManually,
+            state,
+            country,
+            city
+          });
+
+          setValueAdress(data?.display_name ?? "");
+          setAddress("");
+          setDebouncedAddress("");
+
+          setShippingAddress({
+            state,
+            country,
+            city,
+            lat: latitude,
+            lon: longitude
+          });
+
+          setSteps(2);
+        } catch (err) {
+          console.error("Reverse geocoding failed", err);
+        } finally {
+          setIsLoadingLocation(false);
+        }
+      },
+      (err) => {
+        console.error("Geolocation error", err);
+        setIsLoadingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
   const [debouncedAddress, setDebouncedAddress] = useState("");
   const [valueAdress, setValueAdress] = useState("");
@@ -224,6 +317,11 @@ const ShippingDetailsOrder = ({
 
     if (latLon.lat && latLon.lon) {
       for (const config of storeConfigs) {
+        if (config.config.model !== "distance" && zonesPresent) continue;
+        // Only auto-calc for distance-based stores
+        console.log("WE GOT HERE FOR THE CONFIG", config);
+
+        console.log("PASSED THE MODEL", config.config.model);
         console.log("🔍 Checking config for storeId:", config.storeId);
 
         if (
@@ -272,7 +370,8 @@ const ShippingDetailsOrder = ({
         const result = {
           distance: distance.toFixed(1),
           cost: shippingCost.toFixed(2),
-          estimatedDays: `${estimatedDays}-${estimatedDays + 1}`
+          estimatedDays: `${estimatedDays}-${estimatedDays + 1}`,
+          type: "distance"
         };
 
         console.log(
@@ -284,13 +383,18 @@ const ShippingDetailsOrder = ({
           ...prev,
           [config.storeId]: result
         }));
+        // also persist to store shipping fees
+        try {
+          setShippingFeeForStore(Number(config.storeId), Number(result.cost));
+        } catch (e) {
+          console.error("Failed to set shipping fee for store", e);
+        }
       }
     } else {
       console.warn("⚠️ latLon is missing or invalid:", latLon);
     }
   }, [latLon]);
 
-  console.log(latLon);
   const calculateDistance = (
     lat1: number,
     lng1: number,
@@ -331,50 +435,16 @@ const ShippingDetailsOrder = ({
     return distance;
   };
 
-  const handleLocationSubmit = async () => {
-    if (!userLocation.address.trim()) return;
-
-    setIsLoadingLocation(true);
-    try {
-      // In a real app, you'd use a geocoding service like Google Maps API
-      // For demo purposes, we'll simulate coordinates
-      const mockCoordinates = {
-        lat: 40.7128 + (Math.random() - 0.5) * 0.1,
-        lng: -74.006 + (Math.random() - 0.5) * 0.1
-      };
-
-      setUserLocation((prev) => ({
-        ...prev,
-        ...mockCoordinates
-      }));
-
-      // Calculate shipping for all distance-based stores
-      const distanceStores = storeConfigs.filter(
-        (store) => store.config.model === "distance"
-      );
-      for (const store of distanceStores) {
-        await calculateDistanceShipping({
-          ...store,
-          config: {
-            ...store.config,
-            storeLocation: store.config.storeLocation || {
-              lat: 40.7589 + (Math.random() - 0.5) * 0.2,
-              lng: -73.9851 + (Math.random() - 0.5) * 0.2,
-              address: `Store ${store.storeId} Location`
-            }
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error processing location:", error);
-    } finally {
-      setIsLoadingLocation(false);
-    }
-  };
-
-  console.log(latLon, distanceResults);
+  console.log(distanceResults, "DISTANECE RESULTS");
   return (
-    <div className="space-y-6">
+    <div
+      className={clsx(
+        "space-y-4",
+        step === 1
+          ? " translate-y-0  "
+          : " translate-y-[100%]  pointer-events-none invisible hidden"
+      )}
+    >
       <div className="flex items-center gap-2 mb-4">
         <Truck className="h-5 w-5" />
         <h2 className="text-xl font-semibold">Stores Shipping Settings</h2>
@@ -398,34 +468,92 @@ const ShippingDetailsOrder = ({
               // Zone-based shipping
 
               <>
-                {zonePresent ? (
+                {zonesPresent ? (
                   <div className="space-y-4">
                     <p className="text-sm text-muted-foreground">
                       Available shipping zones for this store:
                     </p>
                     <div className="grid gap-3">
-                      {storeConfig.config.zones?.map((zone) => (
-                        <div
-                          key={zone.id}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                        >
-                          <div className="flex-1">
-                            <h4 className="font-medium">{zone.name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Regions: {zone.name}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-center gap-1 text-sm font-medium">
-                              ₦{zone.flat_fee.toFixed(2)}
+                      {storeConfig.config.zones?.map((zone) => {
+                        // Check if zone already exists in zonesSelected
+                        const selected = zonesSelected.find(
+                          (z) =>
+                            z.zoneSelectedId === zone.id &&
+                            z.storeId === storeConfig.storeId
+                        );
+
+                        return (
+                          <div
+                            onClick={() => {
+                              setZonesSelected((prev) => {
+                                const exist = prev.find(
+                                  (z) =>
+                                    z.zoneSelectedId === zone.id &&
+                                    z.storeId === storeConfig.storeId
+                                );
+
+                                if (exist) {
+                                  // unselect if it's already selected
+                                  return prev.filter(
+                                    (z) =>
+                                      !(
+                                        z.zoneSelectedId === zone.id &&
+                                        z.storeId === storeConfig.storeId
+                                      )
+                                  );
+                                }
+
+                                // replace any existing zone for this store with the new one
+                                const withoutStore = prev.filter(
+                                  (z) => z.storeId !== storeConfig.storeId
+                                );
+
+                                return [
+                                  ...withoutStore,
+                                  {
+                                    storeId: storeConfig.storeId,
+                                    zoneSelectedId: zone.id,
+                                    price: zone.flat_fee ?? undefined
+                                  }
+                                ];
+                              });
+
+                              const result = {
+                                type: "zone",
+                                zone_id: zone.id,
+                                zone_name: zone.name,
+                                cost: zone.flat_fee.toFixed(2),
+                                estimatedDays: zone.estimatedDays
+                              };
+                              setDistanceResults((prev) => ({
+                                ...prev,
+                                [storeConfig.storeId]: result
+                              }));
+                            }}
+                            key={zone.id}
+                            className={clsx(
+                              "flex items-center justify-between p-3 border rounded-lg hover:bg-amber-400 cursor-pointer transition-colors",
+                              selected ? " bg-amber-200" : " bg-none"
+                            )}
+                          >
+                            <div className="flex-1">
+                              <h4 className="font-medium">{zone.name}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                Regions: {zone.name}
+                              </p>
                             </div>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              {zone.estimatedDays} days
+                            <div className="text-right">
+                              <div className="flex items-center gap-1 text-sm font-medium">
+                                ₦{zone.flat_fee.toFixed(2)}
+                              </div>
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Clock className="h-3 w-3" />
+                                {zone.estimatedDays} days
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )) || (
+                        );
+                      }) || (
                         <p className="text-sm text-muted-foreground">
                           No zones configured
                         </p>
@@ -437,189 +565,98 @@ const ShippingDetailsOrder = ({
                         toggle button
                       </div>
                       <Switch
-                        checked={zonePresent}
-                        onCheckedChange={() => setZonePresent(!zonePresent)}
+                        checked={zonesPresent}
+                        onCheckedChange={() => setZonesPresent(!zonesPresent)}
                       />
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Search className="h-4 w-4 text-gray-500" />
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Address Search
-                      </label>
-                    </div>
-
-                    <>
-                      {/* Input shows if no location selected */}
-                      {!valueAdress ? (
-                        <div className="relative">
-                          <InputComponent
-                            label=""
-                            placeholder="Enter your address to search..."
-                            name="address"
-                            value={address}
-                            onChange={(e) => {
-                              setAddress(e.target.value);
-                            }}
-                            className="h-12 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 border border-gray-300 focus:border-blue-500 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
-                          />
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between border border-green-200 dark:border-green-700 rounded-lg px-4 py-3 bg-green-50 dark:bg-green-900/20">
-                          <div className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
-                            <span className="text-sm font-medium text-green-800 dark:text-green-200">
-                              {valueAdress}
-                            </span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={handleClearLocation}
-                            className="p-1 text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-full transition-colors duration-200"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Suggestions */}
-                      {gettingLocations ? (
-                        <div className="space-y-2 mt-3">
-                          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
-                            Searching for locations...
-                          </div>
-                          <div className="space-y-2">
-                            <Skeleton />
-                            <Skeleton />
-                            <Skeleton />
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          {locations?.length > 0 && debouncedAddress && (
-                            <div className="relative mt-1">
-                              <div className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
-                                {locations.map((location: Location) => (
-                                  <div
-                                    key={location.display_name}
-                                    className="cursor-pointer px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors duration-200"
-                                    onClick={() => {
-                                      console.log(
-                                        "WE CLICKED THE THE ADD LOCATION BTN"
-                                      );
-
-                                      handleSelectLocation(location);
-                                    }}
-                                  >
-                                    <div className="flex items-start gap-3">
-                                      <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                                      <div>
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                          {location.display_name}
-                                        </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                          {location.address.city},{" "}
-                                          {location.address.state}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                          {locations?.length === 0 &&
-                            debouncedAddress &&
-                            !gettingLocations && (
-                              <div className="flex items-center gap-2 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-                                <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
-                                <span className="text-sm text-yellow-800 dark:text-yellow-200">
-                                  We could not find that location. Using state
-                                  coordinates as fallback.
-                                </span>
-                              </div>
-                            )}
-                        </>
-                      )}
-                    </>
-                  </div>
+                  <AbstractedLocationManager
+                    address={address}
+                    debouncedAddress={debouncedAddress}
+                    gettingLocations={gettingLocations}
+                    handleClearLocation={handleClearLocation}
+                    handleSelectLocation={handleSelectLocation}
+                    handleUseMyLocationNow={handleUseMyLocationNow}
+                    isLoadingLocation={isLoadingLocation}
+                    locations={locations}
+                    setAddress={setAddress}
+                    valueAdress={valueAdress}
+                  />
                 )}
               </>
             ) : (
-              // Distance-based shipping
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  Enter your location to calculate shipping cost and delivery
-                  time:
-                </p>
+              <div>
+                {zonesPresent ? (
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Enter your location to calculate shipping cost and
+                      delivery time:
+                    </p>
 
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <Label
-                      htmlFor={`location-${storeConfig.storeId}`}
-                      className="sr-only"
-                    >
-                      Your location
-                    </Label>
-                    <Input
-                      id={`location-${storeConfig.storeId}`}
-                      placeholder="Enter your address or location"
-                      value={userLocation.address}
-                      onChange={(e) =>
-                        setUserLocation((prev) => ({
-                          ...prev,
-                          address: e.target.value
-                        }))
-                      }
-                      disabled={isLoadingLocation}
+                    <AbstractedLocationManager
+                      address={address}
+                      debouncedAddress={debouncedAddress}
+                      gettingLocations={gettingLocations}
+                      handleClearLocation={handleClearLocation}
+                      handleSelectLocation={handleSelectLocation}
+                      handleUseMyLocationNow={handleUseMyLocationNow}
+                      isLoadingLocation={isLoadingLocation}
+                      locations={locations}
+                      setAddress={setAddress}
+                      valueAdress={valueAdress}
                     />
-                  </div>
-                  <Button
-                    onClick={handleLocationSubmit}
-                    disabled={!userLocation.address.trim() || isLoadingLocation}
-                  >
-                    {isLoadingLocation ? "Calculating..." : "Calculate"}
-                  </Button>
-                </div>
 
-                {distanceResults[storeConfig.storeId] && (
-                  <div className="p-4 bg-muted/50 rounded-lg">
-                    <h4 className="font-medium mb-2">Shipping Quote</h4>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Distance:</span>
-                        <p className="font-medium">
-                          {distanceResults[storeConfig.storeId].distance} km
-                        </p>
+                    {distanceResults[storeConfig.storeId] && (
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <h4 className="font-medium mb-2">Shipping Quote</h4>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">
+                              Distance:
+                            </span>
+                            <p className="font-medium">
+                              {distanceResults[storeConfig.storeId].distance} km
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">Cost:</span>
+                            <p className="font-medium">
+                              ${distanceResults[storeConfig.storeId].cost}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">
+                              Delivery:
+                            </span>
+                            <p className="font-medium">
+                              {
+                                distanceResults[storeConfig.storeId]
+                                  .estimatedDays
+                              }{" "}
+                              days
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Cost:</span>
-                        <p className="font-medium">
-                          ${distanceResults[storeConfig.storeId].cost}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Delivery:</span>
-                        <p className="font-medium">
-                          {distanceResults[storeConfig.storeId].estimatedDays}{" "}
-                          days
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                {storeConfig.config.storeLocation && (
-                  <div className="text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3 inline mr-1" />
-                    Store location: {storeConfig.config.storeLocation.address}
+                    {storeConfig.config.storeLocation?.address && (
+                      <div className="text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3 inline mr-1" />
+                        Store location:{" "}
+                        {storeConfig.config.storeLocation.address}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <p>Shipping price will be determined automatically. </p>
                   </div>
                 )}
               </div>
+
+              // Distance-based shipping
             )}
           </CardContent>
         </Card>

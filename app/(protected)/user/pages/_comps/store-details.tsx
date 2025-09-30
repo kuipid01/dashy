@@ -15,7 +15,8 @@ import {
   Camera,
   Shield,
   Eye,
-  EyeOff
+  EyeOff,
+  ActivitySquare
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { InputComponent } from "@/app/(protected)/_components/input-component";
@@ -40,6 +41,8 @@ const StoreDetails = () => {
     useUpdateStore();
   const { mutateAsync: updateUser, isPending: updatingUser } = useUpdateUser();
   const { upload, isPending: uploadingImage } = useUploadImage();
+  const { upload: uploadLogo, isPending: uploadingImageLogo } =
+    useUploadImage();
   console.log(userStore);
   const isLoading = isUserLoading || isStoreLoading;
 
@@ -70,14 +73,9 @@ const StoreDetails = () => {
         icon: MapPin
       },
       contact: {
-        valid: !!(store.email && store.phone_number),
+        valid: !!store.phone_number,
         label: "Contact Information",
         icon: Phone
-      },
-      description: {
-        valid: !!store.description && store.description.length > 10,
-        label: "Store Description",
-        icon: Globe
       }
     };
 
@@ -85,7 +83,7 @@ const StoreDetails = () => {
       (req) => req.valid
     ).length;
     const totalCount = Object.keys(requirements).length;
-    const isFullyActivated = validCount === totalCount && store.is_active;
+    const isFullyActivated = validCount === totalCount;
 
     return { requirements, validCount, totalCount, isFullyActivated };
   };
@@ -104,9 +102,9 @@ const StoreDetails = () => {
           return;
         }
 
-        const res = await upload([storeLogo]);
+        const res = await uploadLogo([storeLogo]);
         await updateStore({
-          ...userData,
+          // ...userData,
           store_logo: res.urls[0]
         });
 
@@ -116,7 +114,7 @@ const StoreDetails = () => {
 
       handleUpload();
     }
-  }, [storeLogo, upload, updateStore, userData]);
+  }, [storeLogo, uploadLogo, updateStore, userData]);
   useEffect(() => {
     if (storeHeaderImage) {
       const handleUpload = async () => {
@@ -132,7 +130,6 @@ const StoreDetails = () => {
 
         const res = await upload([storeHeaderImage]);
         await updateStore({
-          ...userData,
           cover_image: res.urls[0]
         });
 
@@ -282,7 +279,7 @@ const StoreDetails = () => {
                   className="cursor-pointer group relative block w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors duration-200"
                   htmlFor="store-logo"
                 >
-                  {store.store_logo ? (
+                  {store.store_logo && !uploadingImageLogo ? (
                     <div className="relative w-full h-full rounded-xl overflow-hidden">
                       <Image
                         src={store.store_logo}
@@ -297,6 +294,10 @@ const StoreDetails = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  ) : uploadingImageLogo ? (
+                    <div className="flex items-center justify-center h-full">
+                      <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400">
@@ -314,7 +315,7 @@ const StoreDetails = () => {
                   className="cursor-pointer group relative block w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors duration-200"
                   htmlFor="store-header-image"
                 >
-                  {store.cover_image ? (
+                  {store.cover_image && !uploadingImage ? (
                     <div className="relative w-full h-full rounded-xl overflow-hidden">
                       <Image
                         src={store.cover_image}
@@ -410,41 +411,6 @@ const StoreDetails = () => {
                   name="email"
                   className="h-12 px-4 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
                 />
-              </div>
-            </div>
-          </div>
-
-          {/* Store Status Section */}
-          <div className="px-6 py-8 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-gray-600 border-t border-gray-200 dark:border-gray-600">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                  <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    Store Status
-                  </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">
-                    {store.is_active
-                      ? "Store is currently active"
-                      : "Store is inactive"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                {store.is_active ? (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 rounded-full">
-                    <Eye className="h-4 w-4" />
-                    <span className="text-sm font-medium">Active</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">
-                    <EyeOff className="h-4 w-4" />
-                    <span className="text-sm font-medium">Inactive</span>
-                  </div>
-                )}
               </div>
             </div>
           </div>

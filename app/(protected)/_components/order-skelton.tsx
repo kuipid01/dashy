@@ -20,18 +20,18 @@ const OrderSkeletonLoader: React.FC = () => {
           {/* User Email/Phone (placeholder) */}
         </div>
         <div>
-          <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>{" "}
+          <div className="h-4 bg-gray-300 rounded w-full lg:w-32 mb-2"></div>{" "}
           {/* Store Label */}
           <div className="h-5 bg-gray-300 rounded w-full mb-1"></div>{" "}
           {/* Store Name */}
-          <div className="h-4 bg-gray-300 rounded w-48"></div>{" "}
+          <div className="h-4 bg-gray-300 rounded w-full lg:w-48"></div>{" "}
           {/* Store Address (placeholder) */}
         </div>
       </div>
 
       {/* Order Items Section */}
       <div>
-        <div className="h-5 bg-gray-300 rounded w-40 mb-4"></div>{" "}
+        <div className="h-5 bg-gray-300 rounded w-full lg:w-40 mb-4"></div>{" "}
         {/* Order Items Label */}
         {/* Loop for multiple order items */}
         {[...Array(3)].map(

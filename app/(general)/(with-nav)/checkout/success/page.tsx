@@ -1,61 +1,77 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCartStore } from "@/stores/cart-store";
-import { CheckCircle, Truck, Package, Home } from "lucide-react";
+import { CheckCircle, Truck, Package, Home, Copy } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFetchUser } from "@/app/(handlers)/auth-handlers/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetOrderById } from "@/app/(handlers)/orders";
+import { useGetOrdersByIds } from "./use-fetch-orders";
+import SuccessPageSkeleton from "./components/success-page";
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const orderIdParam = searchParams.get("orderId");
-  const orderIdNumber = useMemo(() => Number(orderIdParam), [orderIdParam]);
 
-  const {
-    data: order,
-    isPending,
-    isError
-  } = useGetOrderById(orderIdNumber, !!orderIdNumber);
+  // const orderIdParam = searchParams.get("orderId");
+  const orderIdsParam = searchParams.get("orderIds");
+  const orderIds = useMemo(() => {
+    if (!orderIdsParam) return [];
+    return orderIdsParam
+      .split(",")
+      .map((id) => Number(id))
+      .filter(Boolean);
+  }, [orderIdsParam]);
 
-  const { items, clearCart } = useCartStore();
-  const { user } = useFetchUser();
+  const { data: orders, loading } = useGetOrdersByIds(orderIds);
 
-  // Convert items object to array for easier mapping (fallback if needed)
-  const cartItems = useMemo(() => Object.values(items), [items]);
+  const { _hasHydrated } = useCartStore();
+  const { user, isLoading } = useFetchUser();
 
-  const orderItems = order?.order_items ?? [];
-  const orderTotal = order?.total ?? 0;
+  const orderItems = orders?.flatMap((order) => order.order_items) ?? [];
+  const orderTotal = orders?.reduce((acc, order) => acc + order.total, 0) ?? 0;
+  console.log(
+    orders.flatMap((o) => o?.order_items),
+    "orders"
+  );
+  // useEffect(() => {
+  //   // If orderId is invalid or request errored/no data, redirect to checkout
+  //   if (!orderIdParam || Number.isNaN(orderIdNumber)) {
+  //     router.replace("/checkout");
+  //     return;
+  //   }
 
-  useEffect(() => {
-    // If orderId is invalid or request errored/no data, redirect to checkout
-    if (!orderIdParam || Number.isNaN(orderIdNumber)) {
-      router.replace("/checkout");
-      return;
-    }
+  //   if (!isPending && (isError || !order)) {
+  //     router.replace("/checkout");
+  //     return;
+  //   }
 
-    if (!isPending && (isError || !order)) {
-      router.replace("/checkout");
-      return;
-    }
+  //   // Clear the cart after a successful order loads
+  //   if (!isPending && order) {
+  //     clearCart();
+  //   }
+  // }, [
+  //   orderIdParam,
+  //   orderIdNumber,
+  //   isPending,
+  //   isError,
+  //   order,
+  //   router,
+  //   clearCart
+  // ]);
+  const [copied, setCopied] = useState(false);
 
-    // Clear the cart after a successful order loads
-    if (!isPending && order) {
-      clearCart();
-    }
-  }, [
-    orderIdParam,
-    orderIdNumber,
-    isPending,
-    isError,
-    order,
-    router,
-    clearCart
-  ]);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(orders[0].purhase_id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  if (!_hasHydrated || isLoading) return <SuccessPageSkeleton />;
 
   return (
     <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
@@ -75,50 +91,72 @@ const SuccessPage = () => {
                 will be processed shortly.
               </p>
             </div>
-
+            <div className="flex items-center justify-between p-4 rounded-2xl shadow-md bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold text-lg">
+              <span className="truncate font-black">
+                Purchase ID: {orders[0].purhase_id}
+              </span>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="ml-2 text-black bg-white hover:bg-gray-100 rounded-full"
+                onClick={handleCopy}
+              >
+                <Copy className="h-5 w-5" />
+              </Button>
+              {copied && (
+                <span className="ml-3 text-sm font-medium">Copied!</span>
+              )}
+            </div>
             {/* Order Details */}
             <div className="bg-gray-50 p-4 rounded-lg text-left">
               <h4 className="font-semibold mb-3">Order Summary</h4>
-              {isPending ? (
+              {loading ? (
                 <div className="animate-pulse space-y-2">
                   <div className="h-4 bg-gray-200 rounded w-2/3"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/3"></div>
                 </div>
               ) : (
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Order ID:</span>
-                    <span className="font-medium">#{order?.id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Status:</span>
-                    <span className="font-medium capitalize">
-                      {order?.status ?? order?.orderStatus ?? "processing"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Order Total:</span>
-                    <span className="font-semibold">
-                      ₦{orderTotal.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Items:</span>
-                    <span>
-                      {orderItems.length || cartItems.length} product(s)
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Shipping:</span>
-                    <span className="text-green-600">Free</span>
-                  </div>
-                </div>
+                <>
+                  {orders.map((order) => (
+                    <div
+                      key={order.id}
+                      className="space-y-2 border-y py-3 border-gray-400 text-sm"
+                    >
+                      <div className="flex justify-between">
+                        <span>Order ID:</span>
+                        <span className="font-medium">#{order?.id}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Status:</span>
+                        <span className="font-medium capitalize">
+                          {order?.status ?? order?.orderStatus ?? "processing"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Order Total:</span>
+                        <span className="font-semibold">
+                          ₦{orderTotal.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Items:</span>
+                        <span>
+                          {order?.order_items?.length ?? "NA"} product(s)
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Shipping:</span>
+                        <span className="text-green-600">Free</span>
+                      </div>
+                    </div>
+                  ))}
+                </>
               )}
             </div>
 
             {/* Order Items */}
-            {!isPending && orderItems.length > 0 && (
+            {!loading && orderItems.length > 0 && (
               <div className="bg-gray-50 p-4 rounded-lg text-left">
                 <h4 className="font-semibold mb-3">Items</h4>
                 <div className="space-y-3">
@@ -128,7 +166,9 @@ const SuccessPage = () => {
                       className="flex items-center justify-between text-sm"
                     >
                       <div className="flex-1 pr-4">
-                        <p className="font-medium line-clamp-1">{it.name}</p>
+                        <p className="font-medium line-clamp-1">
+                          {it?.Product?.Name ?? "NA"}
+                        </p>
                         <p className="text-zinc-500">
                           Qty: {it.quantity ?? it.Quantity}
                         </p>
@@ -143,7 +183,7 @@ const SuccessPage = () => {
             )}
 
             {/* Shipping Info */}
-            <div className="flex items-center justify-center gap-6 text-sm text-zinc-500">
+            {/* <div className="flex items-center justify-center gap-6 text-sm text-zinc-500">
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4" />
                 <span>Free shipping</span>
@@ -152,22 +192,22 @@ const SuccessPage = () => {
                 <Package className="w-4 h-4" />
                 <span>2-3 business days</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Action Buttons */}
-            <div className="flex gap-4 justify-center pt-4">
+            <div className="flex lg:flex-row flex-col-reverse gap-4 justify-center pt-4">
               <Link href="/">
                 <Button className="px-8 py-3 text-lg">
                   <Home className="w-5 h-5 mr-2" />
                   Continue Shopping
                 </Button>
               </Link>
-              {!isPending && user && (
+              {!loading && user && (
                 <Button variant="outline" className="px-8 py-3 text-lg">
                   Track Order
                 </Button>
               )}
-              {!user && !isPending && (
+              {!user && !loading && (
                 <Button className="px-8 py-3 text-lg">
                   Create Account to Track Orders
                 </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import PoductSec from "./components/product-sec";
 import ProductVariantManager from "./components/variant-manger";
 import MediaSec from "./components/media-sec";
@@ -8,10 +8,10 @@ import { useParams } from "next/navigation";
 
 const Page = () => {
   const { id } = useParams();
-  const [reviews] = useState([
-    { user: "Jane Doe", rating: 4, comment: "Great product!" },
-    { user: "John Smith", rating: 5, comment: "Excellent quality." }
-  ]);
+  // const [reviews] = useState([
+  //   { user: "Jane Doe", rating: 4, comment: "Great product!" },
+  //   { user: "John Smith", rating: 5, comment: "Excellent quality." }
+  // ]);
 
   return (
     <div className="min-h-screen w-[95%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
@@ -27,7 +27,7 @@ const Page = () => {
           </div> */}
 
           {/* Reviews */}
-          <div className="p-4 border rounded-lg shadow-md">
+          {/* <div className="p-4 border rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-4">Reviews</h3>
             {reviews.map((review, index) => (
               <div key={index} className="mb-4 border-b pb-4">
@@ -44,7 +44,7 @@ const Page = () => {
                 <p>{review.comment}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* Sidebar Section */}
@@ -53,13 +53,6 @@ const Page = () => {
           <MediaSec />
 
           {/* Inventory */}
-
-          {/* Performance */}
-          <div className="p-4 border rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Performance</h3>
-            <p>Sales this month: $1200</p>
-            <p>Customer satisfaction: 95%</p>
-          </div>
         </div>
       </div>
     </div>

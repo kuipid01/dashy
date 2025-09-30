@@ -48,10 +48,14 @@ const Security = () => {
         backup_phone: userSecurity.security_settings.backup_phone || "",
         security_question:
           userSecurity.security_settings.security_question || "",
+
         security_answer: userSecurity.security_settings.security_answer || ""
       });
       // Optionally, set the backup codes here if they exist
-      setBackUpCodes(userSecurity.security_settings.backup_codes || []);
+      console.log(userSecurity);
+      setBackUpCodes(
+        userSecurity.security_settings.BackupCodes.split(",") || []
+      );
     }
   }, [userSecurity]);
 
@@ -72,10 +76,15 @@ const Security = () => {
       }
     }
 
-    await mutateAsync(securityData);
-    // Reset form after successful submission
-    setSecurityData({});
-    toast.success("Security settings updated successfully.");
+    try {
+      await mutateAsync(securityData);
+      // Reset form after successful submission
+      setSecurityData({});
+      toast.success("Security settings updated successfully.");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.error ?? "An error occured");
+    }
   };
 
   const validatePhoneNumber = (phoneNumber: string) => {
@@ -92,7 +101,7 @@ const Security = () => {
       Math.random().toString(36).substring(2, 15)
     );
     setBackUpCodes(codes);
-    setSecurityData({ ...securityData, backup_codes: codes });
+    setSecurityData({ ...securityData, backup_codes: codes.toString() });
     return codes;
   };
 
@@ -480,7 +489,7 @@ const Security = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     Generate backup codes for account recovery
                   </p>
@@ -554,7 +563,7 @@ const Security = () => {
                   disabled={isPending || Object.keys(securityData).length === 0}
                   type="submit"
                   className={clsx(
-                    "px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg flex items-center gap-2",
+                    "px-8 py-3 rounded-lg cursor-pointer font-medium transition-all duration-200 shadow-lg flex items-center gap-2",
                     securityStatus.isFullySecured
                       ? "bg-green-600 hover:bg-green-700 text-white disabled:bg-green-400"
                       : "bg-blue-600 hover:bg-blue-700 text-white disabled:bg-blue-400"

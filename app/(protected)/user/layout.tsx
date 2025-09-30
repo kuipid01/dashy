@@ -6,7 +6,7 @@ export default function Layout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex md:flex-row flex-col overflow-x-hidden relative min-h-screen antialiased">
+    <div className="flex lg:flex-row flex-col overflow-x-hidden relative min-h-screen antialiased">
       <Suspense
         fallback={
           <div className="grid place-items-center py-10">

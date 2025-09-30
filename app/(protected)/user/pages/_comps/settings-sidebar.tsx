@@ -24,7 +24,7 @@ const SettingsSidebar = () => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="w-fit max-w-full overflow-x-auto md:sticky md:top-[calc(40px+7vh)] md:bottom-0 md:h-[calc(100vh-(7vh+40px))] flex flex-row md:flex-col gap-4">
+      <div className="w-fit max-w-full overflow-x-auto lg:sticky lg:top-[calc(40px+7vh)] lg:bottom-0 lg:h-[calc(100vh-(7vh+40px))] flex flex-row lg:flex-col gap-4">
         {settingsList.map((link) => (
           <button
             key={link.link}

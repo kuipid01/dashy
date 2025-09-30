@@ -145,7 +145,7 @@ export interface Order {
   address?: Address;
   orderStatus: string;
   sales_means: "ONLINE" | "STORE"
-  arrival_date:Date;
+  arrival_date: Date;
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   placed_at: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   updatedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
@@ -273,6 +273,7 @@ export interface TemporalUserWithOrders extends TemporalUser {
 
 // Order API Request/Response Types
 export interface CreateOrderRequest {
+  purhase_id:string,
   userId?: number;
   temporalUserId?: number;
   store_id: number;
@@ -286,17 +287,23 @@ export interface CreateOrderRequest {
   agentId?: number;
   thirdPartyProvider?: string;
   contact?: {
-    id:string
+    id: string
   };
-  paymentstatus:boolean,
+  paymentstatus: boolean,
   address?: {
-    id:string
+    id: string
   };
   sales_means: "ONLINE" | "STORE";
   notes?: string;
+  shipping: {
+    zone_id?: string,
+    zone_name?: string,
+    fee: number,
+    distance?: number
+  }
 }
 export interface CreateTemporalOrderRequest {
-
+  purhase_id:string,
   store_id: number;
   order_items: {
     product_id: number;
@@ -308,32 +315,39 @@ export interface CreateTemporalOrderRequest {
   agentId?: number;
   thirdPartyProvider?: string;
   contact?: {
-    id?:string;
-    first_name?:string;
-    last_name?:string;
-    email?:string;
-    phone?:string;
-    sub_contact_phone?:string;
-    sub_contact_email?:string;
+    id?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    sub_contact_phone?: string;
+    sub_contact_email?: string;
   };
-  paymentstatus:boolean,
+  paymentstatus: boolean,
   address?: {
-    id?:string;
-    street?:string;
-    city?:string;
-    state?:string;
-    postal_code?:string;
-    country?:string;
-    description?:string;
+    id?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    postal_code?: string;
+    country?: string;
+    description?: string;
   };
   sales_means: "ONLINE" | "STORE";
   notes?: string;
-  temporal_user:{
-    email:string,
-    first_name:string,
-    last_name:string,
-    phone:string
+  temporal_user: {
+    email: string,
+    first_name: string,
+    last_name: string,
+    phone: string
+  },
+  shipping: {
+    zone_id?: string,
+    zone_name?: string,
+    fee: number,
+    distance?: number
   }
+
 }
 
 export interface UpdateOrderRequest {
@@ -346,7 +360,7 @@ export interface UpdateOrderRequest {
   contactId?: string;
   addressId?: string;
   notes?: string;
-  arrival_date?:Date
+  arrival_date?: Date
 }
 
 export interface LinkOrderToDeliveryOptionRequest {
@@ -462,7 +476,7 @@ export type ShippingPricingModel = "zones" | "distance";
 export interface ShippingConfig {
   model: ShippingPricingModel;
   base_fee?: number; // distance model
-  per_km?: number; 
+  per_km?: number;
   store: Store;  // distance model
   storeLocation?: {
     lat: number
@@ -479,7 +493,7 @@ export interface ShippingZone {
   coverage_value: string; // e.g. "Within 10km radius" or "Lagos: Ikeja, Yaba"
   flat_fee: number;
   free_ship_min?: number | null;
-  estimatedDays?:number 
+  estimatedDays?: number
 }
 
 export interface UpsertShippingConfigRequest {
@@ -494,7 +508,7 @@ export interface CreateShippingZoneRequest {
   coverage_value: string;
   flat_fee: number;
   free_ship_min?: number | null;
-  estimatedDays?: number ;
+  estimatedDays?: number;
 }
 
 export type UpdateShippingZoneRequest = Partial<CreateShippingZoneRequest>;

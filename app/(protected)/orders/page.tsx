@@ -13,13 +13,15 @@ const Page = () => {
   const { data, isLoading } = useFetchStoreOrders(
     store?.store?.id ?? undefined
   );
-
+  console.log(data, "ORERS");
   return (
     <div className=" flex flex-col gap-5 p-5 rounded-xl min-h-screen h-full w-full">
       <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 ">
         {isLoading || storeLoading ? (
           // Display skeleton loaders while loading
-          [1, 2, 3, 4, 5].map((ske) => <OrderSkeletonLoader key={ske} />)
+          Array.from({ length: 10 }).map((_, index) => (
+            <OrderSkeletonLoader key={index} />
+          ))
         ) : data && data.length > 0 ? (
           // Display OrderCards if data is available
           data.map((order: Order) => (

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -17,7 +16,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { Package, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { AddressSelection } from "./components/address-selection";
 import {
   useCheckUserExists,
@@ -35,6 +34,7 @@ import { useCreateOrder } from "@/app/(handlers)/orders";
 import { useCreateTemporalUser } from "@/app/(handlers)/temporal-user";
 import { Contact } from "@/constants/types";
 import { useCreateOrderWithTemporalUser } from "@/app/(handlers)/orders/queries";
+import { generatePurchaseId } from "./utils/get-purchase-id";
 // Removed verification panel in favor of anonymous checkout flow
 
 interface Address {
@@ -50,7 +50,7 @@ interface Address {
 const CheckoutPage = () => {
   const searchParams = useSearchParams();
   const activeStore = searchParams.get("store");
-  const { items } = useCartStore();
+  const { items, getItemsByStore, clearCart, _hasHydrated } = useCartStore();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -62,7 +62,9 @@ const CheckoutPage = () => {
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
+  const [distanceResults, setDistanceResults] = useState<Record<string, any>>(
+    {}
+  );
   // Address selection state
   const [showAddressSelection, setShowAddressSelection] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null); // For future use in order processing
@@ -123,14 +125,15 @@ const CheckoutPage = () => {
     }
   }, [user]);
 
-  // For guests, no verification panel; keep manual address form
-  const handleEmailChange = (newEmail: string) => {
-    setEmail(newEmail);
-    if (!user) {
-      setShowAddressSelection(false);
-      setSelectedAddress(null);
-    }
-  };
+  const shippingFee: number = useMemo(
+    () =>
+      Object.values(distanceResults).reduce(
+        (acc, distance) => acc + parseFloat(distance.cost),
+        0
+      ),
+    [distanceResults]
+  );
+  // console.log(shippingFee);
 
   const handleCompleteOrder = async () => {
     if (user) {
@@ -141,9 +144,9 @@ const CheckoutPage = () => {
     }
 
     setIsProcessing(true);
-    let createdOrder;
+
     try {
-      // Validate address presence (either selected or manual filled)
+      // Validate address
       if (
         !selectedAddress &&
         (!addressManually.street ||
@@ -155,81 +158,110 @@ const CheckoutPage = () => {
         toast.error("Please add a shipping address");
         return;
       }
+      const purchaseId = generatePurchaseId();
+      // Get grouped cart items by store
+      const itemsByStore = getItemsByStore(); // {storeId: [items...]}
 
-      // Convert cart items to order items format
-      const orderItems = cartItems.map((item) => ({
-        product_id: item.product.id,
-        quantity: item.quantity,
-        price: item.product.discounted_price ?? item.product.price ?? 0
-      }));
+      const createdOrders: any[] = [];
 
-      // If not logged in, create a temporary user record for the order
-      if (!user) {
-        console.log("JERERE ");
-        try {
-          createdOrder = await createOrderTemp({
-            store_id: cartItems[0].storeId,
-            order_items: orderItems,
-            deliveryMode: "store" as const,
-            sales_means: "ONLINE" as const,
-            contact: {
-              id: selectedContact?.ID as string,
-              ...contactManually
-            },
-            paymentstatus: false,
-            address: {
-              id: selectedAddress?.id as string,
-              ...addressManually
-            },
-            temporal_user: {
-              email: contactManually.email,
-              first_name: contactManually.first_name,
-              last_name: contactManually.last_name,
-              phone: contactManually.phone
-            }
-          });
-        } catch (e: any) {
-          toast.error(e.response.data.error);
-          throw e.response.data.error;
-          // Non-blocking: proceed even if pending user creation fails
+      for (const [storeId, items] of Object.entries(itemsByStore)) {
+        const orderItems = items.map((item: any) => ({
+          product_id: item.product.id,
+          quantity: item.quantity,
+          price: item.product.discounted_price ?? item.product.price ?? 0
+        }));
+        const shippingRes = distanceResults[storeId];
+        let shippingPayload;
+        if (shippingRes.type === "zone") {
+          shippingPayload = {
+            zone_id: shippingRes.zone_id,
+            zone_name: shippingRes.zone_name,
+            fee: parseFloat(shippingRes.cost)
+          };
+        } else {
+          shippingPayload = {
+            distance: parseFloat(shippingRes.distance),
+            fee: parseFloat(shippingRes.cost)
+          };
         }
-      } else {
-        // Create order
         try {
-          createdOrder = await createOrder({
-            store_id: cartItems[0].storeId,
-            order_items: orderItems,
-            deliveryMode: "store" as const,
-            sales_means: "ONLINE" as const,
-            contact: {
-              id: selectedContact?.ID as string
-            },
-            paymentstatus: false,
-            address: {
-              id: selectedAddress?.id as string
-            }
-          });
-        } catch (error: any) {
-          toast.error(error.response.data.error);
-          throw error.response.data.error;
+          let createdOrder;
+
+          if (!user) {
+            // Temporary user order
+            createdOrder = await createOrderTemp({
+              store_id: Number(storeId),
+              order_items: orderItems,
+              deliveryMode: "store" as const,
+              sales_means: "ONLINE" as const,
+              contact: {
+                id: selectedContact?.ID as string,
+                ...contactManually
+              },
+              paymentstatus: false,
+              address: {
+                id: selectedAddress?.id as string,
+                ...addressManually
+              },
+              temporal_user: {
+                email: contactManually.email,
+                first_name: contactManually.first_name,
+                last_name: contactManually.last_name,
+                phone: contactManually.phone
+              },
+              shipping: shippingPayload,
+              purhase_id: purchaseId
+            });
+          } else {
+            // Logged-in user order
+            createdOrder = await createOrder({
+              store_id: Number(storeId),
+              order_items: orderItems,
+              deliveryMode: "store" as const,
+              sales_means: "ONLINE" as const,
+              contact: {
+                id: selectedContact?.ID as string
+              },
+              paymentstatus: false,
+              address: {
+                id: selectedAddress?.id as string
+              },
+              shipping: shippingPayload,
+              purhase_id: purchaseId
+            });
+          }
+
+          createdOrders.push(createdOrder);
+        } catch (err: any) {
+          console.error(`❌ Failed to create order for store ${storeId}`, err);
+          toast.error(
+            `Order for store ${storeId} failed: ${
+              err?.response?.data?.error || err.message
+            }`
+          );
+          // keep going (don’t crash all)
         }
       }
 
-      //TODO:TRIGGER PAYMENT
-      // TODO: create order and initiate payment here
-      if (!createOrder) {
+      if (createdOrders.length === 0) {
+        toast.error("No orders could be created");
         return;
       }
-      router.push(
-        //@ts-expect-error
-        `/checkout/success?orderId=${createdOrder?.id ?? createdOrder.order_id}`
-      );
+
+      // 🚀 Redirect to checkout with the first successful order
+      // router.push(
+      //   `/checkout/success?orderId=${
+      //     createdOrders[0]?.id ?? createdOrders[0]?.order_id
+      //   }`
+      // );
+      const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
+      clearCart();
+      router.push(`/checkout/success?orderIds=${orderIds}`);
     } catch (error: unknown) {
-      console.log(error, "error");
-      const errorMessage =
-        error instanceof Error ? error.message : "Something went wrong";
-      toast.error(errorMessage);
-      return;
+      console.error(error, "error");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -261,33 +293,6 @@ const CheckoutPage = () => {
     setPhone(contact.Phone);
   };
 
-  if (cartItems.length === 0) {
-    return (
-      <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
-        <div className="max-w-2xl mt-20 mx-auto text-center">
-          <Card className="p-8">
-            <CardContent className="space-y-6">
-              <Package className="w-20 h-20 mx-auto text-zinc-400" />
-              <h2 className="text-3xl font-bold mb-2">Your cart is empty</h2>
-              <p className="text-zinc-500 mb-6">
-                Add some products to your cart before checkout
-              </p>
-              <Link href="/">
-                <Button className="px-8 py-3 text-lg">Continue Shopping</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-  console.log(
-    selectedAddress,
-    selectedContact,
-    addressManually,
-    phone,
-    contactManually
-  );
   const disabled = () => {
     console.log(selectedContact);
     if (isProcessing || isCreatingUser) {
@@ -335,6 +340,127 @@ const CheckoutPage = () => {
 
     return false;
   };
+  const isAddressIncomplete = () => {
+    return (
+      !selectedAddress &&
+      (!addressManually.street ||
+        !addressManually.city ||
+        !addressManually.state ||
+        !addressManually.postalCode ||
+        !addressManually.country)
+    );
+  };
+
+  const shippingFeeIncluded = () => {
+    if (shippingFee < 1) return false;
+    return true;
+  };
+  const isButtonDisabled = () => {
+    return (
+      isProcessing ||
+      isCreatingUser ||
+      isAddressIncomplete() ||
+      disabled() ||
+      !shippingFeeIncluded()
+    );
+  };
+
+  const getButtonLabel = () => {
+    if (isProcessing || isCreatingUser) return "Processing...";
+
+    if (isAddressIncomplete()) return "Add Address to Continue";
+
+    if (
+      !selectedContact &&
+      (!contactManually.email ||
+        !contactManually.first_name ||
+        !contactManually.last_name ||
+        !contactManually.phone)
+    ) {
+      return "Add Contact to Continue";
+    }
+
+    if (user) {
+      if (!phone || !isValidNigerianNumber(phone)) {
+        return "Enter Valid Phone Number";
+      }
+    } else {
+      if (
+        !contactManually.phone ||
+        !isValidNigerianNumber(contactManually.phone)
+      ) {
+        return "Enter Valid Phone Number";
+      }
+    }
+
+    if (!shippingFeeIncluded()) return "Select Shipping Option";
+
+    return "Checkout";
+  };
+
+  if (!_hasHydrated) {
+    return (
+      <div className="flex flex-col w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)] gap-10">
+        {/* Header */}
+        <div className="flex flex-col w-full gap-3">
+          <Skeleton className="h-10 w-1/3 rounded-lg" />
+          <Skeleton className="h-6 w-1/2 rounded-lg" />
+        </div>
+
+        {/* Content area: 2 columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full">
+          {/* Left column */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-6 w-1/2 rounded-md" />
+              <Skeleton className="h-10 w-full rounded-md" />
+              <Skeleton className="h-10 w-4/5 rounded-md" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-6 w-1/2 rounded-md" />
+              <Skeleton className="h-10 w-full rounded-md" />
+              <Skeleton className="h-10 w-3/4 rounded-md" />
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-6 w-1/2 rounded-md" />
+              <Skeleton className="h-10 w-full rounded-md" />
+              <Skeleton className="h-10 w-4/5 rounded-md" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-6 w-1/2 rounded-md" />
+              <Skeleton className="h-10 w-full rounded-md" />
+              <Skeleton className="h-10 w-3/4 rounded-md" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (cartItems.length === 0 && !isUserLoading) {
+    return (
+      <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+        <div className="max-w-2xl mt-20 mx-auto text-center">
+          <Card className="p-8">
+            <CardContent className="space-y-6">
+              <Package className="w-20 h-20 mx-auto text-zinc-400" />
+              <h2 className="text-3xl font-bold mb-2">Your cart is empty</h2>
+              <p className="text-zinc-500 mb-6">
+                Add some products to your cart before checkout
+              </p>
+              <Link href="/">
+                <Button className="px-8 py-3 text-lg">Continue Shopping</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
       <div className="flex gap-1 items-center mb-8">
@@ -382,6 +508,8 @@ const CheckoutPage = () => {
               setAddressManually={setAddressManually}
               setLatLon={setLatLon}
               latLon={latLon}
+              setDistanceResults={setDistanceResults}
+              distanceResults={distanceResults}
             />
           </div>
 
@@ -422,11 +550,18 @@ const CheckoutPage = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="text-green-600 font-semibold">Free</span>
+                    <span className="font-semibold">
+                      ₦{shippingFee.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between font-bold text-xl pt-2 border-t">
                     <span>Total</span>
-                    <span>₦{getTotalPrice().toLocaleString()}</span>
+                    <span>
+                      ₦
+                      {(
+                        getTotalPrice() + parseFloat(shippingFee.toFixed(2))
+                      ).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -434,18 +569,9 @@ const CheckoutPage = () => {
                 <Button
                   className="w-full py-6 text-lg font-semibold"
                   onClick={handleCompleteOrder}
-                  disabled={disabled()}
+                  disabled={isButtonDisabled()}
                 >
-                  {isProcessing || isCreatingUser
-                    ? "Processing..."
-                    : !selectedAddress &&
-                      (!addressManually.street ||
-                        !addressManually.city ||
-                        !addressManually.state ||
-                        !addressManually.postalCode ||
-                        !addressManually.country)
-                    ? "Add Address to Continue"
-                    : "Checkout"}
+                  {getButtonLabel()}
                 </Button>
               </CardFooter>
             </Card>

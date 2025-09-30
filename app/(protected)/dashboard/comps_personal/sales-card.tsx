@@ -148,22 +148,28 @@ export default function SalesCard({ orders }: SalesCardProps) {
             <div className="animate-in slide-in-from-left-2 duration-500 delay-600">
               <Pill
                 upperText="Online"
-                valueDirection={onlineSales ?? 0}
-                value={onlineSales ?? 0}
+                valueDirection={parseFloat(onlineSales.toFixed(2)) ?? 0}
+                value={parseFloat(onlineSales.toFixed(2)) ?? 0}
               />
             </div>
             <div className="animate-in slide-in-from-left-2 duration-500 delay-700">
               <Pill
                 upperText="In Store"
-                valueDirection={storeSales ?? 0}
-                value={storeSales ?? 0}
+                valueDirection={parseFloat(storeSales.toFixed(2)) ?? 0}
+                value={parseFloat(storeSales.toFixed(2)) ?? 0}
               />
             </div>
             <div className="animate-in slide-in-from-left-2 duration-500 delay-800">
               <Pill
                 upperText="Total"
-                valueDirection={onlineSales + storeSales || 0}
-                value={onlineSales + storeSales || 0}
+                valueDirection={
+                  parseFloat(onlineSales.toFixed(2)) +
+                    parseFloat(storeSales.toFixed(2)) || 0
+                }
+                value={
+                  parseFloat(onlineSales.toFixed(2)) +
+                    parseFloat(storeSales.toFixed(2)) || 0
+                }
               />
             </div>
           </div>

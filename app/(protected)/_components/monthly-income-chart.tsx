@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   BarChart3,
@@ -37,61 +38,52 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Order } from "@/constants/types";
 import { format } from "date-fns";
+import { useState } from "react";
 
 /**
  * Aggregates order data into a monthly income format for the chart.
  * @param {Array<Order>} orders - The array of order objects.
  * @returns {Array<MonthlyIncomeData>}
  */
-export const processOrdersToMonthlyData = (orders: Order[]) => {
-  console.log(orders);
-  const monthlyDataMap = new Map();
 
-  orders.forEach((order) => {
-    // Safely get the date from the order.
-    const orderDate =
-      order.placedAt || order.placed_at || new Date().toISOString();
+type MonthlyData = {
+  month: string;
+  revenue: number;
+  income: number;
+};
+
+export const processOrdersToMonthlyData = (orders: Order[]): MonthlyData[] => {
+  const monthlyData: Record<string, { revenue: number; income: number }> = {};
+
+  for (const order of orders) {
+    console.log(order, "ORDER");
+    // ✅ Pick the most reliable date field
+    const orderDate = order.placedAt || order.placed_at;
+
+    if (!orderDate) {
+      console.warn("Skipping order with no valid date:", order);
+      continue;
+    }
+
+    // ✅ Convert to month string like "Jan", "Feb"
     const month = format(new Date(orderDate), "MMM");
 
-    // Calculate values for the current order
-    const revenue = order.total || 0;
-    const netTotal = order.commision || 0;
-    // For simplicity, profit is assumed to be equal to revenue since there are no expenses
-    const income = revenue - netTotal;
-
-    if (monthlyDataMap.has(month)) {
-      const existingData = monthlyDataMap.get(month);
-      existingData.revenue += revenue;
-      existingData.income += income;
-    } else {
-      monthlyDataMap.set(month, {
-        month,
-        revenue,
-        income
-      });
+    // ✅ Initialize if not exists
+    if (!monthlyData[month]) {
+      monthlyData[month] = { revenue: 0, income: 0 };
     }
-  });
 
-  // Convert the map values back to an array
-  const monthlyData = Array.from(monthlyDataMap.values()).sort((a, b) => {
-    const monthsOrder = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-    return monthsOrder.indexOf(a.month) - monthsOrder.indexOf(b.month);
-  });
+    // ✅ Sum values (default to 0 if undefined)
+    monthlyData[month].revenue += order.net_total ?? 0;
+    monthlyData[month].income += order.total ?? 0;
+  }
 
-  return monthlyData;
+  // ✅ Convert to array for charting
+  return Object.entries(monthlyData).map(([month, values]) => ({
+    month,
+    revenue: values.revenue,
+    income: values.income
+  }));
 };
 
 export interface MonthlyIncomeData {
@@ -122,7 +114,7 @@ const getBarColor = (month: string, metric: string, selectedMetric: string) => {
 };
 
 const formatYAxis = (value: number) => {
-  return value.toString();
+  return value.toFixed(2).toString();
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -132,7 +124,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="font-medium text-gray-900">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} style={{ color: entry.color }} className="text-sm">
-            {entry.name}: ₦{entry.value}
+            {entry.name}: ₦{parseFloat(entry.value.toFixed(2))}
           </p>
         ))}
       </div>
@@ -149,7 +141,9 @@ export default function MonthlyIncomeChart({
   onSortChange
 }: MonthlyIncomeChartProps) {
   const chartData = processOrdersToMonthlyData(orders);
-
+  // const [sortByState, setSortByState] = useState<"revenue" | "income">(
+  //   "revenue"
+  // );
   const handleMetricChange = (metric: "revenue" | "income") => {
     onMetricChange?.(metric);
   };
@@ -158,9 +152,12 @@ export default function MonthlyIncomeChart({
     onExport?.();
   };
 
-  const handleSortChange = (sortBy: string) => {
-    onSortChange?.(sortBy);
-  };
+  // const handleSortChange = (value: "revenue" | "income") => {
+  //   onSortChange?.(value);
+  //   setSortByState(value);
+  //   // 👉 here you can also trigger sorting your data
+  //   console.log("Sort changed to:", value);
+  // };
 
   return (
     <div className="bgblur p-6 rounded-xl shadow-sm">
@@ -175,10 +172,11 @@ export default function MonthlyIncomeChart({
 
         <div className="flex items-center gap-3">
           {/* Sort By Dropdown */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
-                Sort By
+                Sort By:{" "}
+                <span className="font-semibold capitalize">{sortByState}</span>
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
@@ -187,13 +185,12 @@ export default function MonthlyIncomeChart({
                 <TrendingUp size={14} className="mr-2" />
                 Revenue
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleSortChange("profit")}>
+              <DropdownMenuItem onClick={() => handleSortChange("income")}>
                 <DollarSign size={14} className="mr-2" />
                 Profit
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
-
+          </DropdownMenu> */}
           {/* Export Button */}
           <Button
             customDisabled={true}

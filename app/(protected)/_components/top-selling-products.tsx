@@ -9,6 +9,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { Product } from "@/constants/types";
+import { imageToRenderImage } from "@/app/utils/get-image";
 
 export interface TopSellingProduct {
   id: string;
@@ -61,7 +62,7 @@ export default function TopSellingProducts({
   isLoading // Destructure the prop
 }: TopSellingProductsProps) {
   const SKELETON_ROW_COUNT = 5; // You can adjust this number
-
+  console.log(products);
   return (
     <div className="bgblur p-6 rounded-xl shadow-sm">
       {/* Header */}
@@ -133,8 +134,8 @@ export default function TopSellingProducts({
                 <TableCell className="py-4 px-2">
                   <div className="flex items-center gap-3">
                     <Image
-                      src={product.product.Image}
-                      alt={product.product.Name}
+                      src={imageToRenderImage(product.product.Image) ?? ""}
+                      alt={product.product.Name ?? "image alt"}
                       width={40}
                       height={40}
                       className="size-10 rounded-md object-cover"

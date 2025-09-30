@@ -7,7 +7,7 @@ export default function Back({ onClick }: { onClick?: () => void }) {
   return (
     <div
       onClick={onClick || router.back}
-      className=" flex gap-2 px-3 py-1 hover:bg-gray-100 transition duration-200 rounded-md bg-gray-200  border border-zinc-400"
+      className=" w-fit flex gap-2 px-3 py-1 hover:bg-gray-100 transition duration-200 rounded-md bg-gray-200  border border-zinc-400"
     >
       <button className="flex  cursor-pointer items-center">
         <ArrowLeft width={20} height={20} className=" text-zinc-500" />

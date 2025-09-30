@@ -16,6 +16,18 @@ interface CartState {
     items: Record<string, CartItem>; // A map for O(1) item access
     totalItems: number; // A derived state for convenience
     groupedByStore: boolean; // Toggle for store grouping view
+    // Shipping-related state
+    shippingFeesByStore: Record<number, number>;
+    shippingAddress?: {
+        street?: string;
+        city?: string;
+        state?: string;
+        postalCode?: string;
+        country?: string;
+        addressDescription?: string;
+        lat?: number;
+        lon?: number;
+    };
 }
 
 // Actions to manipulate the cart state
@@ -26,6 +38,14 @@ interface CartActions {
     clearCart: () => void;
     toggleGroupByStore: () => void;
     getItemsByStore: () => Record<number, CartItem[]>;
+    // Shipping-related actions
+    setShippingFeeForStore: (storeId: number, fee: number) => void;
+    clearShippingFees: () => void;
+    setShippingAddress: (addr: NonNullable<CartState["shippingAddress"]>) => void;
+    getTotalShipping: () => number;
+    // Hydration flag
+    _hasHydrated: boolean;
+    setHasHydrated: (v: boolean) => void;
 }
 
 // The combined store interface
@@ -37,6 +57,7 @@ export const useCartStore = create<CartStore>()(
             items: {},
             totalItems: 0,
             groupedByStore: false,
+            shippingFeesByStore: {},
 
             // Action to add a product to the cart or increase its quantity
             addItem: (product, quantity = 1) => {
@@ -48,10 +69,10 @@ export const useCartStore = create<CartStore>()(
                         // Update quantity if item already exists
                         existingItem.quantity += quantity;
                     } else {
-                        
+
                         // Add a new item with store information
-                        items[product.ID ?? product.id] = { 
-                            product, 
+                        items[product.ID ?? product.id] = {
+                            product,
                             quantity,
                             storeId: product.storeId || product.store_id,
                             storeName: product.store?.name
@@ -113,7 +134,7 @@ export const useCartStore = create<CartStore>()(
 
             // Action to remove all items from the cart
             clearCart: () => {
-                set({ items: {}, totalItems: 0 });
+                set({ items: {}, totalItems: 0, shippingFeesByStore: {}, shippingAddress: undefined });
             },
 
             // Toggle store grouping view
@@ -126,7 +147,7 @@ export const useCartStore = create<CartStore>()(
                 const state = get();
                 const items = Object.values(state.items);
                 const grouped: Record<number, CartItem[]> = {};
-                
+
                 items.forEach(item => {
                     const storeId = item.storeId;
                     if (!grouped[storeId]) {
@@ -134,12 +155,33 @@ export const useCartStore = create<CartStore>()(
                     }
                     grouped[storeId].push(item);
                 });
-                
+
                 return grouped;
             },
+            setShippingFeeForStore: (storeId, fee) => {
+                set((state) => ({
+                    shippingFeesByStore: { ...state.shippingFeesByStore, [storeId]: fee }
+                }));
+            },
+            clearShippingFees: () => {
+                set({ shippingFeesByStore: {} });
+            },
+            setShippingAddress: (addr) => {
+                set({ shippingAddress: { ...addr } });
+            },
+            getTotalShipping: () => {
+                const state = get();
+                return Object.values(state.shippingFeesByStore).reduce((sum, n) => sum + (Number(n) || 0), 0);
+            },
+            // Hydration tracking
+            _hasHydrated: false,
+            setHasHydrated: (v) => set({ _hasHydrated: v }),
         }),
         {
             name: "shopping-cart-storage", // A unique name for your storage key
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true);
+            },
         }
     )
 );
