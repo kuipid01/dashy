@@ -47,6 +47,7 @@ interface EarningsChartProps {
 }
 
 const EarningsChart: React.FC<EarningsChartProps> = ({ chartData }) => {
+  console.log(chartData, "CHART DATA");
   const averageEarnings = getAverageEarnings(chartData);
 
   return (

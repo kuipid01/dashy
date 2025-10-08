@@ -26,6 +26,8 @@ import OrderDetails from "./order-details";
 import UpdateOrderDialog from "./update-order-dialog";
 import OrderTracking from "./order-tracking";
 import InvoiceGenerator from "./invoice-generator";
+import DisputeResolutionForm from "./dispute-resolution-form";
+import { cn } from "@/lib/utils";
 
 export default function OrderCard({
   order,
@@ -34,6 +36,7 @@ export default function OrderCard({
   order: Order;
   store: any;
 }) {
+  const [isDisputeOpen, setIsDisputeOpen] = useState(false);
   const [isOrderTrackingOpen, setIsOrderTrackingOpen] = useState(false);
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -41,10 +44,32 @@ export default function OrderCard({
   const imageToRender = order?.orderItems[0]?.Product.Image.includes(",")
     ? order?.orderItems[0]?.Product.Image.split(",")
     : order?.orderItems[0]?.Product.Image;
-  console.log(imageToRender[0], "image to redner");
+
   //
+  const orderCardColor = {
+    shipped: "bg-green-300/50",
+    delivered: "bg-blue-300/50",
+    cancelled: "bg-red-300/50",
+    pending: "bg-yellow-300/50",
+    processing: "bg-purple-300/50",
+    draft: "bg-gray-300/50",
+    dispute: "bg-red-300/50"
+  };
+
+  console.log("ORDER", order);
+  const hasDispute = order.has_dispute;
+  const disputeResolved = order.dispute_winner;
   return (
-    <div className=" rounded-xl py-3 h-fit bgblur  overflow-hidden flex flex-col gap-3">
+    <div
+      className={cn(
+        " rounded-xl py-3 h-fit  overflow-hidden flex flex-col gap-3",
+        hasDispute && !disputeResolved
+          ? "border shadow-sm shadow-red-500/50 border-red-500 bg-red-300/50"
+          : disputeResolved
+          ? "bg-green-300/50"
+          : orderCardColor[order.status as keyof typeof orderCardColor]
+      )}
+    >
       <div className=" p-3 flex flex-col gap-3">
         <div className="flex justify-between">
           <div className="flex flex-col">
@@ -175,6 +200,39 @@ export default function OrderCard({
         isOpen={isInvoiceOpen}
         order={order}
         setIsOpen={setInvoiceOpen}
+      />
+
+      {order.payment_status && (
+        <div className="bg-general w-[90%] mx-auto rounded-md p-3 ">
+          <p className="text-sm font-medium text-white">
+            {order.payment_status === "held_in_escrow"
+              ? "This payment will be be released after delivery confirmation or 2 days after delivery utomatically"
+              : order.payment_status}
+          </p>
+        </div>
+      )}
+      {order.has_dispute && (
+        <div className=" w-fit  bg-primary/80 backdrop-blur-3xl ml-3 shadow shadow-primary/70 rounded-md p-3 ">
+          <p className="text-sm font-medium text-red-500 mb-2">
+            {order.dispute_winner
+              ? "Dispute Resolved"
+              : "There is a dispute on this order."}
+          </p>
+          <Button
+            variant="default"
+            className="text-white bg-red-500 w-fit"
+            size="sm"
+            onClick={() => setIsDisputeOpen(true)}
+          >
+            View Dispute
+          </Button>
+        </div>
+      )}
+
+      <DisputeResolutionForm
+        order={order}
+        isOpen={isDisputeOpen}
+        setIsOpen={setIsDisputeOpen}
       />
     </div>
   );

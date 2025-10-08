@@ -10,7 +10,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { BookDown, ChevronRight, Truck } from "lucide-react";
+import {
+  BookDown,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Truck
+} from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import InvoiceGenerator from "./invoice-generator";
 import OrderTracking from "./order-tracking";
@@ -31,7 +37,7 @@ export default function OrderDetails({
 }: OrderDetailsProps) {
   const [isOrderTrackingOpen, setIsOrderTrackingOpen] = React.useState(false);
   const [isInvoiceOpen, setInvoiceOpen] = React.useState(false);
-
+  const [showMoreOrderDetails, setShowMoreOrderDetails] = React.useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {children ? <DialogTrigger asChild>{children}</DialogTrigger> : null}
@@ -147,66 +153,72 @@ export default function OrderDetails({
             </div>
           ))}
         </div>
+        {!showMoreOrderDetails && (
+          <div className="flex justify-between w-full">
+            <div className="flex flex-col gap-3">
+              <p className="headerText">Payment</p>
+              <div className="flex items-center gap-3">
+                <p className="headerText text-slate-800">
+                  {order?.platform_to_store_payment_status === "completed"
+                    ? "PAID TO STORE"
+                    : "PENDING TO STORE"}
+                </p>
+                <div className="border text-[9px] text-blue-950 font-medium border-blue-900 p-1 rounded-md">
+                  {order?.platform_to_store_payment_status === "completed"
+                    ? "PAID TO STORE"
+                    : "PENDING TO STORE"}
+                </div>
+              </div>
+            </div>
 
-        <div className="flex justify-between w-full">
-          <div className="flex flex-col gap-3">
-            <p className="headerText">Payment</p>
-            <div className="flex items-center gap-3">
-              <p className="headerText text-slate-800">
-                {order?.payment?.status === "completed" ? "Paid" : "Pending"}
-              </p>
-              <div className="border text-[9px] text-blue-950 font-medium border-blue-900 p-1 rounded-md">
-                {order?.payment?.status === "completed" ? "PAID" : "PENDING"}
+            <div className="flex flex-col gap-3">
+              <p className="headerText">Delivery</p>
+              <div className="flex flex-col gap-1">
+                <p className="text-zinc-600 text-xs font-medium">ADDRESS</p>
+                <p className="light_mid">
+                  {order?.address?.Street ? order?.address?.Street : "N/A"},{" "}
+                  {order?.address?.City ? order?.address?.City : "N/A"},{" "}
+                  {order?.address?.State ? order?.address?.State : "N/A"}
+                </p>
+                <p className="light_mid text-xs">
+                  {order?.contact?.FirstName
+                    ? order?.contact?.FirstName
+                    : "N/A"}{" "}
+                  {order?.contact?.LastName ? order?.contact?.LastName : "N/A"}
+                </p>
               </div>
             </div>
           </div>
-
-          <div className="flex flex-col gap-3">
-            <p className="headerText">Delivery</p>
-            <div className="flex flex-col gap-1">
-              <p className="text-zinc-600 text-xs font-medium">ADDRESS</p>
-              <p className="light_mid">
-                {order?.address?.Street || order?.address?.street || "N/A"},{" "}
-                {order?.address?.City || order?.address?.city || "N/A"},{" "}
-                {order?.address?.State || order?.address?.state || "N/A"}
-              </p>
-              <p className="light_mid text-xs">
-                {order?.contact?.FirstName || order?.contact?.name || "N/A"}{" "}
-                {order?.contact?.LastName || ""}
-              </p>
+        )}
+        {!showMoreOrderDetails && (
+          <div className="flex justify-between py-3 border-t border-gray-300 w-full">
+            <div className="flex flex-col gap-3">
+              <p className="headerText">Need Help?</p>
+              <div className="flex flex-col gap-3 text-xs font-medium text-gray-500">
+                <p>Order Issues</p>
+                <p>Delivery Info</p>
+                <p>Returns</p>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <p className="headerText mb-3">Order Summary</p>
+              <div className="flex items-center mb-1 justify-between gap-10">
+                <p className="text-[16px]">Order Total (Shipping included):</p>
+                <p className="light_mid font-bold">₦{order?.total || 0}</p>
+              </div>
+              <div className="flex items-center mb-1 justify-between gap-10">
+                <p className="text-[16px]">Platform Fee:</p>
+                <p className="light_mid font-bold">₦{order?.commision || 0}</p>
+              </div>
+              <div className="flex items-center mb-1 justify-between gap-10">
+                <p className="text-[16px]">Store Earnings:</p>
+                <p className="text-black font-bold text-lg">
+                  ₦{order?.net_total || 0}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-between py-3 border-t border-gray-300 w-full">
-          <div className="flex flex-col gap-3">
-            <p className="headerText">Need Help?</p>
-            <div className="flex flex-col gap-3 text-xs font-medium text-gray-500">
-              <p>Order Issues</p>
-              <p>Delivery Info</p>
-              <p>Returns</p>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p className="headerText mb-3">Order Summary</p>
-            <div className="flex items-center mb-1 justify-between gap-10">
-              <p className="text-[16px]">SubTotal:</p>
-              <p className="light_mid font-bold">₦{order?.total || 0}</p>
-            </div>
-            <div className="flex items-center mb-1 justify-between text-zinc-500 text-[14px] font-medium gap-10">
-              <p className="">Delivery:</p>
-              <p className="">₦{order?.deliveryOption?.price || 0}</p>
-            </div>
-            <div className="flex items-center justify-between text-zinc-500 text-[14px] font-medium gap-10">
-              <p className="">Tax:</p>
-              <p className="">₦0</p>
-            </div>
-            <div className="flex items-center justify-between py-2 border-t-1 mt-3 border-dashed gap-10">
-              <p className="text-[16px]">Total:</p>
-              <p className="light_mid font-bold">₦{order?.total || 0}</p>
-            </div>
-          </div>
-        </div>
+        )}
 
         <OrderTracking
           order={order}
@@ -220,6 +232,124 @@ export default function OrderDetails({
           order={order}
           setIsOpen={setInvoiceOpen}
         />
+
+        <div
+          onClick={() => setShowMoreOrderDetails(!showMoreOrderDetails)}
+          className="flex items-center cursor-pointer w-full gap-2 border-t pb-3 border-gray-300 pt-3"
+        >
+          {showMoreOrderDetails ? "Less Order Details" : "More Order Details"}
+          {showMoreOrderDetails ? <ChevronUp /> : <ChevronDown />}
+        </div>
+
+        {showMoreOrderDetails && order?.contact && order?.address && (
+          <div className="flex flex-col gap-3 mt-1  w-full">
+            {/* Section Header */}
+            <p className="text-lg font-semibold text-muted-foreground border-b pb-2">
+              Buyer Details
+            </p>
+
+            {/* Contact Details */}
+            <div className="grid gap-4 sm:grid-cols-">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-muted-foreground">Full Name</span>
+                <div className="flex items-center justify-between bg-muted/30 rounded-md px-3 py-2">
+                  <p className="font-medium capitalize">
+                    {order?.contact?.FirstName +
+                      " " +
+                      order?.contact?.LastName || "N/A"}
+                  </p>
+                  <button
+                    className="text-xs text-primary hover:underline"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        order?.contact?.FirstName +
+                          " " +
+                          order?.contact?.LastName || "N/A"
+                      )
+                    }
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-muted-foreground">Phone</span>
+                <div className="flex items-center justify-between bg-muted/30 rounded-md px-3 py-2">
+                  <p className="font-medium capitalize">
+                    {order?.contact?.Phone || "N/A"}
+                  </p>
+                  <button
+                    className="text-xs text-primary hover:underline"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        order?.contact?.Phone || "N/A"
+                      )
+                    }
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1 sm:col-span-2">
+                <span className="text-sm text-muted-foreground">Email</span>
+                <div className="flex items-center justify-between bg-muted/30 rounded-md px-3 py-2">
+                  <p className="font-medium break-all capitalize">
+                    {order?.contact?.Email || "N/A"}
+                  </p>
+                  <button
+                    className="text-xs text-primary hover:underline"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        order?.contact?.Email || "N/A"
+                      )
+                    }
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Address Details */}
+            <div className="grid gap-4 sm:grid-cols-2 mt-2">
+              <div className="flex flex-col gap-1 sm:col-span-2">
+                <span className="text-sm text-muted-foreground">Address</span>
+                <div className="flex items-center justify-between bg-muted/30 rounded-md px-3 py-2">
+                  <p className="font-medium break-all capitalize">
+                    {order?.address?.Street ? order?.address?.Street : "N/A"},{" "}
+                    {order?.address?.City ? order?.address?.City : "N/A"},{" "}
+                    {order?.address?.State ? order?.address?.State : "N/A"},{" "}
+                    {order?.address?.Country ? order?.address?.Country : "N/A"}
+                  </p>
+                  <button
+                    className="text-xs text-primary hover:underline"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        `${
+                          order?.address?.Street
+                            ? order?.address?.Street
+                            : "N/A"
+                        }, ${
+                          order?.address?.City ? order?.address?.City : "N/A"
+                        }, ${
+                          order?.address?.State ? order?.address?.State : "N/A"
+                        }, ${
+                          order?.address?.Country
+                            ? order?.address?.Country
+                            : "N/A"
+                        }`
+                      )
+                    }
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -80,8 +80,7 @@ const TopCard = ({
 
             <div className="text-sm flex items-center space-x-2 mt-1">
               <span className="text-muted-foreground">
-                Yeay! your {subText} have {direction} by $723.12 from last
-                month!
+                Yay! your {subText} have {direction} from last month!
               </span>
             </div>
           </div>

@@ -31,7 +31,6 @@ export {
 export type {
   EarningsResponse,
   MonthlyEarning,
-  EarningsApiResponse,
   EarningsQueryParams,
   EarningsStats,
 } from "./types";

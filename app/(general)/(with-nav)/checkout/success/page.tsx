@@ -93,7 +93,7 @@ const SuccessPage = () => {
             </div>
             <div className="flex items-center justify-between p-4 rounded-2xl shadow-md bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold text-lg">
               <span className="truncate font-black">
-                Purchase ID: {orders[0].purhase_id}
+                Purchase ID: {orders[0]?.purhase_id}
               </span>
               <Button
                 variant="secondary"
@@ -203,13 +203,22 @@ const SuccessPage = () => {
                 </Button>
               </Link>
               {!loading && user && (
-                <Button variant="outline" className="px-8 py-3 text-lg">
+                <Button
+                  variant="outline"
+                  className="px-8 py-3 text-lg"
+                  onClick={() =>
+                    router.push(`/public-dashboard/${orders[0]?.purhase_id}`)
+                  }
+                >
                   Track Order
                 </Button>
               )}
               {!user && !loading && (
-                <Button className="px-8 py-3 text-lg">
-                  Create Account to Track Orders
+                <Button
+                  onClick={() => router.push(`/public-dashboard`)}
+                  className="px-8 py-3 text-lg"
+                >
+                  Track Order
                 </Button>
               )}
             </div>

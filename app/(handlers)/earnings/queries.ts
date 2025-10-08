@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getEarnings, getMyEarnings, getStoreEarnings } from "./api";
-import { EarningsQueryParams } from "./types";
+import { getEarnings, getMyEarnings, getStoreEarnings, getPayoutOrders } from "./api";
+import { EarningsQueryParams, PayoutOrdersResponse } from "./types";
 
 /**
  * Hook to fetch current user's earnings data
@@ -8,6 +8,7 @@ import { EarningsQueryParams } from "./types";
  * @returns Query result with earnings data
  */
 export const useEarnings = (params?: EarningsQueryParams) => {
+  console.log(params, "PARAMS");
   return useQuery({
     queryKey: ["earnings", "me", params],
     queryFn: () => getMyEarnings(params),
@@ -29,6 +30,15 @@ export const useStoreEarnings = (storeId: number, params?: EarningsQueryParams) 
     enabled: !!storeId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// Payout orders hook
+export const usePayoutOrders = (params?: { status?: "completed" | "pending"; page?: number; limit?: number; }) => {
+  return useQuery<PayoutOrdersResponse>({
+    queryKey: ["earnings", "payout-orders", params],
+    queryFn: () => getPayoutOrders(params),
+    staleTime: 60 * 1000,
   });
 };
 

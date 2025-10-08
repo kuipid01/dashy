@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Additional types specific to order API operations
 
 export interface OrderResponse {
@@ -5,7 +6,7 @@ export interface OrderResponse {
   data: {
     id: number;
     total: number;
-    status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+    status: "pending" | "processing" | "shipped" | "delivered" | "cancelled" | "dispute"  ;
     userId: number;
     net_total: number;
     commission: number;
@@ -17,7 +18,7 @@ export interface OrderResponse {
     thirdPartyProvider?: string;
     thirdPartyTrackingId?: string;
     contactId?: string;
-    addressId?: string;
+    addressId?: string;   
     orderStatus: string;
     sales_means: "ONLINE" | "STORE";
     placedAt: string;

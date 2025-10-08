@@ -111,13 +111,16 @@ export interface Order {
   | "shipped"
   | "delivered"
   | "cancelled"
-  | string; // Gorm default 'pending'
+  | "draft"
+  | "dispute"
+    | string; // Gorm default 'pending'
 
   userId: number;
   user: User;
   net_total: number;
   commision: number;
   storeId?: number; // Nullable in Go, so optional in TS
+  store_id?: number; // Nullable in Go, so optional in TS
   store?: Store;
 
   paymentId?: string;
@@ -149,8 +152,31 @@ export interface Order {
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   placed_at: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   updatedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
+  shipping_fee: number;
+  payment_status: "held_in_escrow" | "paid" | "pending_disbursement" | "failed";
   deletedAt?: string; // gorm.DeletedAt is a pointer, so optional. Maps to string for timestamp or null.
+
+
+  delivery_approved_at?: Date | null;
+  delivery_rejected_at?: Date | null;
+  delivery_rejected_reason?: string | null;
+  has_dispute?: boolean | null;
+  refund_requested?: boolean | null;
+  auto_disbursed?: boolean | null;
+  auto_disbursed_at?: Date | null;
+  released_at?: Date | null;
+  refund_at?: Date | null;
+  refund_status?: "pending" | "success" | "failed";
+  dispute_proof?: string | null;
+  store_dispute_proof?: string | null;
+  store_dispute_response?: string | null;
+  store_dispute_at?: Date | null;
+  dispute_winner?: "store" | "customer" | null; 
+  dispute_resolved_reason?: string | null;
+  platform_to_store_payment_status?: string | null | "completed" | "pending";
+	platform_to_store_payment_at?: Date | null;
 }
+
 
 export interface User {
   ID: number;
@@ -548,4 +574,79 @@ export interface Location {
     country: string;
     country_code: string;
   };
+}
+
+// ===================== Feedback Types =====================
+export interface Feedback {
+  id: number;
+  stars: number; // 1-5 rating
+  feedback: string;
+  user_id?: number;
+  user?: User;
+  order_id?: number;
+  order?: Order;
+  product_id?: number;
+  product?: Product;
+  store_id?: number;
+  store?: Store;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateFeedbackRequest {
+  stars: number; // 1-5 rating
+  feedback: string;
+  order_id?: number;
+  product_id?: number;
+  store_id?: number;
+}
+
+export interface UpdateFeedbackRequest {
+  stars?: number;
+  feedback?: string;
+}
+
+export interface FeedbackResponse {
+  success: boolean;
+  data: Feedback;
+  message?: string;
+}
+
+export interface FeedbacksListResponse {
+  success: boolean;
+  data: {
+    feedbacks: Feedback[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  message?: string;
+}
+
+export interface AverageRatingResponse {
+  success: boolean;
+  data: {
+    average_rating: number;
+    total_feedbacks: number;
+    rating_breakdown: {
+      "1": number;
+      "2": number;
+      "3": number;
+      "4": number;
+      "5": number;
+    };
+  };
+  message?: string;
+}
+
+export interface FeedbacksByStarsResponse {
+  success: boolean;
+  data: {
+    feedbacks: Feedback[];
+    star_rating: number;
+    total: number;
+    page: number;
+    limit: number;
+  };
+  message?: string;
 }

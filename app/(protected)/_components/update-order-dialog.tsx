@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Order } from "@/constants/types";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { CheckCircle, Clock, Package, Truck, XCircle } from "lucide-react";
 import { useUpdateOrder } from "@/app/(handlers)/orders";
+import { toast } from "sonner";
 
 interface UpdateOrderDialogProps {
   order: Order;
@@ -57,7 +59,7 @@ export default function UpdateOrderDialog({
       ? new Date(order.arrival_date).toISOString().split("T")[0]
       : ""
   );
-  const [selectedStatus, setSelectedStatus] = useState<string>(order.status);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
 
   const quickDateOptions = [
     { label: "In 3 days", days: 3 },
@@ -74,26 +76,38 @@ export default function UpdateOrderDialog({
   };
 
   const handleUpdateOrder = async () => {
+    if (order.status === "dispute" || order.status === "delivered") {
+      toast.error(
+        "You cannot update this order, the order status is already completed, cancelled or disputed"
+      );
+      return;
+    }
+
+    const payload: Record<string, any> = {};
+
+    if (estimatedArrivalDate) {
+      payload.arrival_date = estimatedArrivalDate;
+    }
+
+    if (selectedStatus !== "" || selectedStatus !== order.status) {
+      payload.status = selectedStatus === "draft" ? "pending" : selectedStatus;
+    }
+
     await updateOrder({
       id: order.id,
-      data: {
-        arrival_date: estimatedArrivalDate
-          ? new Date(estimatedArrivalDate)
-          : undefined,
-        status:
-          selectedStatus === "draft"
-            ? "pending"
-            : (selectedStatus as
-                | "pending"
-                | "processing"
-                | "shipped"
-                | "delivered"
-                | "cancelled"
-                | undefined)
-      }
+      data: payload
     });
+
     onOpenChange(false);
   };
+  const cannotUpdateOrder =
+    order.status === "dispute" || order.status === "delivered";
+  console.log(cannotUpdateOrder, "CANNOT UPDATE ORDER ");
+  console.log(updatingOrder, "UPDATING ORDER ");
+  console.log(estimatedArrivalDate, "ESTIMATED ARRIVAL DATE ");
+  console.log(selectedStatus, "SELECTED STATUS ");
+  console.log(order.status, "ORDER STATUS ");
+  console.log(cannotUpdateOrder, "CANNOT UPDATE ORDER ");
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -137,11 +151,8 @@ export default function UpdateOrderDialog({
           <div className="space-y-3">
             <Label className="text-sm font-medium">Order Status</Label>
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-full text-black">
-                <SelectValue
-                  className="text-black"
-                  placeholder="Select status"
-                />
+              <SelectTrigger className="w-full  !text-black">
+                <SelectValue className=" bg-emerald-500" placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map((status) => {
@@ -165,16 +176,18 @@ export default function UpdateOrderDialog({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={updatingOrder}
+            className="bg-gray-800  text-white hover:bg-gray-800"
           >
             Cancel
           </Button>
           <Button
             onClick={handleUpdateOrder}
             disabled={
+              cannotUpdateOrder ||
               updatingOrder ||
               (!estimatedArrivalDate && selectedStatus === order.status)
             }
-            className="bg-black text-white hover:bg-gray-800"
+            className="bg-black disabled:bg-gray-800 text-white hover:bg-gray-800"
           >
             {updatingOrder ? "Updating..." : "Update Order"}
           </Button>

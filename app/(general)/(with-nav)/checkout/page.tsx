@@ -83,7 +83,7 @@ const CheckoutPage = () => {
     city: "",
     state: "",
     postalCode: "",
-    country: "",
+    country: "Nigeria",
     addressDescription: ""
   });
 
@@ -341,6 +341,9 @@ const CheckoutPage = () => {
     return false;
   };
   const isAddressIncomplete = () => {
+    console.log(addressManually);
+    console.log(selectedAddress);
+    console.log("failed here 1");
     return (
       !selectedAddress &&
       (!addressManually.street ||

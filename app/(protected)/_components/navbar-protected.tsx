@@ -30,6 +30,7 @@ import {
   useFetchUserStore,
   useHandleLogout
 } from "@/app/(handlers)/auth-handlers/auth";
+import { AnimatePresence, motion } from "framer-motion";
 
 const NavbarProtected = () => {
   const { user, isLoading } = useFetchUser();
@@ -200,40 +201,79 @@ const NavbarProtected = () => {
         </div>
       </div>
 
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-20 bg-black/50 flex">
-          <div className="bg-white w-[250px] flex flex-col p-5">
-            <div className="flex justify-between items-center mb-5">
-              <p className="font-bold text-lg">Menu</p>
-              <button onClick={() => setSidebarOpen(false)}>
-                <X size={24} />
-              </button>
-            </div>
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            key="sidebar"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+            className="fixed  inset-0 z-20 bg-black/50 flex"
+          >
+            <motion.div
+              initial={{ opacity: 0, x: 100, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 100, scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+              key="sidebar-content"
+              className="bg-white absolute right-0 top-0 bottom-0 w-[250px] flex flex-col p-5"
+            >
+              <div className="flex justify-between items-center mb-5">
+                <p className="font-bold text-lg">Menu</p>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <X size={24} />
+                </button>
+              </div>
 
-            <ul className="flex flex-col gap-4">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    onClick={() => setSidebarOpen(false)}
-                    className={clsx(
-                      "capitalize block px-4 py-2 rounded-md",
-                      link.href === "settings" &&
-                        pathname.toLowerCase() === "/user"
-                        ? "bg-[#d4d4d4]"
-                        : pathname.toLowerCase() === `/${link.href}` &&
-                            "bg-[#d4d4d4]"
-                    )}
-                    href={link.href === "settings" ? "/user" : `/${link.href}`}
+              <ul className="flex flex-col gap-4">
+                {links.map((link, index) => (
+                  <motion.li
+                    initial={{
+                      opacity: 0,
+                      x: index * 10,
+                      y: index * 10,
+                      scale: 0.8,
+                      rotate: index * 3
+                    }}
+                    animate={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 }}
+                    exit={{
+                      opacity: 0,
+                      x: 100,
+                      y: index * 10,
+                      scale: 0.8,
+                      rotate: index * 3
+                    }}
+                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                    key={link.href}
                   >
-                    {link.href}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex-1" onClick={() => setSidebarOpen(false)} />
-        </div>
-      )}
+                    <Link
+                      onClick={() => setSidebarOpen(false)}
+                      className={clsx(
+                        "capitalize block px-4 py-2 rounded-md",
+                        link.href === "settings" &&
+                          pathname.toLowerCase() === "/user"
+                          ? "bg-[#d4d4d4]"
+                          : pathname.toLowerCase() === `/${link.href}` &&
+                              "bg-[#d4d4d4]"
+                      )}
+                      href={
+                        link.href === "settings" ? "/user" : `/${link.href}`
+                      }
+                    >
+                      {link.href}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+            <div className="flex-1" onClick={() => setSidebarOpen(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

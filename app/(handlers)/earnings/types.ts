@@ -16,11 +16,7 @@ export interface EarningsResponse {
   monthly_earnings: MonthlyEarning[]; // past 6 months data
 }
 
-export interface EarningsApiResponse {
-  success: boolean;
-  data: EarningsResponse;
-  message?: string;
-}
+
 
 export interface EarningsError {
   success: false;
@@ -44,6 +40,10 @@ export interface EarningsQueryParams {
   month?: number;
   dateFrom?: string; // ISO date string
   dateTo?: string; // ISO date string
+  // include only orders with platform_to_store_payment_status filter
+  payout_status?: "completed" | "pending";
+  // aggregation granularity for charts
+  granularity?: "week" | "month" | "six_months";
 }
 
 // Earnings statistics for additional analytics
@@ -54,4 +54,14 @@ export interface EarningsStats {
   worstMonth: MonthlyEarning;
   growthTrend: 'increasing' | 'decreasing' | 'stable';
   projectedNextMonth: number;
+}
+
+// Payout orders response for listing orders by platform payout status
+export interface PayoutOrdersResponse {
+  orders: import("@/constants/types").Order[];
+  pendingCount:number;
+  completedCount:number;
+  page?: number;
+  limit?: number;
+  total?: number;
 }

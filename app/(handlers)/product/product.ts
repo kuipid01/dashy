@@ -50,6 +50,20 @@ const uploadImage = async (images: File[]): Promise<any> => {
   console.log(response, "response")
   return response.data;
 };
+export const uploadImageUnprotected = async (images: File[]): Promise<any> => {
+  const formData = new FormData();
+  images.forEach((file) => formData.append("files", file));
+
+  console.log([...formData.entries()]); // ✅ Confirm what you're sending
+
+  const response = await api.post(`/upload-unprotected`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data", //
+    },
+  });
+  console.log(response, "response")
+  return response.data;
+};
 
 export const useFetchUserProducts = () => {
   const { data, isLoading, error, isError } = useQuery<Product[], Error>({
@@ -147,6 +161,16 @@ export const useUpdateProduct = (id: string | number) => {
 export const useUploadImage = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (image: File[]) => uploadImage(image),
+  });
+
+  return {
+    upload: mutateAsync,
+    isPending,
+  };
+};
+export const useUploadImageUnprotected = () => {
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (image: File[]) => uploadImageUnprotected(image),
   });
 
   return {

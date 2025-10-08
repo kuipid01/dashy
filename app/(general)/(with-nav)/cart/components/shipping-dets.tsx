@@ -89,6 +89,16 @@ const ShippingDetailsOrder = ({
 }) => {
   const { items } = useCartStore();
 
+  //states
+  const [debouncedAddress, setDebouncedAddress] = useState("");
+  const [valueAdress, setValueAdress] = useState("");
+  const [address, setAddress] = useState("");
+  const [storeConfigs, setStoreConfigs] = useState<StoreConfig[]>([]);
+  const [userLocation, setUserLocation] = useState<LocationInput>({
+    address: ""
+  });
+
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [zonesSelected, setZonesSelected] = useState<
     {
       storeId: string | number;
@@ -106,12 +116,6 @@ const ShippingDetailsOrder = ({
     [cart]
   );
 
-  const [storeConfigs, setStoreConfigs] = useState<StoreConfig[]>([]);
-  const [userLocation, setUserLocation] = useState<LocationInput>({
-    address: ""
-  });
-
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const { setShippingFeeForStore, clearShippingFees, setShippingAddress } =
     useCartStore();
 
@@ -223,9 +227,6 @@ const ShippingDetailsOrder = ({
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
-  const [debouncedAddress, setDebouncedAddress] = useState("");
-  const [valueAdress, setValueAdress] = useState("");
-  const [address, setAddress] = useState("");
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -529,6 +530,18 @@ const ShippingDetailsOrder = ({
                                 ...prev,
                                 [storeConfig.storeId]: result
                               }));
+                              if (storeIds.length === 1) {
+                                //it means we can move to the next step
+                                setSteps(2);
+                              } else {
+                                //we check if  all have distances results
+                                for (const id of storeIds) {
+                                  if (!distanceResults[id as number]) {
+                                    return;
+                                  }
+                                }
+                                setSteps(2);
+                              }
                             }}
                             key={zone.id}
                             className={clsx(

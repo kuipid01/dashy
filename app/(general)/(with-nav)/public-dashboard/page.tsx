@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import type React from "react";
@@ -15,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useLoginPurchaseOrder } from "@/app/(handlers)/order-tracking/query";
 
 export default function PublicDashboardPage() {
   const router = useRouter();
@@ -22,35 +25,43 @@ export default function PublicDashboardPage() {
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { mutateAsync: login, isPending } = useLoginPurchaseOrder();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    // Simulate API call to verify order
-    setTimeout(() => {
-      if (email && pin) {
-        // In a real app, you would verify the email and PIN with your backend
-        // For now, we'll generate a mock order ID and navigate to it
-        const orderId = `ORD-${pin}`;
+    if (email && pin) {
+      try {
+        await login({ email, purchaseId: pin });
+        // Navigate to OTP verification page
         router.push(
-          `/public-dashboard/${orderId}?email=${encodeURIComponent(email)}`
+          `/public-dashboard/verify?email=${encodeURIComponent(
+            email
+          )}&orderId=${pin}`
         );
-      } else {
-        setError("Please enter both email and Purchase ID");
+      } catch (err: any) {
+        console.log(err);
+        setError(
+          err.response.data.error ??
+            "Failed to initiate order tracking. Please try again."
+        );
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }, 1000);
+    } else {
+      setError("Please enter both email and Purchase ID");
+    }
   };
 
   return (
-    <div className="min-h-screen _bg-gradient-to-br py-10 from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md mt-15 space-y-6">
+    <div className="min-h-screen _bg-gradient-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto shadow-lg">
-            <Package className="w-8 h-8 text-dark" />
+            <Package className="w-8 h-8 text-black" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
             Track Your Order
@@ -119,9 +130,9 @@ export default function PublicDashboardPage() {
                 type="submit"
                 className="w-full"
                 size="lg"
-                disabled={isLoading}
+                disabled={isLoading || isPending}
               >
-                {isLoading ? (
+                {isLoading || isPending ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Searching...
