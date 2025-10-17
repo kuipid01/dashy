@@ -23,6 +23,7 @@ const VariantsCorner = ({
     "price",
     "stock",
     "sku",
+    "images"
   ];
 
   return (

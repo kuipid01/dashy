@@ -1,9 +1,12 @@
+import { ProductVariant } from "@/constants/types";
+
 // types/product.ts
 export interface Product {
     id: number;
     ID: number;
     name: string;
     category: string;
+    variants: ProductVariant[] | null;
     image: string[] | File[] ; // Comma-separated string from backend
     videos?: string[]  | File[] | null;
     description?: string | null;

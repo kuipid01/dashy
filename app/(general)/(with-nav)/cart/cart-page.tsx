@@ -30,7 +30,9 @@ const CartPage = () => {
     removeItem,
     groupedByStore,
     toggleGroupByStore,
-    getItemsByStore
+    getItemsByStore,
+    getItemPrice,
+    getItemTotalPrice
   } = useCartStore();
 
   console.log(activeStore, "activeStore");
@@ -43,8 +45,7 @@ const CartPage = () => {
 
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => {
-      const price = item.product.discounted_price ?? item.product.price ?? 0;
-      return total + price * item.quantity;
+      return total + getItemTotalPrice(item);
     }, 0);
   };
 
@@ -54,16 +55,15 @@ const CartPage = () => {
 
   const getStoreTotal = (storeItems: typeof cartItems) => {
     return storeItems.reduce((total, item) => {
-      const price = item.product.discounted_price ?? item.product.price ?? 0;
-      return total + price * item.quantity;
+      return total + getItemTotalPrice(item);
     }, 0);
   };
 
-  const handleQuantityChange = (productId: string, newQuantity: number) => {
+  const handleQuantityChange = (cartItemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
-      removeItem(productId);
+      removeItem(cartItemId);
     } else {
-      updateItemQuantity(productId, newQuantity);
+      updateItemQuantity(cartItemId, newQuantity);
     }
   };
 
@@ -71,11 +71,33 @@ const CartPage = () => {
 
   // Render individual cart item
   const renderCartItem = (item: (typeof cartItems)[0]) => {
-    const price = item.product.discounted_price ?? item.product.price ?? 0;
-    const totalPrice = price * item.quantity;
+    const price = getItemPrice(item);
+    const totalPrice = getItemTotalPrice(item);
+
+    // Helper function to render variant details
+    const renderVariantDetails = () => {
+      if (!item.variant) return null;
+
+      const variantDetails = [];
+      if (item.variant.Size) variantDetails.push(`Size: ${item.variant.Size}`);
+      if (item.variant.Color)
+        variantDetails.push(`Color: ${item.variant.Color}`);
+      if (item.variant.Material)
+        variantDetails.push(`Material: ${item.variant.Material}`);
+      if (item.variant.Dimensions)
+        variantDetails.push(`Dimensions: ${item.variant.Dimensions}`);
+
+      if (variantDetails.length === 0) return null;
+
+      return (
+        <div className="text-sm text-zinc-500 mb-2">
+          {variantDetails.join(" • ")}
+        </div>
+      );
+    };
 
     return (
-      <Card key={item.product.id} className="overflow-hidden">
+      <Card key={item.cartItemId} className="overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-center gap-6">
             {/* Product Image */}
@@ -92,6 +114,7 @@ const CartPage = () => {
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-xl mb-2">{item.product.name}</h3>
               <p className="text-zinc-600 mb-2">{item.product.category}</p>
+              {renderVariantDetails()}
               {item.storeName && (
                 <p className="text-sm text-blue-600 mb-2 flex items-center gap-1">
                   <Store size={14} />
@@ -106,10 +129,7 @@ const CartPage = () => {
               <div className="flex items-center justify-between rounded-full bg-gray-100 px-3 py-2 w-[140px] shadow-sm">
                 <button
                   onClick={() =>
-                    handleQuantityChange(
-                      String(item.product.id),
-                      item.quantity - 1
-                    )
+                    handleQuantityChange(item.cartItemId, item.quantity - 1)
                   }
                   className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
                   aria-label="Decrease quantity"
@@ -121,10 +141,7 @@ const CartPage = () => {
                 </span>
                 <button
                   onClick={() =>
-                    handleQuantityChange(
-                      String(item.product.id),
-                      item.quantity + 1
-                    )
+                    handleQuantityChange(item.cartItemId, item.quantity + 1)
                   }
                   className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
                   aria-label="Increase quantity"
@@ -142,7 +159,7 @@ const CartPage = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => removeItem(String(item.product.id))}
+                onClick={() => removeItem(item.cartItemId)}
                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
               >
                 Remove

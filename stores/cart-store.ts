@@ -1,14 +1,18 @@
 
 import { Product } from "@/app/(handlers)/types/product";
+import { ProductVariant } from "@/constants/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 // Define the structure for an individual cart item
 export interface CartItem {
     product: Product;
+    variant?: ProductVariant;
     quantity: number;
     storeId: number;
     storeName?: string;
+    // Composite key for unique identification
+    cartItemId: string; // Format: "productId_variantId" or "productId" if no variant
 }
 
 // The main state of the cart store
@@ -32,12 +36,16 @@ interface CartState {
 
 // Actions to manipulate the cart state
 interface CartActions {
-    addItem: (product: Product, quantity?: number) => void;
-    removeItem: (productId: string) => void;
-    updateItemQuantity: (productId: string, quantity: number) => void;
+    addItem: (product: Product, quantity?: number, variant?: ProductVariant) => void;
+    removeItem: (cartItemId: string) => void;
+    updateItemQuantity: (cartItemId: string, quantity: number) => void;
     clearCart: () => void;
     toggleGroupByStore: () => void;
     getItemsByStore: () => Record<number, CartItem[]>;
+    // Helper functions for variant handling
+    getCartItemId: (productId: string | number, variantId?: string) => string;
+    getItemPrice: (item: CartItem) => number;
+    getItemTotalPrice: (item: CartItem) => number;
     // Shipping-related actions
     setShippingFeeForStore: (storeId: number, fee: number) => void;
     clearShippingFees: () => void;
@@ -60,77 +68,125 @@ export const useCartStore = create<CartStore>()(
             shippingFeesByStore: {},
 
             // Action to add a product to the cart or increase its quantity
-            addItem: (product, quantity = 1) => {
+            addItem: (product, quantity = 1, variant?: ProductVariant) => {
                 set((state) => {
-                    const items = { ...state.items };
-                    const existingItem = items[product.ID ?? product.id];
-                    console.log(product, "product in store")
-                    if (existingItem) {
-                        // Update quantity if item already exists
-                        existingItem.quantity += quantity;
-                    } else {
+                    console.group("🟩 ADD ITEM TO CART");
 
-                        // Add a new item with store information
-                        items[product.ID ?? product.id] = {
+                    console.log("🛍️ Product received:", product);
+                    console.log("🔢 Quantity to add:", quantity);
+                    console.log("🧩 Variant (if any):", variant);
+
+                    const items = { ...state.items };
+                    console.log("📦 Current cart items before adding:", items);
+
+                    const cartItemId = get().getCartItemId(product.ID ?? product.id, variant?.id);
+                    console.log("🆔 Generated cartItemId:", cartItemId);
+
+                    const existingItem = items[cartItemId];
+                    console.log(
+                        existingItem
+                            ? "♻️ Item already exists in cart, will increase quantity."
+                            : "✨ Item not in cart, will create new entry."
+                    );
+
+                    if (existingItem) {
+                        existingItem.quantity += quantity;
+                        console.log("🔁 Updated quantity:", existingItem.quantity);
+                    } else {
+                        items[cartItemId] = {
                             product,
+                            variant,
                             quantity,
                             storeId: product.storeId || product.store_id,
-                            storeName: product.store?.name
+                            storeName: product.store?.name,
+                            cartItemId,
                         };
+                        console.log("✅ Added new item to cart:", items[cartItemId]);
                     }
 
-                    // Recalculate total items
                     const newTotalItems = Object.values(items).reduce(
                         (total, item) => total + item.quantity,
                         0
                     );
+                    console.log("🧮 Recalculated total items in cart:", newTotalItems);
 
+                    console.groupEnd();
                     return { items, totalItems: newTotalItems };
                 });
             },
 
             // Action to remove an item completely from the cart
-            removeItem: (productId) => {
+            removeItem: (cartItemId) => {
                 set((state) => {
+                    console.group("🟥 REMOVE ITEM FROM CART");
+
+                    console.log("🆔 cartItemId to remove:", cartItemId);
+
                     const items = { ...state.items };
-                    const itemToRemove = items[productId];
-                    if (!itemToRemove) return state; //  Do nothing if item doesn't exist
+                    console.log("📦 Current cart items before removal:", items);
 
-                    delete items[productId];
+                    const itemToRemove = items[cartItemId];
 
-                    // Recalculate total items
+                    if (!itemToRemove) {
+                        console.warn("⚠️ No item found for the given cartItemId. Nothing removed.");
+                        console.groupEnd();
+                        return state;
+                    }
+
+                    console.log("🗑️ Removing item:", itemToRemove);
+                    delete items[cartItemId];
+
                     const newTotalItems = Object.values(items).reduce(
                         (total, item) => total + item.quantity,
                         0
                     );
+                    console.log("🧮 Recalculated total items in cart after removal:", newTotalItems);
 
+                    console.groupEnd();
                     return { items, totalItems: newTotalItems };
                 });
             },
 
             // Action to update the quantity of an existing item
-            updateItemQuantity: (productId, quantity) => {
+            updateItemQuantity: (cartItemId, quantity) => {
                 set((state) => {
+                    console.group("🟦 UPDATE ITEM QUANTITY");
+
+                    console.log("🆔 cartItemId:", cartItemId);
+                    console.log("🔢 New quantity requested:", quantity);
+
                     const items = { ...state.items };
-                    const existingItem = items[productId];
+                    console.log("📦 Current cart items:", items);
 
-                    if (!existingItem) return state; // Do nothing if item doesn't exist
+                    const existingItem = items[cartItemId];
 
-                    if (quantity <= 0) {
-                        delete items[productId]; // Remove item if quantity is zero or less
-                    } else {
-                        existingItem.quantity = quantity; // Update the quantity
+                    if (!existingItem) {
+                        console.warn("⚠️ Item not found in cart. Quantity update skipped.");
+                        console.groupEnd();
+                        return state;
                     }
 
-                    // Recalculate total items
+                    console.log("🧩 Found existing item:", existingItem);
+
+                    if (quantity <= 0) {
+                        console.log("🗑️ Quantity is zero or less. Removing item from cart.");
+                        delete items[cartItemId];
+                    } else {
+                        console.log(`🔄 Updating quantity from ${existingItem.quantity} → ${quantity}`);
+                        existingItem.quantity = quantity;
+                    }
+
                     const newTotalItems = Object.values(items).reduce(
                         (total, item) => total + item.quantity,
                         0
                     );
+                    console.log("🧮 Recalculated total items in cart:", newTotalItems);
 
+                    console.groupEnd();
                     return { items, totalItems: newTotalItems };
                 });
             },
+
 
             // Action to remove all items from the cart
             clearCart: () => {
@@ -172,6 +228,18 @@ export const useCartStore = create<CartStore>()(
             getTotalShipping: () => {
                 const state = get();
                 return Object.values(state.shippingFeesByStore).reduce((sum, n) => sum + (Number(n) || 0), 0);
+            },
+            // Helper functions for variant handling
+            getCartItemId: (productId, variantId) => {
+                return variantId ? `${productId}_${variantId}` : `${productId}`;
+            },
+            getItemPrice: (item) => {
+                // Return variant price if available, otherwise product price
+                return item.variant?.price || item.product.price;
+            },
+            getItemTotalPrice: (item) => {
+                const unitPrice = get().getItemPrice(item);
+                return unitPrice * item.quantity;
             },
             // Hydration tracking
             _hasHydrated: false,

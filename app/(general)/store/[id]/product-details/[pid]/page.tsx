@@ -36,8 +36,9 @@ import ShippingDetails from "../../components/shipping-details";
 
 const Page = () => {
   const { pid, id } = useParams<{ pid: string; id: string }>();
-  console.log(id);
-  const { addItem, updateItemQuantity, items, removeItem } = useCartStore();
+
+  const { addItem, updateItemQuantity, items, removeItem, getCartItemId } =
+    useCartStore();
   const { data: product, isLoading: productLoading } = useFetchProduct(pid);
   const { data: variants, isLoading: variantsLoading } =
     UseFetchProductVariants(product?.id ?? 0);
@@ -47,11 +48,69 @@ const Page = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showDescription, setShowDescription] = useState(false);
   const [showShippingDetails, setShowShippingDetails] = useState(false);
+  const iseSelectedVariantInCart = useMemo(() => {
+    console.log("🟡 Checking if selected variant is in cart...");
 
-  const images = useMemo(
-    () => (product?.image?.length ? product.image : ["/assets/login.jpg"]),
-    [product?.image]
-  );
+    if (!selectedVariantNew || !product) {
+      console.log("❌ No selectedVariantNew or product found.");
+      return false;
+    }
+
+    console.log("🧩 Selected Variant Details:", {
+      productId: product.id,
+      variantId: selectedVariantNew.id,
+      name: selectedVariantNew.Size || selectedVariantNew.Color || "Variant"
+    });
+
+    // Use the new cart item ID structure
+    const cartItemId = getCartItemId(product.id, selectedVariantNew.id);
+    const cartItem = items[cartItemId];
+
+    console.log("🛒 Cart Item ID:", cartItemId);
+    console.log("🛒 Cart Item:", cartItem);
+
+    const isMatch = Boolean(cartItem);
+    console.log(`✅ Variant Match Found: ${isMatch ? "YES" : "NO"}`);
+
+    return isMatch;
+  }, [selectedVariantNew, product, items, getCartItemId]);
+
+  console.log("iseSelectedVariantInCart:", iseSelectedVariantInCart, items);
+  const images = useMemo(() => {
+    // If a variant is selected and has images, use variant images
+    if (selectedVariantNew?.images) {
+      const variantImages = selectedVariantNew.images
+        .split(",")
+        .filter(Boolean);
+      if (variantImages.length > 0) {
+        return variantImages;
+      }
+    }
+
+    // Fallback to product images
+    return product?.image?.length ? product.image : ["/assets/login.jpg"];
+  }, [product?.image, selectedVariantNew?.images]);
+
+  const productHasVariants = Array.isArray(variants) && variants.length > 0;
+  console.log("productHasVariants:", productHasVariants);
+
+  const productIsInCart = useMemo(() => {
+    if (!product) return null;
+
+    if (productHasVariants) {
+      // For products with variants, only check if the currently selected variant is in cart
+      if (selectedVariantNew) {
+        const cartItemId = getCartItemId(product.id, selectedVariantNew.id);
+        return items[cartItemId] || null;
+      }
+      // If no variant is selected, return null (don't show any cart state)
+      return null;
+    } else {
+      // For products without variants, check if product is in cart
+      const cartItemId = getCartItemId(product.id);
+      return items[cartItemId] || null;
+    }
+  }, [product, productHasVariants, selectedVariantNew, items, getCartItemId]);
 
   const currentStock = selectedVariantNew?.stock ?? product?.stock ?? 0;
   const currentPrice =
@@ -68,7 +127,11 @@ const Page = () => {
       </div>
     );
   }
-  const productIsInCart = items[product.id] ? items[product.id] : null;
+  console.log("productIsInCart:", productIsInCart);
+
+  // console.log(selectedVariantNew?.product_id, "selectedVariantNew");
+  console.log(items, "items");
+
   return (
     <>
       <Navbar />
@@ -92,7 +155,7 @@ const Page = () => {
         <div className="flex my-10 flex-col w-full lg:flex-row gap-10">
           <div className="h-[650px] w-full lg:w-[45%] px-5 rounded-2xl relative overflow-hidden">
             <div className="grid absolute top-5 left-1/2 -translate-x-1/2 z-10 grid-cols-4 gap-2 rounded-2xl w-[80%] mx-auto">
-              {images.map((_, index) => (
+              {images.map((_: string, index: number) => (
                 <div
                   key={index}
                   onClick={() => setActiveIndex(index)}
@@ -117,7 +180,7 @@ const Page = () => {
 
             {images.length > 0 && (
               <div className="absolute w-[80%] z-10 bottom-2 left-1/2 -translate-x-1/2 space-x-5 grid-cols-3 grid">
-                {images.map((image, index) => (
+                {images.map((image: string, index: number) => (
                   <div
                     key={index}
                     onClick={() => setActiveIndex(index)}
@@ -156,15 +219,105 @@ const Page = () => {
             </div>
 
             <div className="flex items-center gap-3 mt-4">
-              {productIsInCart ? (
+              {productHasVariants ? (
+                selectedVariantNew ? (
+                  iseSelectedVariantInCart ? (
+                    // If product has variants AND that specific variant is in cart
+                    <div className="flex items-center justify-between rounded-full bg-gray-100 dark:bg-zinc-800 px-2 py-1.5 w-[150px] shadow-sm">
+                      <button
+                        onClick={() => {
+                          console.log(
+                            selectedVariantNew,
+                            "selectedVariantNew?"
+                          );
+                          const cartItemId = getCartItemId(
+                            product.id,
+                            selectedVariantNew?.id
+                          );
+                          console.log(cartItemId, "cartItemId");
+                          updateItemQuantity(
+                            cartItemId,
+                            (productIsInCart?.quantity || 0) - 1
+                          );
+                        }}
+                        className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus size={20} />
+                      </button>
+                      <input
+                        type="number"
+                        value={productIsInCart?.quantity || 0}
+                        onChange={(e) => {
+                          const newQuantity = parseInt(e.target.value, 10);
+                          if (!isNaN(newQuantity) && newQuantity >= 0) {
+                            const cartItemId = getCartItemId(
+                              product.id,
+                              selectedVariantNew?.id
+                            );
+                            console.log(cartItemId, "cartItemId");
+                            updateItemQuantity(cartItemId, newQuantity);
+                          }
+                        }}
+                        className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none dark:text-zinc-200"
+                        min="0"
+                      />
+                      <button
+                        onClick={() => {
+                          const cartItemId = getCartItemId(
+                            product.id,
+                            selectedVariantNew?.id
+                          );
+                          console.log(cartItemId, "cartItemId");
+                          updateItemQuantity(
+                            cartItemId,
+                            (productIsInCart?.quantity || 0) + 1
+                          );
+                        }}
+                        className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    // If product has variants but this particular variant isn't in cart
+                    <button
+                      onClick={() => {
+                        console.log("Product been added", product);
+                        addItem(product, 1, selectedVariantNew);
+                      }}
+                      disabled={isOutOfStock}
+                      className={cn(
+                        "w-full px-10 cursor-pointer py-3 rounded-[30px] font-medium transition-all",
+                        isOutOfStock
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-400"
+                          : "bg-black text-white hover:bg-gray-800"
+                      )}
+                    >
+                      {isOutOfStock ? "Out of Stock" : "Add to Cart"}
+                    </button>
+                  )
+                ) : (
+                  // If product has variants but no variant is selected
+                  <button
+                    disabled
+                    className="w-full px-10 cursor-not-allowed py-3 rounded-[30px] font-medium bg-gray-300 text-gray-500 dark:bg-zinc-700 dark:text-zinc-400"
+                  >
+                    Select a variant
+                  </button>
+                )
+              ) : productIsInCart ? (
+                // If no variants and product is already in cart
                 <div className="flex items-center justify-between rounded-full bg-gray-100 dark:bg-zinc-800 px-2 py-1.5 w-[150px] shadow-sm">
                   <button
-                    onClick={() =>
+                    onClick={() => {
+                      const cartItemId = getCartItemId(product.id);
                       updateItemQuantity(
-                        String(product.id),
-                        productIsInCart.quantity - 1
-                      )
-                    }
+                        cartItemId,
+                        productIsInCart?.quantity - 1
+                      );
+                    }}
                     className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                     aria-label="Decrease quantity"
                   >
@@ -172,23 +325,25 @@ const Page = () => {
                   </button>
                   <input
                     type="number"
-                    value={productIsInCart.quantity}
+                    value={productIsInCart?.quantity}
                     onChange={(e) => {
                       const newQuantity = parseInt(e.target.value, 10);
                       if (!isNaN(newQuantity) && newQuantity >= 0) {
-                        updateItemQuantity(String(product.id), newQuantity);
+                        const cartItemId = getCartItemId(product.id);
+                        updateItemQuantity(cartItemId, newQuantity);
                       }
                     }}
                     className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none dark:text-zinc-200"
                     min="0"
                   />
                   <button
-                    onClick={() =>
+                    onClick={() => {
+                      const cartItemId = getCartItemId(product.id);
                       updateItemQuantity(
-                        String(product.id),
-                        productIsInCart.quantity + 1
-                      )
-                    }
+                        cartItemId,
+                        productIsInCart?.quantity + 1
+                      );
+                    }}
                     className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                     aria-label="Increase quantity"
                   >
@@ -196,6 +351,7 @@ const Page = () => {
                   </button>
                 </div>
               ) : (
+                // If no variants and product not in cart
                 <button
                   onClick={() => addItem(product, 1)}
                   disabled={isOutOfStock}
@@ -209,6 +365,7 @@ const Page = () => {
                   {isOutOfStock ? "Out of Stock" : "Add to Cart"}
                 </button>
               )}
+
               <button className="size-10 grid place-content-center shrink-0 rounded-full border border-gray-300 dark:border-zinc-700">
                 <Heart className="text-zinc-500 dark:text-zinc-300 w-5 h-5" />
               </button>

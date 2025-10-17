@@ -50,7 +50,14 @@ interface Address {
 const CheckoutPage = () => {
   const searchParams = useSearchParams();
   const activeStore = searchParams.get("store");
-  const { items, getItemsByStore, clearCart, _hasHydrated } = useCartStore();
+  const {
+    items,
+    getItemsByStore,
+    clearCart,
+    _hasHydrated,
+    getItemPrice,
+    getItemTotalPrice
+  } = useCartStore();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -106,8 +113,7 @@ const CheckoutPage = () => {
 
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => {
-      const price = item.product.discounted_price ?? item.product.price ?? 0;
-      return total + price * item.quantity;
+      return total + getItemTotalPrice(item);
     }, 0);
   };
 
@@ -524,17 +530,42 @@ const CheckoutPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {cartItems.map((item) => {
-                  const price =
-                    item.product.discounted_price ?? item.product.price ?? 0;
-                  const totalPrice = price * item.quantity;
+                  const price = getItemPrice(item);
+                  const totalPrice = getItemTotalPrice(item);
+
+                  // Helper function to render variant details
+                  const renderVariantDetails = () => {
+                    if (!item.variant) return null;
+
+                    const variantDetails = [];
+                    if (item.variant.Size)
+                      variantDetails.push(`Size: ${item.variant.Size}`);
+                    if (item.variant.Color)
+                      variantDetails.push(`Color: ${item.variant.Color}`);
+                    if (item.variant.Material)
+                      variantDetails.push(`Material: ${item.variant.Material}`);
+                    if (item.variant.Dimensions)
+                      variantDetails.push(
+                        `Dimensions: ${item.variant.Dimensions}`
+                      );
+
+                    if (variantDetails.length === 0) return null;
+
+                    return (
+                      <p className="text-xs text-zinc-400">
+                        {variantDetails.join(" • ")}
+                      </p>
+                    );
+                  };
 
                   return (
                     <div
-                      key={item.product.id}
+                      key={item.cartItemId}
                       className="flex justify-between items-center"
                     >
                       <div>
                         <p className="font-medium">{item.product.name}</p>
+                        {renderVariantDetails()}
                         <p className="text-sm text-zinc-500">
                           Qty: {item.quantity}
                         </p>

@@ -253,6 +253,8 @@ export interface ProductVariant {
   Barcode?: string;
   Stock?: number;
   Price?: number;
+  Images?: string[]; // Array of image URLs
+  ImageFiles?: File[]; // Array of image files for upload
 
   CreatedAt?: string; // ISO date string format
   UpdatedAt?: string;
@@ -649,4 +651,35 @@ export interface FeedbacksByStarsResponse {
     limit: number;
   };
   message?: string;
+}
+
+// ===================== Store Reviews Types =====================
+export interface StoreReview {
+  id: number;
+  store_id: number;
+  email: string;
+  name: string;
+  comment: string;
+  rating: number; // 1-5
+  created_at?: string;
+}
+
+export interface CreateStoreReviewRequest {
+  store_id: number;
+  email: string;
+  name: string;
+  comment: string;
+  rating: number; // 1-5
+}
+
+export interface StoreReviewStatsResponse {
+  average_rating: number;
+  total_reviews: number;
+  rating_counts: {
+    "1": number;
+    "2": number;
+    "3": number;
+    "4": number;
+    "5": number;
+  };
 }

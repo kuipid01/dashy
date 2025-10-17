@@ -33,7 +33,8 @@ import { Moon } from "lucide-react";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
-  const { addItem, updateItemQuantity, items, removeItem } = useCartStore();
+  const { addItem, updateItemQuantity, items, removeItem, getCartItemId } =
+    useCartStore();
   const { data: product, isLoading: productLoading } = useFetchProduct(id);
   const { data: variants, isLoading: variantsLoading } =
     UseFetchProductVariants(product?.id ?? 0);
@@ -48,6 +49,26 @@ const Page = () => {
     () => (product?.image?.length ? product.image : ["/assets/login.jpg"]),
     [product?.image]
   );
+
+  const productHasVariants = Array.isArray(variants) && variants.length > 0;
+
+  const productIsInCart = useMemo(() => {
+    if (!product) return null;
+
+    if (productHasVariants) {
+      // For products with variants, only check if the currently selected variant is in cart
+      if (selectedVariantNew) {
+        const cartItemId = getCartItemId(product.id, selectedVariantNew.ID);
+        return items[cartItemId] || null;
+      }
+      // If no variant is selected, return null (don't show any cart state)
+      return null;
+    } else {
+      // For products without variants, check if product is in cart
+      const cartItemId = getCartItemId(product.id);
+      return items[cartItemId] || null;
+    }
+  }, [product, productHasVariants, selectedVariantNew, items, getCartItemId]);
 
   const currentStock = selectedVariantNew?.stock ?? product?.stock ?? 0;
   const currentPrice =
@@ -70,7 +91,6 @@ const Page = () => {
       </div>
     );
   }
-  const productIsInCart = items[product.id] ? items[product.id] : null;
   return (
     <div className="min-h-screen  bg-primary dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
       {productLoading ? (
@@ -156,15 +176,95 @@ const Page = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-4">
-            {productIsInCart ? (
+            {productHasVariants ? (
+              selectedVariantNew ? (
+                productIsInCart ? (
+                  // If product has variants AND that specific variant is in cart
+                  <div className="flex items-center justify-between rounded-full bg-gray-100 dark:bg-zinc-800 px-2 py-1.5 w-[150px] shadow-sm">
+                    <button
+                      onClick={() => {
+                        const cartItemId = getCartItemId(
+                          product.id,
+                          selectedVariantNew.ID
+                        );
+                        updateItemQuantity(
+                          cartItemId,
+                          (productIsInCart?.quantity || 0) - 1
+                        );
+                      }}
+                      className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={20} />
+                    </button>
+                    <input
+                      type="number"
+                      value={productIsInCart?.quantity || 0}
+                      onChange={(e) => {
+                        const newQuantity = parseInt(e.target.value, 10);
+                        if (!isNaN(newQuantity) && newQuantity >= 0) {
+                          const cartItemId = getCartItemId(
+                            product.id,
+                            selectedVariantNew.ID
+                          );
+                          updateItemQuantity(cartItemId, newQuantity);
+                        }
+                      }}
+                      className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none dark:text-zinc-200"
+                      min="0"
+                    />
+                    <button
+                      onClick={() => {
+                        const cartItemId = getCartItemId(
+                          product.id,
+                          selectedVariantNew.ID
+                        );
+                        updateItemQuantity(
+                          cartItemId,
+                          (productIsInCart?.quantity || 0) + 1
+                        );
+                      }}
+                      className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={20} />
+                    </button>
+                  </div>
+                ) : (
+                  // If product has variants but this particular variant isn't in cart
+                  <button
+                    onClick={() => addItem(product, 1, selectedVariantNew)}
+                    disabled={isOutOfStock}
+                    className={cn(
+                      "w-full px-10 cursor-pointer py-3 rounded-[30px] font-medium transition-all",
+                      isOutOfStock
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-400"
+                        : "bg-black text-white hover:bg-gray-800"
+                    )}
+                  >
+                    {isOutOfStock ? "Out of Stock" : "Add to Cart"}
+                  </button>
+                )
+              ) : (
+                // If product has variants but no variant is selected
+                <button
+                  disabled
+                  className="w-full px-10 cursor-not-allowed py-3 rounded-[30px] font-medium bg-gray-300 text-gray-500 dark:bg-zinc-700 dark:text-zinc-400"
+                >
+                  Select a variant
+                </button>
+              )
+            ) : productIsInCart ? (
+              // If no variants and product is already in cart
               <div className="flex items-center justify-between rounded-full bg-gray-100 dark:bg-zinc-800 px-2 py-1.5 w-[150px] shadow-sm">
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    const cartItemId = getCartItemId(product.id);
                     updateItemQuantity(
-                      String(product.id),
-                      productIsInCart.quantity - 1
-                    )
-                  }
+                      cartItemId,
+                      (productIsInCart?.quantity || 0) - 1
+                    );
+                  }}
                   className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   aria-label="Decrease quantity"
                 >
@@ -172,23 +272,25 @@ const Page = () => {
                 </button>
                 <input
                   type="number"
-                  value={productIsInCart.quantity}
+                  value={productIsInCart?.quantity || 0}
                   onChange={(e) => {
                     const newQuantity = parseInt(e.target.value, 10);
                     if (!isNaN(newQuantity) && newQuantity >= 0) {
-                      updateItemQuantity(String(product.id), newQuantity);
+                      const cartItemId = getCartItemId(product.id);
+                      updateItemQuantity(cartItemId, newQuantity);
                     }
                   }}
                   className="w-10 text-center text-sm font-medium bg-transparent outline-none appearance-none dark:text-zinc-200"
                   min="0"
                 />
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    const cartItemId = getCartItemId(product.id);
                     updateItemQuantity(
-                      String(product.id),
-                      productIsInCart.quantity + 1
-                    )
-                  }
+                      cartItemId,
+                      (productIsInCart?.quantity || 0) + 1
+                    );
+                  }}
                   className="p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   aria-label="Increase quantity"
                 >
@@ -196,6 +298,7 @@ const Page = () => {
                 </button>
               </div>
             ) : (
+              // If no variants and product not in cart
               <button
                 onClick={() => addItem(product, 1)}
                 disabled={isOutOfStock}

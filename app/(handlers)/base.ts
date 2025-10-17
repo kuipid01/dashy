@@ -46,6 +46,7 @@ api.interceptors.response.use(
 
         // ✅ Call backend to clear cookies
         try {
+          console.log("logging out");
           await api.post("/users/logout");
         } catch (logoutError) {
           console.warn("Logout request failed:", logoutError);

@@ -4,6 +4,11 @@ import { api } from "../base";
 import { Product } from "../types/product";
 import { Store } from "@/types/store";
 import { ProductVariant } from "@/constants/types";
+import {
+  CreateStoreReviewRequest,
+  StoreReview,
+  StoreReviewStatsResponse,
+} from "@/constants/types";
 
 const fetchStoreProducts = async (
   storeId: string,
@@ -66,6 +71,35 @@ const fetchStore = async (storeId: string): Promise<Store> => {
   return response.data.store;
 };
 
+const fetchSimilarProducts = async (
+  productId: string
+): Promise<Product[]> => {
+  const response = await api.get(`/similar-products/${productId}`);
+  return response.data;
+};
+
+// Store Reviews
+export const createStoreReview = async (
+  data: CreateStoreReviewRequest
+): Promise<StoreReview> => {
+  const response = await api.post(`/store-reviews`, data);
+  return response.data;
+};
+
+export const fetchStoreReviews = async (
+  storeId: number | string
+): Promise<StoreReview[]> => {
+  const response = await api.get(`/store-reviews/${storeId}`);
+  return response.data;
+};
+
+export const fetchStoreReviewStats = async (
+  storeId: number | string
+): Promise<StoreReviewStatsResponse> => {
+  const response = await api.get(`/store-reviews/${storeId}/stats`);
+  return response.data;
+};
+
 
 
 
@@ -103,6 +137,22 @@ export const useFetchStore = (storeId: string) => {
     queryFn: () => fetchStore(storeId),
     retry: 1,
     enabled: !!storeId,
+  });
+
+  return {
+    data,
+    isLoading,
+    error,
+    isError,
+  };
+};
+
+export const useFetchSimilarProducts = (productId: string) => {
+  const { data, isLoading, error, isError } = useQuery<Product[], Error>({
+    queryKey: ["similar-products", productId],
+    queryFn: () => fetchSimilarProducts(productId),
+    retry: 1,
+    enabled: !!productId,
   });
 
   return {

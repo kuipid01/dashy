@@ -52,7 +52,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 
   return (
     <aside
-      className="fixed hidden sm:flex top-0 right-0 h-full bg-primary shadow-lg transition-all duration-300 ease-in-out overflow-hidden z-10"
+      className="fixed hidden md:flex top-0 right-0 h-full bg-primary shadow-lg transition-all duration-300 ease-in-out overflow-hidden z-10"
       style={{ width: dynamicWidth }}
     >
       <SideResizer onMouseDown={handleMouseDown} />
