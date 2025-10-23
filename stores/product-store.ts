@@ -19,6 +19,7 @@ export const useProductStore = create<ProductStore>()(
         storeId: 0,
         name: "",
         category: "",
+        variants: null,
         image: [],
         description: "",
         stock: 0,
