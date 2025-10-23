@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   X,
   ShoppingCart,
@@ -35,7 +34,7 @@ export default function ProductDetailModal({
   const [quantity, setQuantity] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
 
-  const images = product.images || [];
+  const images = product.image || [];
   const videos = product.videos || [];
 
   const handleImageChange = (direction: "prev" | "next") => {
@@ -111,7 +110,11 @@ export default function ProductDetailModal({
                 />
               ) : (
                 <Image
-                  src={currentMedia}
+                  src={
+                    typeof currentMedia === "string"
+                      ? currentMedia
+                      : URL.createObjectURL(currentMedia as Blob)
+                  }
                   alt={product.name}
                   fill
                   className="object-cover"
