@@ -17,7 +17,7 @@ const Page = () => {
   const router = useRouter();
   const { data: products, isLoading } = useFetchUserProducts();
   const { store } = useFetchUserStore();
-
+  console.log(store, "store");
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -98,6 +98,7 @@ const Page = () => {
 
           return (
             <ProductCard
+              storeName={store.store.name.toLowerCase()}
               key={`${product.id}-${product.name}`}
               product={{ ...product, videos }}
               isAdmin={product.store_id === store?.store?.id}

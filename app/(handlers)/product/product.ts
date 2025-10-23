@@ -36,6 +36,13 @@ const updateProduct = async (
   const response = await api.put(`/products/${id}`, product);
   return response.data;
 };
+const updateProductImages = async (
+  id: string | number,
+  product: Partial<Product>
+): Promise<Product> => {
+  const response = await api.put(`/products-image/${id}`, product);
+  return response.data;
+};
 const uploadImage = async (images: File[]): Promise<any> => {
   const formData = new FormData();
   images.forEach((file) => formData.append("files", file));
@@ -146,6 +153,21 @@ export const useUpdateProduct = (id: string | number) => {
   const query = useQueryClient();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (product: Partial<Product>) => updateProduct(id, product),
+    onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["product", id] });
+      query.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  return {
+    mutateAsync,
+    isPending,
+  };
+};
+export const useUpdateProductImages = (id: string | number) => {
+  const query = useQueryClient();
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (product: Partial<Product>) => updateProductImages(id, product),
     onSuccess: () => {
       query.invalidateQueries({ queryKey: ["product", id] });
       query.invalidateQueries({ queryKey: ["products"] });

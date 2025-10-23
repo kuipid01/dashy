@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 // import { Product } from "@/stores/product-store";
 import { Loader2, Pen, SaveAll } from "lucide-react";
 import Image from "next/image";
+import ProductMediaEditor from "./product-media-editor";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
@@ -235,46 +236,7 @@ const PoductSec = () => {
                 onChange={(e) => handleChange("description", e.target.value)}
               />
             </div>
-            <div className="border mt-4 p-4 rounded-lg shadow-md">
-              <div className="flex mb-2 justify-between items-center">
-                <p>Product Media</p>
-                <Newbtn
-                  onClick={() => {
-                    setCanBeEdited(!canBeEdited);
-                  }}
-                >
-                  {canBeEdited ? (
-                    <div>
-                      <SaveAll size={16} />{" "}
-                      <span className=" text-sm uppercase">
-                        {isPending ? (
-                          <Loader2 className="animate-spin  duration-300" />
-                        ) : (
-                          "Save"
-                        )}
-                      </span>
-                    </div>
-                  ) : (
-                    <>
-                      <Pen size={16} />{" "}
-                      <span className=" text-sm uppercase">Edit</span>
-                    </>
-                  )}
-                </Newbtn>
-              </div>
-              <div className="flex gap-4">
-                {product?.image?.map((url, index) => (
-                  <Image
-                    key={index}
-                    width={124}
-                    height={124}
-                    src={url as string}
-                    alt={`Media ${index + 1}`}
-                    className="w-32 h-32 object-cover rounded-md"
-                  />
-                ))}
-              </div>
-            </div>
+            <ProductMediaEditor productId={id} images={product?.image as any} />
           </>
         )}
       </div>

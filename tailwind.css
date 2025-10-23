@@ -61,7 +61,7 @@
   --popover-foreground: oklch(0.145 0 0);
   
   /* Standard Colors - Use the final Hex/Lab values */
-  --primary: #f8f5ed;
+  --primary: #F8F5ED;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: #3ddb60;
   --secondary-foreground: oklch(0.205 0 0);
@@ -148,7 +148,11 @@
   |--------------------------------------------------------------------------
   */
   --color-darker-primary: #e7e3d6;
+  --color-darker-new-secondary: #F05D23;
+  --color-darker-new-light: #F8F5ED;
+  --color-darker-new-grey: #EFF1ED;
   --color-general: #b53a53;
   --color-general-primary: #b53a53;
   --color-general-primary-foreground: #fff;
+
 }

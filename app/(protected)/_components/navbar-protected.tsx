@@ -46,8 +46,8 @@ const NavbarProtected = () => {
     { href: "products" },
     { href: "earnings" },
     { href: "orders" },
-    { href: "settings" }
-    // { href: "contents" }
+    { href: "settings" },
+    { href: "contents" }
   ];
 
   return (

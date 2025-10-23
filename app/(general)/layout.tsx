@@ -51,7 +51,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{ fontFamily: "MilanesaSerif" }}
+        // style={{ fontFamily: "MilanesaSerif" }}
         className={`antialiased bg-primary`}
       >
         <Toaster />
