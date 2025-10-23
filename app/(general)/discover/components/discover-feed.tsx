@@ -5,12 +5,12 @@ import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { 
-  Heart, 
-  Share2, 
-  ShoppingCart, 
-  MessageCircle, 
-  ChevronUp, 
+import {
+  Heart,
+  Share2,
+  ShoppingCart,
+  MessageCircle,
+  ChevronUp,
   ChevronDown,
   RefreshCw
 } from "lucide-react";
@@ -26,7 +26,10 @@ interface DiscoverFeedProps {
   onProductSelect?: (product: any) => void;
 }
 
-export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeedProps) {
+export default function DiscoverFeed({
+  onSearch,
+  onProductSelect
+}: DiscoverFeedProps) {
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [activeID, setActiveID] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -40,7 +43,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
 
   const { data } = useQuery<ContentItem[]>({
     queryKey: ["discovery-contents"],
-    queryFn: getDiscoveryContent,
+    queryFn: getDiscoveryContent
   });
 
   const { data: contentMarked, isLoading } = useMarkContentAsViewed(
@@ -89,12 +92,12 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
   const handleRefresh = async () => {
     setIsRefreshing(true);
     // Simulate refresh delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsRefreshing(false);
   };
 
   const handleLike = (itemId: string) => {
-    setLikedItems(prev => {
+    setLikedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(itemId)) {
         newSet.delete(itemId);
@@ -129,7 +132,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
       const nextItem = contents[currentIndex + i];
       if (!nextItem) break;
 
-      if (nextItem.type === "photo") {
+      if (nextItem.type === "image") {
         const img = new window.Image();
         img.src = nextItem.url;
       } else if (nextItem.type === "video") {
@@ -148,7 +151,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="fixed top-0 left-0 right-0 z-50 p-4 bg-gradient-to-b from-black/80 to-transparent"
@@ -163,7 +166,9 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
               disabled={isRefreshing}
               className="text-white hover:bg-white/10"
             >
-              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-5 h-5 ${isRefreshing ? "animate-spin" : ""}`}
+              />
             </Button>
             <Button
               variant="ghost"
@@ -184,7 +189,6 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
         dragConstraints={{ top: 0, bottom: 0 }}
         dragElastic={0.1}
         onPanEnd={handlePanEnd}
-        onLongPress={handleLongPress}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -192,11 +196,11 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
             initial={{ y: 300, opacity: 0, scale: 0.9 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -300, opacity: 0, scale: 0.9 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 300, 
+            transition={{
+              type: "spring",
+              stiffness: 300,
               damping: 30,
-              duration: 0.4 
+              duration: 0.4
             }}
             className="relative w-full max-w-md h-[85vh]"
           >
@@ -204,7 +208,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
               <div className="relative h-full">
                 {/* Media Area (80% height) */}
                 <div className="relative h-4/5">
-                  {currentProduct.type === "photo" ? (
+                  {currentProduct.type === "image" ? (
                     <Image
                       src={currentProduct.url || "/placeholder.svg"}
                       alt={currentProduct.title}
@@ -226,7 +230,6 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
                       playsInline
                       preload={currentIndex === 0 ? "auto" : "metadata"}
                       className="object-cover w-full h-full"
-                      onLongPress={handleLongPress}
                     />
                   )}
 
@@ -241,8 +244,10 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
                       onClick={() => handleLike(currentProduct.id)}
                       className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
                     >
-                      <Heart 
-                        className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : 'text-white'}`} 
+                      <Heart
+                        className={`w-6 h-6 ${
+                          isLiked ? "fill-red-500 text-red-500" : "text-white"
+                        }`}
                       />
                     </motion.button>
                     <motion.button
@@ -266,7 +271,11 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
                   {/* Additional action buttons */}
                   <div className="flex gap-3 pt-2">
                     <Button
-                      onClick={() => onProductSelect?.(currentProduct?.product || currentProduct)}
+                      onClick={() =>
+                        onProductSelect?.(
+                          currentProduct?.product || currentProduct
+                        )
+                      }
                       className="flex-1 bg-white text-black hover:bg-gray-100 font-semibold py-3 transition-all duration-200 hover:scale-105"
                     >
                       <ShoppingCart className="w-5 h-5 mr-2" />
@@ -276,8 +285,8 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
                       variant="outline"
                       className="border-white/30 text-white hover:bg-white/10 py-3 transition-all duration-200 hover:scale-105 bg-transparent"
                     >
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      I want something like this
+                      <MessageCircle className="w-5 h-5 mr-2" />I want something
+                      like this
                     </Button>
                   </div>
                 </div>
@@ -288,10 +297,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
 
         {/* Navigation Controls */}
         <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-40">
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <Button
               variant="ghost"
               size="icon"
@@ -302,10 +308,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
               <ChevronUp className="w-6 h-6" />
             </Button>
           </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <Button
               variant="ghost"
               size="icon"
@@ -336,7 +339,7 @@ export default function DiscoverFeed({ onSearch, onProductSelect }: DiscoverFeed
       </motion.div>
 
       {/* Bottom instructions */}
-      <motion.div 
+      <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="fixed bottom-4 left-1/2 -translate-x-1/2 text-center z-40"
