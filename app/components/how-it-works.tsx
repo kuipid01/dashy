@@ -91,7 +91,7 @@ const HowItWorks = () => {
                 y: -5,
                 transition: { duration: 0.2 }
               }}
-              className="bg-[#F76B30] rounded-lg p-8 text-white transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="bg-[#F76B30] rounded-lg p-8 text-white shadow-lg hover:shadow-xl"
             >
               {/* Icon and Title */}
               <motion.div

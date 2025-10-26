@@ -14,7 +14,7 @@ export default function Home() {
         src="/assets/landing-page/landingpage-noise.svg"
         alt="landing-page-new"
         fill
-        className="w-full   object-cover fixed top-0 left-0 z-1000 h-[90vh]"
+        className="w-full    object-cover fixed top-0 left-0 z-1000 h-[90vh]"
       />
       {/* <Landing /> */}
       <LandingPageNew />
