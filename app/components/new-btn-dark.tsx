@@ -18,7 +18,7 @@ export const NewBtnDark = ({
       transition={{ duration: 0.5, delay: 0.4 }}
       onClick={onClick}
       className={cn(
-        "py-2 px-3 hover:bg-black/90 justify-center duration-300 transition-all hover:scale-[1.05] cursor-pointer font-medium text-sm bg-black text-white rounded-md flex items-center gap-1",
+        "py-2 px-3 hover:bg-black/90 max-h-[50px] justify-center duration-300 transition-all hover:scale-[1.05] cursor-pointer font-medium text-sm bg-black text-white rounded-md flex items-center gap-1",
         className
       )}
     >
@@ -49,7 +49,7 @@ export const LightBtn = ({
       animate={{ opacity: 1, filter: "blur(0px)" }}
       transition={{ duration: 0.5, delay: 0.4 }}
       className={cn(
-        "py-2 px-3  duration-300 transition-all justify-center  hover:scale-[1.05] cursor-pointer font-medium text-sm  text-black rounded-md flex items-center  gap-1",
+        "py-2 px-3  duration-300  max-h-[50px] transition-all justify-center  hover:scale-[1.05] cursor-pointer font-medium text-sm  text-black rounded-md flex items-center  gap-1",
         className,
         underline && "underline underline-offset-4",
         underline && "!underline-none"

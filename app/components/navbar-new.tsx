@@ -1,14 +1,98 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Image from "next/image";
 import Link from "next/link";
 import { LightBtn, NewBtnDark } from "./new-btn-dark";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Badge, ShoppingCart, Menu, X, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCartStore } from "@/stores/cart-store";
+
+import { Button } from "./button";
+import { Button as Btnshad } from "@/components/ui/button";
+import { useFetchUser } from "../(handlers)/auth-handlers/auth";
+import { useFetchProduct } from "../(handlers)/general/general";
+import { cn } from "@/lib/utils";
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  rating: number;
+  category: string;
+}
+
+interface CartItem extends Product {
+  quantity: number;
+}
+
+type FlowStep = "products" | "cart" | "checkout" | "success";
 
 export const NavbarNew = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { totalItems } = useCartStore();
+  const [activeStore, setactiveStore] = useState<string | undefined>(undefined);
+  const pathname = usePathname();
+  const [currentStep, setCurrentStep] = useState<FlowStep>("products");
+  const [showReward, setShowReward] = useState(false);
+  const [rewardPoints, setRewardPoints] = useState(0);
+  const [animatingCart, setAnimatingCart] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [progress, setProgress] = useState(0);
+  const { user, isLoading: userLoading } = useFetchUser();
 
+  const { data: product, isLoading: productLoading } = useFetchProduct(
+    pathname.split("/")[4] ?? undefined
+  );
+  console.log(pathname.split("/"));
+  useEffect(() => {
+    if (pathname.includes("/product-details")) {
+      const storeName = pathname.split("/")[2];
+      console.log(storeName, "storeName");
+      setactiveStore(storeName);
+    }
+  }, [pathname, product]);
+
+  const stepProgress = {
+    products: 25,
+    cart: 50,
+    checkout: 75,
+    success: 100
+  };
+
+  useEffect(() => {
+    setProgress(stepProgress[currentStep]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+
+  const removeFromCart = (productId: number) => {
+    setCart((prev) => prev.filter((item) => item.id !== productId));
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const container = {
+    hidden: { opacity: 0.9 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        when: "afterChildren",
+
+        duration: 0.2
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0.9, x: -100, y: 0 },
+    exit: { opacity: 0, x: -10, y: 0 },
+    show: { opacity: 1, x: 0, y: 0 }
+  };
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const router = useRouter();
   const links = [
     {
       name: "About",
@@ -21,12 +105,14 @@ export const NavbarNew = () => {
     {
       name: "Pricing",
       href: "/pricing"
+    },
+    {
+      name: "Discover",
+      href: "/discover"
     }
   ];
-  const router = useRouter();
-
   return (
-    <div className="max-w-[1121px] fixed lg:relative _bg-primary/50 z-100 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+    <nav className="max-w-[1121px] fixed lg:relative  z-10000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
       <Image
         src="/assets/logo.svg"
         alt="logo"
@@ -48,60 +134,194 @@ export const NavbarNew = () => {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-3">
-          <LightBtn text="Login" onClick={() => router.push("/login")} />
-          <NewBtnDark
-            text="Get Started"
-            onClick={() => router.push("/signup")}
-            className="!bg-black text-white"
-          />
+      </div>
+
+      <div className=" hidden lg:flex">
+        <div className="flex items-center gap-4">
+          {!userLoading && !user && (
+            <>
+              <LightBtn text="Login" onClick={() => router.push("/login")} />
+              <NewBtnDark
+                text="Get Started"
+                onClick={() => router.push("/signup")}
+                className="!bg-black text-white"
+              />
+            </>
+          )}
+          {userLoading && (
+            <Loader2 className="w-4 h-4 animate-spin duration-1000" />
+          )}
+
+          {/* //TODO */}
+          {/* Reward Points */}
+          {/* <div
+              className={cn(
+                "flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20",
+                showReward && "reward-pulse"
+              )}
+            >
+              <Gift className="w-4 h-4 text-black " />
+              <span className="text-sm font-medium">{rewardPoints} pts</span>
+            </div> */}
+
+          {/* Cart Icon */}
+          <div className="relative    hidden lg:flex">
+            {productLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin duration-1000" />
+            ) : (
+              <Link href={activeStore ? `/cart?store=${activeStore}` : "/cart"}>
+                <Btnshad
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "relative hover:bg-primary",
+                    animatingCart && "cart-bounce"
+                  )}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+
+                  <div className="absolute  text-black bg-primary  font-bold border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {totalItems}
+                  </div>
+                </Btnshad>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu Button */}
-      <button
-        className="lg:hidden p-2"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        aria-label="Toggle menu"
-      >
-        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg lg:hidden z-50">
-          <div className="px-4 py-6 space-y-4">
-            {links.map((li) => (
-              <Link
-                className="block text-base font-medium text-black hover:text-gray-600 transition-colors py-2"
-                key={li.href}
-                href={li.href.toLowerCase()}
-                onClick={() => setIsMenuOpen(false)}
+      <div className=" flex lg:hidden relative  gap-4 items-center">
+        <div className="relative">
+          {productLoading ? (
+            <Loader2 className="w-4 h-4 animate-spin duration-1000" />
+          ) : (
+            <Link href={activeStore ? `/cart?store=${activeStore}` : "/cart"}>
+              <Btnshad
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "relative cursor-pointer bg-primary hover:bg-primary",
+                  animatingCart && "cart-bounce"
+                )}
               >
-                {li.name}
-              </Link>
-            ))}
-            <div className="flex flex-col gap-3 pt-4 border-t border-gray-200">
-              <LightBtn
-                text="Login"
-                onClick={() => {
-                  router.push("/login");
-                  setIsMenuOpen(false);
-                }}
-                className="w-full justify-center"
-              />
-              <NewBtnDark
-                text="Get Started"
-                onClick={() => {
-                  router.push("/signup");
-                  setIsMenuOpen(false);
-                }}
-                className="w-full justify-center !bg-black text-white"
-              />
-            </div>
-          </div>
+                <ShoppingCart className="w-4 h-4" />
+
+                <div className="absolute  text-black bg-primary border border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  {totalItems}
+                </div>
+              </Btnshad>
+            </Link>
+          )}
         </div>
-      )}
-    </div>
+        <div
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="flex z-100000  cursor-pointer flex-col text-black gap-1"
+        >
+          <motion.div
+            animate={{
+              rotate: showMobileMenu ? 45 : 0
+            }}
+            className=" w-[25px] shrink-0 border-b-[2px] border-black"
+          ></motion.div>
+          <motion.div
+            animate={{
+              rotate: showMobileMenu ? -45 : 0
+            }}
+            className=" w-[25px] border-b-[2px] shrink-0 border-black"
+          ></motion.div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showMobileMenu && (
+          <motion.div
+            key="mobile-menu"
+            exit={{ opacity: 0.8, top: `0vh`, filter: "blur(4px)", height: 0 }}
+            initial={{
+              opacity: 0.8,
+              top: `0vh`,
+              filter: "blur(4px)",
+              height: 0
+            }}
+            animate={{
+              opacity: 1,
+              top: `0vh`,
+              left: 0,
+              right: 0,
+              height: `100vh`,
+              filter: "blur(0px)"
+            }}
+            transition={{
+              duration: 0.5
+            }}
+            className="w-full  lg:hidden absolute  bg-primary-new"
+          >
+            <div className="flex pb-[10px] pt-20 flex-col h-[100vh] justify-between items-end">
+              <motion.ul
+                variants={container}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                className=" "
+              >
+                <motion.li
+                  className="text-right text-4xl font-semibold px-5 py-3"
+                  variants={item}
+                >
+                  <Link href="/features">Features</Link>
+                </motion.li>
+                <motion.li
+                  className="text-right text-4xl font-semibold px-5 py-3"
+                  variants={item}
+                >
+                  <Link href="/pricing">Pricing</Link>
+                </motion.li>
+                <motion.li
+                  className="text-right text-4xl font-semibold px-5 py-3"
+                  variants={item}
+                >
+                  <Link href="/contact">Contact</Link>
+                </motion.li>
+                <motion.li
+                  className="text-right text-4xl font-semibold px-5 py-3"
+                  variants={item}
+                >
+                  <Link href="/discover">Discover</Link>
+                </motion.li>
+              </motion.ul>
+
+              {/* Separate AnimatePresence for instant exit */}
+              <AnimatePresence>
+                {showMobileMenu && (
+                  <motion.div
+                    key="buttons"
+                    initial={{ opacity: 1, scale: 1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }} // Instant disappearance on close
+                    transition={{ duration: 0.1 }}
+                    className="flex bg-primary-new gap-5 px-5"
+                  >
+                    {!userLoading && !user && (
+                      <>
+                        <LightBtn
+                          onClick={() => router.push("/login")}
+                          className="!rounded-[5px]"
+                          text="Log In"
+                        />
+                        <NewBtnDark
+                          onClick={() => router.push("/signup")}
+                          className="!bg-black text-white !rounded-[5px]"
+                          text="Sign Up"
+                        />
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   );
 };

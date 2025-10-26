@@ -13,11 +13,11 @@ const FaqNew = () => {
       answer:
         "Hubsell is an all-in-one platform that automates your social media marketing, content creation, and customer engagement. It uses AI to create posts, schedule content, and manage your online presence across multiple platforms."
     },
-    {
-      question: "How much does Hubsell cost?",
-      answer:
-        "We offer flexible pricing plans starting from $29/month for individual creators to $199/month for enterprise teams. All plans include a 14-day free trial with no credit card required."
-    },
+    // {
+    //   question: "How much does Hubsell cost?",
+    //   answer:
+    //     "We offer flexible pricing plans starting from $29/month for individual creators to $199/month for enterprise teams. All plans include a 14-day free trial with no credit card required."
+    // },
     {
       question: "Can I connect multiple social media accounts?",
       answer:
@@ -26,18 +26,18 @@ const FaqNew = () => {
     {
       question: "Is there a mobile app available?",
       answer:
-        "Currently, Hubsell is optimized for web browsers and works perfectly on mobile devices. We're developing dedicated mobile apps for iOS and Android, coming soon in 2024."
+        "Currently, Hubsell is optimized for web browsers and works perfectly on mobile devices. We're developing dedicated mobile apps for iOS and Android, coming soon in 2026."
     },
     {
       question: "What kind of support do you offer?",
       answer:
         "We provide 24/7 email support, live chat during business hours, and comprehensive documentation. Premium users get priority support and dedicated account managers."
-    },
-    {
-      question: "Can I cancel my subscription anytime?",
-      answer:
-        "Absolutely! You can cancel your subscription at any time from your account settings. Your access continues until the end of your current billing period, and you can reactivate anytime."
     }
+    // {
+    //   question: "Can I cancel my subscription anytime?",
+    //   answer:
+    //     "Absolutely! You can cancel your subscription at any time from your account settings. Your access continues until the end of your current billing period, and you can reactivate anytime."
+    // }
   ];
 
   const toggleAccordion = (index: number) => {
@@ -101,7 +101,7 @@ const FaqNew = () => {
               className="border-b border-gray-200 last:border-b-0"
             >
               <button
-                className="w-full flex items-center justify-between py-6 px-0 text-left hover:bg-gray-50/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg"
+                className="w-full flex items-center justify-between py-6 px-0 text-left hover:bg-gray-50/50 transition-colors duration-200 focus:outline-none _focus:ring-2 focus:ring-gray-200 rounded-lg"
                 onClick={() => toggleAccordion(index)}
               >
                 <span className="text-lg font-medium text-gray-900 pr-4">

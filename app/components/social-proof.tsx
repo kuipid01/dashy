@@ -32,12 +32,14 @@ const SocialProof = () => {
     {
       value: "50% less",
       description: "time spent on marketing tasks",
-      company: "Tola Stores"
+      company: "Tola Stores",
+      image: "/assets/landing-page/save.png"
     },
     {
       value: "3x more",
       description: "followers on Instagram",
-      company: "Bloom & Co"
+      company: "Bloom & Co",
+      image: "/assets/landing-page/shout.svg"
     }
   ];
 
@@ -166,8 +168,17 @@ const SocialProof = () => {
             <motion.div
               key={stat.company}
               variants={item}
-              className="flex bg-white min-h-[200px] lg:min-h-[280px] flex-col items-start rounded-[15px] p-4 sm:p-6 lg:p-[32px] gap-2"
+              className="flex relative overflow-hidden bg-white min-h-[200px] lg:min-h-[280px] flex-col items-start rounded-[15px] p-4 sm:p-6 lg:p-[32px] gap-2"
             >
+              {stat.image && (
+                <Image
+                  src={stat.image}
+                  alt={stat.company}
+                  width={406}
+                  height={280}
+                  className="absolute rotate-[25deg] bottom-[-30%] left-[127px] _top-[-98px] object-cover"
+                />
+              )}
               <div className="flex flex-col">
                 <p className="text-2xl sm:text-3xl lg:text-4xl xl:text-[48px] font-medium text-left text-black">
                   {stat.value}
@@ -201,7 +212,7 @@ const SocialProof = () => {
           </p>
           <div className="flex items-center gap-4 lg:gap-[18px] mt-4 lg:mt-6">
             <Image
-              src="/assets/landing-page/user-profile.png"
+              src="/assets/landing-page/anita.png"
               alt="Review"
               width={100}
               height={100}
@@ -216,15 +227,6 @@ const SocialProof = () => {
               </p>
             </div>
           </div>
-        </motion.div>
-        <motion.div variants={item} className="hidden lg:block">
-          <Image
-            src="/assets/landing-page/user-profile.png"
-            alt="Review"
-            width={292}
-            height={292}
-            className="w-[200px] lg:w-[292px] h-auto object-contain"
-          />
         </motion.div>
       </motion.div>
     </section>

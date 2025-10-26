@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { cubicBezier, motion } from "framer-motion";
+import Image from "next/image";
 
 const WhyLoveHubsell = () => {
   const benefits = [
@@ -79,18 +80,24 @@ const WhyLoveHubsell = () => {
             variants={item}
             className="bg-white h-[500px] rounded-lg p-[34px] lg:p-[54px] shadow-sm border border-gray-100"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
+            <div className="grid grid-cols-1 overflow-clip sm:grid-cols-2 gap-8 items-center h-full">
               {/* Text Content */}
               <div>
                 <h3 className="h2 text-black mb-4">{benefits[0].title}</h3>
-                <p className="lg text-black/50 max-w-[536px] leading-relaxed">
+                <p className="lg text-black/50 max-w-[336px] md:max-w-[436px] lg:max-w-[536px] leading-relaxed">
                   {benefits[0].description}
                 </p>
               </div>
 
               {/* Image Placeholder */}
-              <div className="bg-darker-new-light border border-darker-new-grey rounded-lg h-[200px] md:h-[392px] flex items-center justify-center">
-                <div className="text-gray-400 text-sm">Image placeholder</div>
+              <div className="bg-darker-new-light overflow-clip md:absolute right-0 border border-darker-new-grey h-[300px]  rounded-lg md:h-full flex items-center justify-center">
+                <Image
+                  src="/assets/landing-page/buying.svg"
+                  alt="why-love-hubsell"
+                  width={536}
+                  height={392}
+                  className=" sm:w-[300px] md:w-[436px] lg:w-[536px] h-full object-cover"
+                />
               </div>
             </div>
           </motion.div>
@@ -119,7 +126,13 @@ const WhyLoveHubsell = () => {
 
                 {/* Image Placeholder */}
                 <div className="bg-darker-new-light border border-darker-new-grey rounded-lg h-[392px] flex items-center justify-center">
-                  <div className="text-gray-400 text-sm">Image placeholder</div>
+                  <Image
+                    src="/assets/landing-page/steps.svg"
+                    alt="why-love-hubsell"
+                    width={536}
+                    height={392}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </motion.div>
@@ -139,8 +152,14 @@ const WhyLoveHubsell = () => {
                 </div>
 
                 {/* Image Placeholder */}
-                <div className="bg-darker-new-light rounded-lg h-[392px] flex items-center justify-center">
-                  <div className="text-gray-400 text-sm">Image placeholder</div>
+                <div className="bg-gradient from-[#F05D23] to-[#8A3514] bg-opacity-20 rounded-lg h-[392px] flex items-center justify-center">
+                  <Image
+                    src="/assets/landing-page/speed.svg"
+                    alt="why-love-hubsell"
+                    width={536}
+                    height={392}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </motion.div>

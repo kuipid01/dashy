@@ -3,7 +3,7 @@ import React from "react";
 import { LightBtn, NewBtnDark } from "./new-btn-dark";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import AnimatedText from "./animated-text";
+import { AnimatedText, AnimatedText2 } from "./animated-text";
 const LandingPageNew = () => {
   const router = useRouter();
   return (
@@ -14,13 +14,12 @@ const LandingPageNew = () => {
           className=""
         />
 
-        <AnimatedText
+        <AnimatedText2
           text="Automate Sales, Socials, and Branding."
           className=""
-          delay={0.5}
         />
       </motion.h1>
-      <motion.h1 className=" lg:hidden  text-center mb-6 sm:mb-[38px] max-w-[1000px] text-2xl ">
+      <motion.h1 className=" lg:hidden  text-center mb-6 sm:mb-[38px] max-w-[1000px] text-3xl font-bold ">
         <AnimatedText
           text="Launch Your Online Business in Seconds.Automate Sales, Socials, and Branding."
           className=""
