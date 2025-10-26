@@ -256,7 +256,7 @@ export const NavbarNew = () => {
             }}
             className="w-full  lg:hidden absolute  bg-primary-new"
           >
-            <div className="flex pb-[10px] pt-20 flex-col h-[100vh] justify-between items-end">
+            <div className="flex pb-[10px] pt-20 flex-col h-[100dvh] md:h-[100vh] justify-between items-end">
               <motion.ul
                 variants={container}
                 initial="hidden"
