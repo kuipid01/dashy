@@ -156,10 +156,20 @@ const registerUser = async (data: { email: string, password: string , name:strin
   const response = await api.post(`/users/register`, data)
   return response.data.user
 }
-const loginUserMail = async (data: { email: string, password: string }): Promise<User> => {
-  const response = await api.post(`/users/login-mail`, data)
-  return response.data.user
-}
+// const loginUserMail = async (data: { email: string, password: string }): Promise<User> => {
+//   const response = await api.post(`/users/login-mail`, data)
+//   return response.data.user
+// }
+const loginUserMail = async (data: { email: string, password: string }) => {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  return response.json();
+};
+
 const verifyCode = async (data: { code: string}): Promise<any> => {
   const response = await api.post(`/users/verify-code`, data)
   return response.data.user
