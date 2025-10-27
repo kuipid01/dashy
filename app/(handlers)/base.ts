@@ -1,7 +1,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:4000/v1/api/",
+  // baseURL: "http://localhost:4000/v1/api/",
+  baseURL: "https://api.nile.ng/go/v1/api/",
   withCredentials: true, // Ensure cookies are sent with requests
 });
 

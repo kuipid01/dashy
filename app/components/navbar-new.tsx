@@ -100,7 +100,7 @@ export const NavbarNew = () => {
     }
   ];
   return (
-    <nav className="max-w-[1121px] fixed lg:relative  z-1000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+    <nav className="max-w-[1121px] fixed lg:relative  z-9000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
       <Image
         src="/assets/logo.svg"
         alt="logo"
@@ -203,7 +203,7 @@ export const NavbarNew = () => {
         </div>
         <div
           onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className="flex z-100000  cursor-pointer flex-col text-black gap-1"
+          className="flex z-100000 py-5 cursor-pointer flex-col text-black gap-1"
         >
           <motion.div
             animate={{
@@ -242,7 +242,7 @@ export const NavbarNew = () => {
             transition={{
               duration: 0.5
             }}
-            className="w-full  lg:hidden absolute  bg-primary-new-new"
+            className="w-full  lg:hidden absolute  bg-primary-new"
           >
             <div className="flex pb-[10px] pt-20 flex-col h-[100dvh] md:h-[100vh] justify-between items-end">
               <motion.ul
