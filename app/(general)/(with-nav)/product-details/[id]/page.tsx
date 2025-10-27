@@ -97,7 +97,7 @@ const Page = () => {
         <Skeleton className="w-full h-[50px] mb-5" />
       ) : (
         <Link
-          className="bg-[#b53a53]  text-white  mb-5 w-fit p-2 rounded-full flex items-center gap-2"
+          className="bg-new-secondary  text-white  mb-5 w-fit p-2 rounded-full flex items-center gap-2"
           href={`/store/${product?.store_id}`}
         >
           <ChevronLeft /> Go To Store

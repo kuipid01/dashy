@@ -34,7 +34,7 @@ const LandingPageNew = () => {
         We help your products reach new audiences through automated web and
         social posting, engaging motion designs, and smart brand storytelling.
       </motion.p>
-      <div className="flex flex-col justify-center sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-md sm:max-w-none">
+      <div className="flex z-10000 flex-col justify-center sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-md sm:max-w-none">
         <LightBtn
           text="Login"
           underline={false}

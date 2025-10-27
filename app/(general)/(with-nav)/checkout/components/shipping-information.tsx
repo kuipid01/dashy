@@ -29,7 +29,7 @@ const ShippingInformation = ({
   email,
   setEmail,
   phone,
-  setPhone,
+  setPhone
 }: ShippingInfoProps) => {
   const { user, isLoading: isUserLoading } = useFetchUser();
 
@@ -45,8 +45,6 @@ const ShippingInformation = ({
       if (user.Email) {
         setEmail(user.Email);
       }
-      
-     
     }
   }, [user]);
 
@@ -91,28 +89,35 @@ const ShippingInformation = ({
           ) : user ? (
             // User is logged in, display non-editable details
             <>
-              <div className="px-5 py-2 text-white text-sm bg-[#b53a53]">
-                We found an account with the logged in user, details will be used.
+              <div className="px-5 py-2 text-white text-sm bg-new-secondary">
+                We found an account with the logged in user, details will be
+                used.
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
                   <Label>First Name</Label>
-                  <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">{firstName}</div>
+                  <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">
+                    {firstName}
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label>Last Name</Label>
-                  <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">{lastName}</div>
+                  <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">
+                    {lastName}
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <Label>Email</Label>
-                <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">{email}</div>
+                <div className="bg-gray-100 p-3 rounded-md font-medium text-gray-800">
+                  {email}
+                </div>
               </div>
-            
-               <div className="flex flex-col gap-2">
+
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
-                required
+                  required
                   id="phone"
                   placeholder="+234 801 234 5678"
                   value={phone}
@@ -127,7 +132,7 @@ const ShippingInformation = ({
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
-                  required
+                    required
                     id="firstName"
                     placeholder="John"
                     value={firstName}
@@ -137,7 +142,7 @@ const ShippingInformation = ({
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
-                  required
+                    required
                     id="lastName"
                     placeholder="Doe"
                     value={lastName}
@@ -148,7 +153,7 @@ const ShippingInformation = ({
               <div className="flex flex-col gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                required
+                  required
                   id="email"
                   type="email"
                   placeholder="john@example.com"
@@ -159,7 +164,7 @@ const ShippingInformation = ({
               <div className="flex flex-col gap-2">
                 <Label htmlFor="phone">Phone</Label>
                 <Input
-                required
+                  required
                   id="phone"
                   placeholder="+234 801 234 5678"
                   value={phone}

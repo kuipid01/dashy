@@ -95,24 +95,12 @@ export const NavbarNew = () => {
   const router = useRouter();
   const links = [
     {
-      name: "About",
-      href: "/about"
-    },
-    {
-      name: "Features",
-      href: "/Features"
-    },
-    {
-      name: "Pricing",
-      href: "/pricing"
-    },
-    {
       name: "Discover",
       href: "/discover"
     }
   ];
   return (
-    <nav className="max-w-[1121px] fixed lg:relative  z-10000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+    <nav className="max-w-[1121px] fixed lg:relative  z-1000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
       <Image
         src="/assets/logo.svg"
         alt="logo"
@@ -174,13 +162,13 @@ export const NavbarNew = () => {
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "relative hover:bg-primary",
+                    "relative hover:bg-primary-new",
                     animatingCart && "cart-bounce"
                   )}
                 >
                   <ShoppingCart className="w-4 h-4" />
 
-                  <div className="absolute  text-black bg-primary  font-bold border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  <div className="absolute  text-black bg-primary-new  font-bold border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                     {totalItems}
                   </div>
                 </Btnshad>
@@ -200,13 +188,13 @@ export const NavbarNew = () => {
                 variant="outline"
                 size="sm"
                 className={cn(
-                  "relative cursor-pointer bg-primary hover:bg-primary",
+                  "relative cursor-pointer bg-primary-new hover:bg-primary-new",
                   animatingCart && "cart-bounce"
                 )}
               >
                 <ShoppingCart className="w-4 h-4" />
 
-                <div className="absolute  text-black bg-primary border border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                <div className="absolute  text-black bg-primary-new border border-black -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                   {totalItems}
                 </div>
               </Btnshad>
@@ -254,7 +242,7 @@ export const NavbarNew = () => {
             transition={{
               duration: 0.5
             }}
-            className="w-full  lg:hidden absolute  bg-primary-new"
+            className="w-full  lg:hidden absolute  bg-primary-new-new"
           >
             <div className="flex pb-[10px] pt-20 flex-col h-[100dvh] md:h-[100vh] justify-between items-end">
               <motion.ul
@@ -299,7 +287,7 @@ export const NavbarNew = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }} // Instant disappearance on close
                     transition={{ duration: 0.1 }}
-                    className="flex bg-primary-new gap-5 px-5"
+                    className="flex bg-primary-new-new gap-5 px-5"
                   >
                     {!userLoading && !user && (
                       <>

@@ -108,12 +108,13 @@ export interface Order {
   status:
   | "pending"
   | "processing"
+  | "paid"
   | "shipped"
   | "delivered"
   | "cancelled"
   | "draft"
   | "dispute"
-    | string; // Gorm default 'pending'
+  | string; // Gorm default 'pending'
 
   userId: number;
   user: User;
@@ -171,10 +172,10 @@ export interface Order {
   store_dispute_proof?: string | null;
   store_dispute_response?: string | null;
   store_dispute_at?: Date | null;
-  dispute_winner?: "store" | "customer" | null; 
+  dispute_winner?: "store" | "customer" | null;
   dispute_resolved_reason?: string | null;
   platform_to_store_payment_status?: string | null | "completed" | "pending";
-	platform_to_store_payment_at?: Date | null;
+  platform_to_store_payment_at?: Date | null;
 }
 
 
@@ -301,7 +302,7 @@ export interface TemporalUserWithOrders extends TemporalUser {
 
 // Order API Request/Response Types
 export interface CreateOrderRequest {
-  purhase_id:string,
+  purhase_id: string,
   userId?: number;
   temporalUserId?: number;
   store_id: number;
@@ -331,7 +332,7 @@ export interface CreateOrderRequest {
   }
 }
 export interface CreateTemporalOrderRequest {
-  purhase_id:string,
+  purhase_id: string,
   store_id: number;
   order_items: {
     product_id: number;
@@ -682,4 +683,189 @@ export interface StoreReviewStatsResponse {
     "4": number;
     "5": number;
   };
+}
+
+// ===================== Paystack Payment Types =====================
+export interface PaystackInitializeRequest {
+  order_id: number;
+  purchase_id: string;
+  email: string;
+  customer_name: string;
+  callback_url: string;
+}
+
+export interface PaystackInitializeResponse {
+  status: "success" | "failed";
+  data: {
+    authorization_url: string;
+    access_code: string;
+    reference: string;
+  };
+  message?: string;
+}
+
+export interface PaystackVerifyResponse {
+  success: boolean;
+  data: {
+    id: number;
+    domain: string;
+    status: "success" | "failed" | "pending";
+    reference: string;
+    amount: number;
+    message: string;
+    gateway_response: string;
+    paid_at: string;
+    created_at: string;
+    channel: string;
+    currency: string;
+    ip_address: string;
+    metadata: {
+      order_id: number;
+      purchase_id: string;
+      customer_name: string;
+      email: string;
+    };
+    log: {
+      time_spent: number;
+      attempts: number;
+      authentication: string;
+      errors: number;
+      success: boolean;
+      mobile: boolean;
+      input: any[];
+      channel: string;
+      history: Array<{
+        type: string;
+        message: string;
+        time: number;
+      }>;
+    };
+    fees: number;
+    fees_split: any;
+    authorization: {
+      authorization_code: string;
+      bin: string;
+      last4: string;
+      exp_month: string;
+      exp_year: string;
+      channel: string;
+      card_type: string;
+      bank: string;
+      country_code: string;
+      brand: string;
+      reusable: boolean;
+      signature: string;
+      account_name: string;
+    };
+    customer: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      email: string;
+      customer_code: string;
+      phone: string;
+      metadata: any;
+      risk_action: string;
+      international_format_phone: string;
+    };
+    plan: any;
+    split: any;
+    order_id: number;
+    paidAt: string;
+    createdAt: string;
+    requested_amount: number;
+    pos_transaction_data: any;
+    source: any;
+    fees_breakdown: any;
+  };
+  message?: string;
+}
+
+export interface PaystackStatusResponse {
+  success: boolean;
+  data: {
+    reference: string;
+    status: "success" | "failed" | "pending" | "abandoned";
+    amount: number;
+    currency: string;
+    created_at: string;
+    paid_at?: string;
+    customer: {
+      email: string;
+      first_name: string;
+      last_name: string;
+    };
+    metadata: {
+      order_id: number;
+      purchase_id: string;
+    };
+  };
+  message?: string;
+}
+
+// ===================== Refund Types =====================
+export interface Refund {
+  id: string;
+  order_id: string;
+  store_id: string;
+  payment_ref: string;
+  amount: number;
+  reason: string;
+  status: "pending" | "processing" | "completed" | "declined";
+  admin_note?: string;
+  created_at: string;
+  updated_at: string;
+  processed_at?: string;
+  declined_at?: string;
+  order?: Order;
+  store?: Store;
+}
+
+export interface CreateRefundRequest {
+  order_id: string;
+  store_id: string;
+  payment_ref: string;
+  amount: number;
+  reason: string;
+  bank_account_number:string;
+  bank_account_name:string;
+}
+
+export interface UpdateRefundStatusRequest {
+  status: "pending" | "processing" | "completed" | "declined";
+  admin_note?: string;
+}
+
+export interface RefundResponse {
+  success: boolean;
+  data: Refund;
+  message?: string;
+}
+
+export interface RefundsListResponse {
+  success: boolean;
+  data: {
+    refunds: Refund[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+  message?: string;
+}
+
+export interface RefundStatsResponse {
+  success: boolean;
+  data: {
+    total_refunds: number;
+    pending_refunds: number;
+    processing_refunds: number;
+    completed_refunds: number;
+    declined_refunds: number;
+    total_refund_amount: number;
+    pending_refund_amount: number;
+    processing_refund_amount: number;
+    completed_refund_amount: number;
+    declined_refund_amount: number;
+  };
+  message?: string;
 }

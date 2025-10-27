@@ -33,6 +33,8 @@ import { Moon } from "lucide-react";
 import { Navbar } from "@/app/components/navbar";
 import Footer from "@/app/components/footer";
 import ShippingDetails from "../../components/shipping-details";
+import FooterNew from "@/app/components/footer-new";
+import { NavbarNew } from "@/app/components/navbar-new";
 
 const Page = () => {
   const { pid, id } = useParams<{ pid: string; id: string }>();
@@ -122,7 +124,7 @@ const Page = () => {
 
   if (productLoading || variantsLoading || !product) {
     return (
-      <div className="min-h-screen bg-primary dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+      <div className="min-h-screen bg-primary-new dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
         <ProductDetailSkeleton />
       </div>
     );
@@ -134,13 +136,13 @@ const Page = () => {
 
   return (
     <>
-      <Navbar />
-      <div className="min-h-screen  bg-primary dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+      <NavbarNew />
+      <div className="min-h-screen  bg-primary-new dark:bg-neutral-900 w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
         {productLoading ? (
           <Skeleton className="w-full h-[50px] mb-5" />
         ) : (
           <Link
-            className="bg-[#b53a53]  text-white  mb-5 w-fit p-2 rounded-full flex items-center gap-2"
+            className="bg-new-secondary  text-white  mb-5 w-fit p-2 rounded-full flex items-center gap-2"
             href={`/store/${id}`}
           >
             <ChevronLeft /> Go To Store
@@ -409,7 +411,7 @@ const Page = () => {
 
         <YouMightLike />
       </div>
-      <Footer />
+      <FooterNew />
     </>
   );
 };

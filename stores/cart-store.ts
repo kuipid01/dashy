@@ -235,7 +235,7 @@ export const useCartStore = create<CartStore>()(
             },
             getItemPrice: (item) => {
                 // Return variant price if available, otherwise product price
-                return item.variant?.price || item.product.price;
+                return item.variant?.price || item.product.discounted_price || item.product.price;
             },
             getItemTotalPrice: (item) => {
                 const unitPrice = get().getItemPrice(item);

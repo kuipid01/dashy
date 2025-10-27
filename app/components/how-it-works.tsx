@@ -56,7 +56,7 @@ const HowItWorks = () => {
     }
   };
   return (
-    <section className="py-16 min-h-[400px] px-4 bg-[#FDF9F4]">
+    <section className="py-16 min-h-[400px] px-4 bg-primary-new">
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <motion.div

@@ -77,7 +77,7 @@ export default function ProductCard({
           </div> */}
           </div>
 
-          <p>₦{product?.price}</p>
+          <p>₦{product?.discounted_price || product?.price}</p>
         </div>
       </Link>
     </div>

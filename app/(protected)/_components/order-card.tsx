@@ -53,7 +53,9 @@ export default function OrderCard({
     pending: "bg-yellow-300/50",
     processing: "bg-purple-300/50",
     draft: "bg-gray-300/50",
-    dispute: "bg-red-300/50"
+    dispute: "bg-red-300/50",
+    paid: "bg-green-500/50",
+    pending_payment: "bg-yellow-500/50"
   };
 
   console.log("ORDER", order);

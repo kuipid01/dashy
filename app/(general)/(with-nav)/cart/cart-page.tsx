@@ -178,7 +178,7 @@ const CartPage = () => {
           activeStore !== null &&
           activeStore !== undefined && (
             <Link
-              className="flex items-center gap-2 bg-[#b53a53] text-white p-2 rounded-md hover:text-white transition-colors"
+              className="flex items-center gap-2 bg-new-secondary text-white p-2 rounded-md hover:text-white transition-colors"
               href={activeStore ? "/store/" + activeStore : "/"}
             >
               <ChevronLeft />

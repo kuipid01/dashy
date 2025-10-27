@@ -637,6 +637,8 @@ const DisputeResolution = ({ order }: { order: Order }) => {
         refundType={storeGuilty ? "full" : "partial"}
         orderId={order.id.toString()}
         refundStatus={order.refund_status}
+        storeId={order.store_id?.toString() || ""}
+        paymentRef={order.paymentId || ""}
       />
     );
   }

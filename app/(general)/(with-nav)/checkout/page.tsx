@@ -35,6 +35,7 @@ import { useCreateTemporalUser } from "@/app/(handlers)/temporal-user";
 import { Contact } from "@/constants/types";
 import { useCreateOrderWithTemporalUser } from "@/app/(handlers)/orders/queries";
 import { generatePurchaseId } from "./utils/get-purchase-id";
+import { useInitializePaystackPayment } from "@/app/(handlers)/paystack/queries";
 // Removed verification panel in favor of anonymous checkout flow
 
 interface Address {
@@ -104,7 +105,10 @@ const CheckoutPage = () => {
     useCreateOrder();
   const { mutateAsync: createOrderTemp, isPending: creatingOrderTemp } =
     useCreateOrderWithTemporalUser();
-
+  const {
+    mutateAsync: initializePaystackPayment,
+    isPending: isInitializingPaystackPayment
+  } = useInitializePaystackPayment();
   const { mutateAsync: createPendingUser, isPending: isCreatingUser } =
     useCreatePendingUser();
 
@@ -262,7 +266,23 @@ const CheckoutPage = () => {
       // );
       const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
       clearCart();
-      router.push(`/checkout/success?orderIds=${orderIds}`);
+      const paystackResponse = await initializePaystackPayment({
+        order_id: createdOrders[0].id,
+        purchase_id: purchaseId,
+        email: email,
+        customer_name: `${firstName} ${lastName}`,
+        callback_url: `${window.location.origin}/checkout/success?orderIds=${orderIds}`
+      });
+      console.log(paystackResponse);
+      if (paystackResponse.status === "success") {
+        router.push(paystackResponse.data.authorization_url);
+        setIsProcessing(false);
+        return;
+      } else {
+        toast.error(paystackResponse.message || "Something went wrong");
+        setIsProcessing(false);
+        return;
+      }
     } catch (error: unknown) {
       console.error(error, "error");
       toast.error(

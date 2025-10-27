@@ -11,17 +11,17 @@ import {
 import { CheckCircle } from "lucide-react";
 import { useState } from "react";
 import {
-  useGetBankListCOR,
-  useInitiateTransfer,
-  useValidateName
-} from "@/app/(handlers)/cashonrails/query";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {
+  useListBanks,
+  useVerifyAccountNumber
+} from "@/app/(handlers)/paystack/queries";
+import { useCreateRefund } from "@/app/(handlers)/refunds/queries";
 
 export const DisputeResolutionResult = ({
   disputeResolved,
@@ -30,7 +30,9 @@ export const DisputeResolutionResult = ({
   refundAmount,
   refundType,
   orderId,
-  refundStatus
+  refundStatus,
+  storeId,
+  paymentRef
 }: {
   disputeResolved: boolean;
   storeGuilty: boolean;
@@ -39,7 +41,11 @@ export const DisputeResolutionResult = ({
   refundType?: "full" | "partial" | null;
   orderId: string;
   refundStatus?: "pending" | "success" | "failed";
+  storeId: string;
+  paymentRef: string;
 }) => {
+  const { mutate: createRefund, isPending: isCreatingRefund } =
+    useCreateRefund();
   const [bankDetails, setBankDetails] = useState({
     bankCode: "",
     bankName: "",
@@ -48,32 +54,13 @@ export const DisputeResolutionResult = ({
     refundAmount: 0,
     refundType: "full"
   });
-  type ValidateNameResponse = {
-    success: boolean;
-    status: string;
-    message: string;
-    data: string;
-  };
 
-  const { data: validateName } = useValidateName(
-    bankDetails.accountNumber,
-    bankDetails.bankCode,
-    "NGN"
-  ) as { data?: ValidateNameResponse };
+  const { data: verifyAccountNumber, isLoading: isLoadingVerifyAccountNumber } =
+    useVerifyAccountNumber(bankDetails.accountNumber, bankDetails.bankCode);
 
-  const {
-    data: bankList = {
-      data: []
-    } as {
-      data: {
-        code: string;
-        name: string;
-      }[];
-    }
-  } = useGetBankListCOR();
+  console.log(verifyAccountNumber, "verifyAccountNumber");
+  const { data: banks } = useListBanks();
 
-  const { mutate: initiateTransfer, isPending: isInitiatingTransfer } =
-    useInitiateTransfer();
   const [showRefundForm, setShowRefundForm] = useState(false);
   console.log(refundStatus, "refundStatus");
 
@@ -135,14 +122,12 @@ export const DisputeResolutionResult = ({
                 Dashbuy takes the commision regadless of the dispute resolution.
               </p>
               <Button
-                disabled={isInitiatingTransfer}
+                disabled={isCreatingRefund}
                 onClick={() => setShowRefundForm(true)}
                 variant="outline"
                 className="w-fit bg-green-500 text-white hover:bg-green-600"
               >
-                {isInitiatingTransfer
-                  ? "Initiating Refund..."
-                  : "Initiate Refund"}
+                {isCreatingRefund ? "Initiating Refund..." : "Initiate Refund"}
               </Button>
             </>
           )}
@@ -182,56 +167,62 @@ export const DisputeResolutionResult = ({
                     setBankDetails({ ...bankDetails, bankCode: value })
                   }
                 >
-                  <SelectTrigger className="mt-1 border-gray-200 cursor-pointer h-[50px] border w-full rounded-md">
+                  <SelectTrigger className="mt-1 z-10000 border-gray-200 cursor-pointer h-[50px] border w-full rounded-md">
                     <SelectValue placeholder="Select bank" />
                     {bankDetails.bankCode}
                   </SelectTrigger>
-                  <SelectContent>
-                    {bankList?.data.map(
-                      (bank: { code: string; name: string }) => (
-                        <SelectItem key={bank.code} value={bank.code}>
+                  <SelectContent className="z-10000">
+                    {banks?.map(
+                      (bank: { code: string; name: string }, index: number) => (
+                        <SelectItem key={index} value={bank.code}>
                           {bank.name}
                         </SelectItem>
                       )
                     )}
                   </SelectContent>
                 </Select>
-                <Input
-                  disabled
-                  placeholder="Account name"
-                  value={validateName?.data}
-                />
+
+                {isLoadingVerifyAccountNumber ? (
+                  <div className="flex items-center justify-center h-[50px] animate-pulse bg-gray-200 rounded-md"></div>
+                ) : (
+                  <Input
+                    disabled
+                    placeholder="Account name"
+                    value={verifyAccountNumber?.account_name}
+                  />
+                )}
               </DialogDescription>
               <DialogFooter>
                 <Button
-                  disabled={!validateName?.data || isInitiatingTransfer}
+                  disabled={
+                    !verifyAccountNumber?.account_name || isCreatingRefund
+                  }
                   variant="outline"
                   className="w-full bg-green-500 text-white hover:bg-green-600"
                   onClick={() => {
-                    if (!validateName?.data) return;
+                    if (!verifyAccountNumber?.account_name) return;
 
                     setBankDetails({
                       ...bankDetails,
                       refundAmount: refundAmount || 0,
                       refundType: refundType || "full"
                     });
-                    initiateTransfer({
-                      account_number: bankDetails.accountNumber,
-                      account_name: validateName?.data,
-                      bank_code: bankDetails.bankCode,
-                      amount: refundAmount?.toString() || "0",
-                      currency: "NGN",
-                      sender_name: "Dashbuy",
-                      narration: "Refund",
-                      reference: "REFUND",
-                      order_id: orderId
+
+                    createRefund({
+                      order_id: orderId,
+                      store_id: storeId,
+                      payment_ref: paymentRef,
+                      amount: refundAmount || 0,
+                      reason: reason,
+                      bank_account_number: bankDetails.accountNumber,
+                      bank_account_name: verifyAccountNumber?.account_name
                     });
-                    if (!isInitiatingTransfer) {
+                    if (!isCreatingRefund) {
                       setShowRefundForm(false);
                     }
                   }}
                 >
-                  {isInitiatingTransfer
+                  {isCreatingRefund
                     ? "Initiating Refund..."
                     : "Initiate Refund"}
                 </Button>

@@ -383,7 +383,7 @@ export default function ProductAddition() {
             <Button
               disabled={!isStepValid() || addingProduct}
               onClick={handlePublish}
-              className="w-24 bg-[#b53a53] hover:bg-[##b53a53]/70 cursor-pointer text-white disabled:bg-gray-400"
+              className="w-24 bg-new-secondary hover:bg-[##b53a53]/70 cursor-pointer text-white disabled:bg-gray-400"
             >
               {addingProduct ? (
                 <Loader2 className="animate-spin duration-300 " />

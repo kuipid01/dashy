@@ -88,7 +88,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-primary-new text-foreground;
   }
 }
 
@@ -107,7 +107,7 @@ body {
     @apply text-[14px] text-zinc-400;
   }
   .bgblur {
-    @apply bg-[#e7e3d6] backdrop-blur-3xl  rounded-[15px] shadow shadow-gray-300;
+    @apply bg-primary-new backdrop-blur-3xl  rounded-[15px] shadow shadow-gray-300;
   }
 }
 
