@@ -19,12 +19,12 @@ export default function StoreNotFound({ id }: { id?: string }) {
         </div>
         <h2 className="mt-4 text-lg font-semibold">Store not available</h2>
         <p className="mt-2 text-sm text-gray-600">
-          We couldn’t find a store with id{` `}
+          This store is not available for use{` `}
           <span className="font-medium">{id ?? "(unknown)"}</span>.
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
-          <Link href="/">
-            <Button variant="outline">Go home</Button>
+          <Link href="/dashboard">
+            <Button variant="outline">Dashboard</Button>
           </Link>
           <Link href="/signup">
             <Button className="gap-2">
