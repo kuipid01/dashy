@@ -90,7 +90,7 @@ const Page = () => {
       </div> */}
       <div className="flex  justify-center items-center flex-1">
         <form
-          className=" max-w-[70%]  lg:max-w-md mx-auto b flex flex-col items-center"
+          className=" max-w-[100%]  lg:max-w-md mx-auto b flex flex-col items-center"
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
@@ -98,10 +98,11 @@ const Page = () => {
           </h1>
 
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">
-            Lets get kicking once again ,money must be made....
+            Lets get kicking once again....
           </p>
-          <div className="flex flex-col gap-5 mb-5">
+          <div className="flex w-[100%] flex-col gap-5 mb-5">
             <InputField
+              className="!w-[100%]"
               type="email"
               placeholder="Enter Email"
               onChange={(e) => {
@@ -110,6 +111,7 @@ const Page = () => {
             />
             <div className=" relative">
               <InputField
+                className="!w-[100%]"
                 type={passwordVisible ? "text" : "password"}
                 placeholder="Enter Password"
                 onChange={(e) => {
@@ -129,7 +131,7 @@ const Page = () => {
             disabled={
               !passwordValid() || !isValidEmail(formDetails.email) || isPending
             }
-            className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
+            className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-new-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
             {isPending ? "Entering...." : " Enter"}
           </button>

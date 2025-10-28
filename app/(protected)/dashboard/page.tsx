@@ -326,7 +326,7 @@ const Page = () => {
   }
   return (
     <>
-      <div className="flex bg-primary flex-col gap-5 p-4 sm:p-6">
+      <div className="flex bg-primary flex-col gap-5 p-2 sm:p-6">
         {/* Header Actions */}
         <div className="justify-end flex gap-5">
           <ButtonLikePill icon={<Flower />} text="Plan Upgrade" />

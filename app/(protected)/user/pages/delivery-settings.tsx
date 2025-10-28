@@ -301,15 +301,15 @@ export default function DeliverySettings() {
       {model === "zones" && (
         <Card className="p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 font-medium">
+            <div className="flex items-center gap-2 font-medium text-wrap">
               <MapPin size={18} /> Fallback
             </div>
           </div>
           <div className="-mt-2 max-w-full">
-            <Badge variant="secondary" className="text-xs py-2">
+            <div className="text-xs rounded-md px-2 font-medium bg-new-secondary text-wrap !max-w-full py-2">
               Define areas and set flat fees. Example: Mainland Lagos within
               10km → ₦2000
-            </Badge>
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="grid gap-2">

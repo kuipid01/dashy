@@ -6,7 +6,7 @@ export default function Layout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex lg:flex-row flex-col overflow-x-hidden relative min-h-screen antialiased">
+    <div className="flex  lg:flex-row flex-col overflow-x-hidden relative min-h-screen antialiased">
       <Suspense
         fallback={
           <div className="grid place-items-center py-10">
@@ -16,7 +16,9 @@ export default function Layout({
       >
         <SettingsSidebar />
       </Suspense>
-      <div className="flex flex-col px-5 lg:px-10  flex-1">{children}</div>
+      <div className="flex mt-5 sm:mt-0 flex-col px-0 sm:px-5 lg:px-10  flex-1">
+        {children}
+      </div>
     </div>
   );
 }
