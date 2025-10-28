@@ -69,7 +69,7 @@ api.interceptors.response.use(
             method: "POST",
             credentials: "include",
           }).then(res => res.json()).then(() => {
-            // window.location.href = "/login";
+         
           });
         
           // window.location.href = "/login";

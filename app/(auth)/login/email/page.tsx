@@ -48,17 +48,20 @@ const Page = () => {
       const searchParams = new URLSearchParams(window.location.search);
       const redirectPath = searchParams.get("redirect");
 
-      await mutateAsync({
+      const response = await mutateAsync({
         email: formDetails.email,
         password: formDetails.password
       });
-
-      toast.success("Get In !!!!");
-
-      if (redirectPath) {
-        router.push(redirectPath);
+      console.log(response);
+      if (!response.error || response.error === null) {
+        toast.success("Get In !!!!");
+        if (redirectPath) {
+          router.push(redirectPath);
+        } else {
+          router.push("/dashboard");
+        }
       } else {
-        router.push("/dashboard"); // fallback
+        toast.error(response.error);
       }
     } catch (error: any) {
       console.log("got here");
