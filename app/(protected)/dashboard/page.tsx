@@ -329,7 +329,11 @@ const Page = () => {
       <div className="flex bg-primary flex-col gap-5 p-2 sm:p-6">
         {/* Header Actions */}
         <div className="justify-end flex gap-5">
-          <ButtonLikePill icon={<Flower />} text="Plan Upgrade" />
+          <ButtonLikePill
+            disabled={true}
+            icon={<Flower />}
+            text="Plan Upgrade"
+          />
           <ButtonLikePill
             disabled={true}
             icon={<Download />}
@@ -339,7 +343,7 @@ const Page = () => {
 
         {/* Top Stats Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-5">
-          {ordersLoading || !orders ? (
+          {ordersLoading ? (
             <SalesCardSkeleton />
           ) : (
             <SalesCard orders={orders} />

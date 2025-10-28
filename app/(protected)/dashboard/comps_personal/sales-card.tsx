@@ -12,7 +12,7 @@ import { Order } from "@/constants/types";
 import { Pill } from "../../_components/small-comps";
 
 type SalesCardProps = {
-  orders: Order[];
+  orders: Order[] | undefined;
 };
 
 // --- Helpers ---
@@ -89,11 +89,11 @@ export default function SalesCard({ orders }: SalesCardProps) {
   }, [range, today]);
 
   const onlineSales = orders
-    .filter((order) => order.sales_means === "ONLINE")
+    ?.filter((order) => order.sales_means === "ONLINE")
     .reduce((acc, order) => acc + (order.total || 0), 0);
   const storeSales = orders
-    .filter((order) => order.sales_means === "STORE")
-    .reduce((acc, order) => acc + (order.total || 0), 0);
+    ?.filter((order) => order.sales_means === "STORE")
+    ?.reduce((acc, order) => acc + (order.total || 0), 0);
 
   const compare = () => {
     if (sales > prevSales) {
@@ -148,27 +148,27 @@ export default function SalesCard({ orders }: SalesCardProps) {
             <div className="animate-in slide-in-from-left-2 duration-500 delay-600">
               <Pill
                 upperText="Online"
-                valueDirection={parseFloat(onlineSales.toFixed(2)) ?? 0}
-                value={parseFloat(onlineSales.toFixed(2)) ?? 0}
+                valueDirection={parseFloat(onlineSales?.toFixed(2) ?? "0") ?? 0}
+                value={parseFloat(onlineSales?.toFixed(2) ?? "0") ?? 0}
               />
             </div>
             <div className="animate-in slide-in-from-left-2 duration-500 delay-700">
               <Pill
                 upperText="In Store"
-                valueDirection={parseFloat(storeSales.toFixed(2)) ?? 0}
-                value={parseFloat(storeSales.toFixed(2)) ?? 0}
+                valueDirection={parseFloat(storeSales?.toFixed(2) ?? "0") ?? 0}
+                value={parseFloat(storeSales?.toFixed(2) ?? "0") ?? 0}
               />
             </div>
             <div className="animate-in slide-in-from-left-2 duration-500 delay-800">
               <Pill
                 upperText="Total"
                 valueDirection={
-                  parseFloat(onlineSales.toFixed(2)) +
-                    parseFloat(storeSales.toFixed(2)) || 0
+                  parseFloat(onlineSales?.toFixed(2) ?? "0") +
+                    parseFloat(storeSales?.toFixed(2) ?? "0") || 0
                 }
                 value={
-                  parseFloat(onlineSales.toFixed(2)) +
-                    parseFloat(storeSales.toFixed(2)) || 0
+                  parseFloat(onlineSales?.toFixed(2) ?? "0") +
+                    parseFloat(storeSales?.toFixed(2) ?? "0") || 0
                 }
               />
             </div>
