@@ -8,14 +8,14 @@ export default function Page() {
     <div className="flex flex-1 flex-col bg-[#F7F7F8] h-full p-3">
       <div className="flex justify-center items-center flex-1">
         <form
-          className="max-w-[70%] lg:max-w-md mx-auto flex flex-col items-center"
+          className="w-full max-w-[100%] justify-center  lg:max-w-md mx-auto flex flex-col items-center"
           action=""
         >
-          <h1 className="text-[20px] font-medium text-left w-full uppercase text-black mb-5">
+          <h1 className="text-[20px] font-medium text-center w-full uppercase text-black mb-5">
             HubSell
           </h1>
 
-          <p className="text-black mb-5 font-light text-2xl leading-[1.5] text-left w-full">
+          <p className="text-black mb-5 font-light text-2xl leading-[1.5] text-center w-full">
             Log in to manage your thriving online business.
           </p>
 

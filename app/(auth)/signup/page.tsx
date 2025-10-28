@@ -30,7 +30,7 @@ export default function Page() {
       </div>
       <div className="flex justify-center items-center flex-1">
         <form
-          className=" max-w-[70%]  lg:max-w-md mx-auto b flex flex-col items-center"
+          className=" w-full max-w-[100%]  lg:max-w-md mx-auto b flex flex-col items-center"
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
@@ -38,7 +38,8 @@ export default function Page() {
           </h1>
 
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">
-            Get better data with conversational forms, surveys, quizzes & more.
+            Sell smarter with HubSell—your store, sales, and growth in one
+            place.
           </p>
 
           <button
