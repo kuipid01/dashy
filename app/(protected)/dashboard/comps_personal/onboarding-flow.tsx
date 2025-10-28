@@ -459,9 +459,10 @@ export function OnboardingFlow() {
                     nameValid ? "border-green-400 " : "border-red-300"
                   )}
                   value={storeData.name}
-                  onChange={(e) =>
-                    setStoreData({ ...storeData, name: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const formattedName = e.target.value.replace(/\s+/g, "-");
+                    setStoreData({ ...storeData, name: formattedName });
+                  }}
                 />
               </div>
               {storeData.name && (
