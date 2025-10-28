@@ -231,7 +231,6 @@ const useOrderAnalytics = (orders: Order[] | undefined) => {
 // Main Component
 const Page = () => {
   // State
-  const [showModal, setShowModal] = useState(true);
 
   // Data fetching hooks
   const { user, isLoading: userLoading } = useFetchUser();
@@ -317,7 +316,8 @@ const Page = () => {
   const isLoading = userLoading || storeLoading || ordersLoading;
 
   // Early returns
-  if (!user?.hasCompletedOnboarding && !userLoading) {
+
+  if (user && !user?.hasCompletedOnboarding && !userLoading) {
     return <OnboardingFlow />;
   }
 
