@@ -317,7 +317,14 @@ const Page = () => {
 
   // Early returns
 
-  if (user && !user?.hasCompletedOnboarding && !userLoading) {
+  if (
+    user &&
+    !user?.hasCompletedOnboarding &&
+    !userLoading &&
+    store &&
+    store?.store?.id &&
+    !isLoading
+  ) {
     return <OnboardingFlow />;
   }
 
