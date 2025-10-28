@@ -100,9 +100,9 @@ const Page = () => {
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">
             Lets get kicking once again....
           </p>
-          <div className="flex w-[100%] flex-col gap-5 mb-5">
+          <div className="flex w-[100%] items-center justify-center flex-col gap-5 mb-5">
             <InputField
-              className="!w-[100%]"
+              className="!w-[100%] md:!w-[400px] "
               type="email"
               placeholder="Enter Email"
               onChange={(e) => {
@@ -111,7 +111,7 @@ const Page = () => {
             />
             <div className=" relative">
               <InputField
-                className="!w-[100%]"
+                className="!w-[100%] md:!w-[400px] "
                 type={passwordVisible ? "text" : "password"}
                 placeholder="Enter Password"
                 onChange={(e) => {

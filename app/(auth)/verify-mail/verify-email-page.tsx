@@ -1,12 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useRegisterUser } from "@/app/(handlers)/auth-handlers/auth";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const VerifyEmailPage = () => {
+  const { mutateAsync, isPending } = useRegisterUser();
+  const [countdown, setCountdown] = useState(60);
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const router = useRouter();
+  const handleSendVerificationEmail = async () => {
+    try {
+      await mutateAsync({
+        email: email,
+        password: "",
+        name: ""
+      });
+      toast.success("Email sent successfully");
+      setCountdown(60);
+    } catch (error: any) {
+      console.log("got here");
+      console.log(error);
+      toast.error(
+        error.response.data.error || "Email sent failed please try again"
+      );
+    }
+  };
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="flex-1 bg-white min-h-screen flex justify-center items-center flex-col p-4">
@@ -32,22 +62,27 @@ export const VerifyEmailPage = () => {
           </p>
           <div className="mt-6 w-full flex flex-col items-center gap-3">
             <button
+              disabled={isPending}
               className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
               onClick={() => {
-                console.log("clckike");
                 router.push(`/verify-code?email=${encodeURIComponent(email)}`);
               }}
             >
               Enter code
             </button>
-            <button
-              className="w-[400px] cursor-pointer disabled:opacity-50  text-secondary h-[40px] font-medium  py-1 rounded-md  flex justify-center items-center gap-3"
-              onClick={() => {
-                /* TODO: trigger resend email */
-              }}
-            >
-              Didn&apos;t receive an email? Resend
-            </button>
+            {countdown > 0 ? (
+              <p className="text-sm text-zinc-500">
+                Resend in {countdown} seconds
+              </p>
+            ) : (
+              <button
+                disabled={isPending}
+                className="w-[400px] cursor-pointer disabled:opacity-50  text-secondary h-[40px] font-medium  py-1 rounded-md  flex justify-center items-center gap-3"
+                onClick={handleSendVerificationEmail}
+              >
+                Resend
+              </button>
+            )}
           </div>
         </div>
       </div>

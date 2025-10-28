@@ -99,7 +99,11 @@ export const VerifyCodePage = () => {
 
           <button
             type="button"
-            onClick={() => router.push("/verify-mail")}
+            onClick={() =>
+              router.push(
+                `/verify-mail?email=${encodeURIComponent(emailFromQuery)}`
+              )
+            }
             className="mt-4 w-full h-[40px] text-secondary font-medium"
           >
             Didn’t get a code? Go back
@@ -109,5 +113,3 @@ export const VerifyCodePage = () => {
     </Suspense>
   );
 };
-
-// export default VerifyCodePage;
