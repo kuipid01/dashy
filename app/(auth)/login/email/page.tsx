@@ -109,7 +109,7 @@ const Page = () => {
                 setFormDetails({ ...formDetails, email: e.target.value });
               }}
             />
-            <div className=" relative">
+            <div className=" w-full relative">
               <InputField
                 className="!w-[100%] md:!w-[400px] "
                 type={passwordVisible ? "text" : "password"}
