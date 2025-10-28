@@ -14,7 +14,7 @@ const Page = () => {
   // ]);
 
   return (
-    <div className="min-h-screen w-[95%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+    <div className="min-h-screen w-[95%] mx-auto px-2 md:px-5 lg:px-10 lg:py-[calc(10vh+50px)]">
       <div className="flex flex-col lg:flex-row gap-10 w-full">
         {/* Main Section */}
         <div className="w-full lg:w-3/5 flex flex-col gap-10">
