@@ -4,6 +4,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function OAuthComp() {
   const router = useRouter();
@@ -11,7 +12,11 @@ export default function OAuthComp() {
 
   useEffect(() => {
     const code = searchParams.get("code");
-    if (!code) return;
+    if (!code) {
+      toast.error("no code found or wrong code");
+      router.push("/login");
+      return;
+    }
 
     const run = async () => {
       try {
@@ -38,8 +43,9 @@ export default function OAuthComp() {
   }, [router, searchParams]);
 
   return (
-    <div className="flex min-h-screen h-full items-center justify-center">
-      <p>Completing sign-in…</p>
+    <div className="flex bg-primary flex-col min-h-screen h-full items-center justify-center">
+      <Loader2 className="w-10 h-10 animate-spin text-black" />
+      <p className="text-black">Completing sign-in…</p>
     </div>
   );
 }
