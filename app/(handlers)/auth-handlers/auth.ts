@@ -270,7 +270,7 @@ export const useFetchUserStore = () => {
   } = useQuery<any, Error>({
     queryKey: ['store'],
     queryFn: fetchUserStore,
-    retry: 1,
+    retry: 3,
   })
 
   return {
