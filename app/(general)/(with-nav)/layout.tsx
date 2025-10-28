@@ -13,7 +13,15 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Hubsell",
-  description: "Hubsell ❤"
+  description: "Hubsell ❤",
+  keywords: "Hubsell, store",
+  openGraph: {
+    title: "Hubsell",
+    description: "Hubsell ❤",
+    url: "https://www.hubsell.com",
+    siteName: "Hubsell",
+    type: "website"
+  }
 };
 
 export default function RootLayout({
