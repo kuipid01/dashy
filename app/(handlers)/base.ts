@@ -68,8 +68,8 @@ api.interceptors.response.use(
           await fetch("/api/auth/logout", {
             method: "POST",
             credentials: "include",
-          }).then(res => res.json()).then(data => {
-            window.location.href = "/login";
+          }).then(res => res.json()).then(() => {
+            // window.location.href = "/login";
           });
         
           // window.location.href = "/login";
