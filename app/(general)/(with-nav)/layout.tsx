@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   title: "Hubsell",
   description: "Hubsell ❤",
   keywords: "Hubsell, store",
+  icons: {
+    icon: "/vercel.svg"
+  },
   openGraph: {
     title: "Hubsell",
     description: "Hubsell ❤",
