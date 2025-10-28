@@ -271,6 +271,8 @@ export const useFetchUserStore = () => {
     queryKey: ['store'],
     queryFn: fetchUserStore,
     retry: 3,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
   return {
