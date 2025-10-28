@@ -90,7 +90,7 @@ const Page = () => {
       </div> */}
       <div className="flex  justify-center items-center flex-1">
         <form
-          className=" max-w-[100%]  lg:max-w-md mx-auto b flex flex-col items-center"
+          className=" w-full max-w-[100%]  lg:max-w-md mx-auto b flex flex-col items-center"
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
@@ -131,7 +131,7 @@ const Page = () => {
             disabled={
               !passwordValid() || !isValidEmail(formDetails.email) || isPending
             }
-            className="w-[400px] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-new-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
+            className="md:w-[400px] w-[100%] cursor-pointer disabled:opacity-50  text-white h-[40px] font-medium bg-new-secondary  py-1 rounded-md  flex justify-center items-center gap-3"
           >
             {isPending ? "Entering...." : " Enter"}
           </button>
