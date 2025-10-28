@@ -87,7 +87,7 @@ export default function ProductAddition() {
 
   const { mutateAsync } = usePublishProducts();
   const { store } = useFetchUserStore();
-  console.log(store);
+  console.log("STORE GOTTEN ",store);
   const { upload } = useUploadImage();
   const handlePublish = async () => {
     try {

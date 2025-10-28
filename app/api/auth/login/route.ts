@@ -14,28 +14,23 @@ export async function POST(req: Request) {
 
   const nextRes = NextResponse.json(data, { status: res.status });
 
-  const rawCookies = res.headers.get("set-cookie");
-  if (rawCookies) {
-    const accessMatch = rawCookies.match(/access_token=([^;]+)/);
-    const refreshMatch = rawCookies.match(/refresh_token=([^;]+)/);
+  // ✅ Manually set cookies from tokens in body
+  if (data.access_token) {
+    nextRes.cookies.set("access_token", data.access_token, {
+      httpOnly: false,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
+  }
 
-    if (accessMatch) {
-      nextRes.cookies.set("access_token", accessMatch[1], {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/",
-      });
-    }
-
-    if (refreshMatch) {
-      nextRes.cookies.set("refresh_token", refreshMatch[1], {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/",
-      });
-    }
+  if (data.refresh_token) {
+    nextRes.cookies.set("refresh_token", data.refresh_token, {
+      httpOnly: false,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
   }
 
   return nextRes;
