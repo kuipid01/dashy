@@ -190,14 +190,95 @@ const NavbarProtected = () => {
           >
             <Menu size={24} />
           </button>
-          <div className="size-[40px] cursor-pointer overflow-hidden ml-3 rounded-full relative">
-            <Image
-              alt="user profile picture"
-              fill
-              className="object-cover"
-              src="/assets/login.jpg"
-            />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="size-[40px] bg-gray-400 border border-gray-600 cursor-pointer overflow-hidden ml-3 rounded-full relative">
+                <Image
+                  alt="user profile picture"
+                  fill
+                  className="object-cover"
+                  src={user?.avatar || "/assets/login.jpg"}
+                />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="bottom"
+              className="min-w-[300px] mr-20 p-5"
+            >
+              <DropdownMenuLabel className="mb-3">Account</DropdownMenuLabel>
+              {isLoading ? (
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="size-10 bg-gray-300 rounded-full animate-pulse" />
+                  <div className="flex flex-col gap-1">
+                    <div className="w-32 h-4 bg-gray-300 rounded-md animate-pulse" />
+                    <div className="w-48 h-3 bg-gray-200 rounded-md animate-pulse" />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center mb-3 justify-between">
+                  <div className="flex gap-2">
+                    <div className="size-10 relative rounded-full">
+                      <Image
+                        alt="user profile picture"
+                        fill
+                        className="object-cover rounded-full"
+                        src={user?.avatar || "/assets/login.jpg"}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="font-bold">{user?.Name}</p>
+                      <p className="text-sm text-gray-600">{user?.Email}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <DropdownMenuSeparator className="mb-3" />
+              {storeLoading ? (
+                <DropdownMenuItem className="flex items-center py-3 gap-3 cursor-not-allowed opacity-50">
+                  <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+                  <div className="w-16 h-4 bg-gray-300 rounded animate-pulse" />
+                </DropdownMenuItem>
+              ) : !userStore?.name ? (
+                <div></div>
+              ) : (
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/store/${userStore?.name}`}
+                    className="flex items-center py-3 hover:bg-gray-200 gap-3"
+                  >
+                    <Store size={24} /> Store
+                  </Link>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem className="flex items-center py-3 hover:bg-gray-200 gap-3">
+                <LayoutDashboard size={24} /> Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/user"
+                  className="flex items-center py-3 hover:bg-gray-200 gap-3"
+                >
+                  <Settings size={24} /> Settings
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="mt-5" />
+              <DropdownMenuItem asChild>
+                <button
+                  onClick={handleLogout}
+                  className="text-red-500 py-3 mt-2 flex items-center gap-3"
+                >
+                  {loading ? (
+                    <Loader2 className="animate-spin duration-200" />
+                  ) : (
+                    <LogOut color="#fb2c36" size={24} />
+                  )}
+                  {loading ? "Loading" : "Log Out"}
+                </button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
