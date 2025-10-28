@@ -65,12 +65,12 @@ api.interceptors.response.use(
         // ✅ Call backend to clear cookies
         try {
           console.log("logging out");
-          // await fetch("/api/auth/logout", {
-          //   method: "POST",
-          //   credentials: "include",
-          // }).then(res => res.json()).then(data => {
-          //   window.location.href = "/login";
-          // });
+          await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          }).then(res => res.json()).then(data => {
+            window.location.href = "/login";
+          });
         
           // window.location.href = "/login";
         } catch (logoutError) {
