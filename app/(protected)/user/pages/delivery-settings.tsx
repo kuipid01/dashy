@@ -270,7 +270,7 @@ export default function DeliverySettings() {
   };
 
   return (
-    <div className="flex px-10 py-4 flex-col gap-6">
+    <div className="flex lg:px-10 py-4 flex-col gap-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           <span>🚚</span> Delivery Settings
