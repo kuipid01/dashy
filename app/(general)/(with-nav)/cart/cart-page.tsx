@@ -98,10 +98,10 @@ const CartPage = () => {
 
     return (
       <Card key={item.cartItemId} className="overflow-hidden">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-6">
+        <CardContent className=" p-2 md:p-4 lg:p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
             {/* Product Image */}
-            <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="relative md:w-24 w-full h-[200px] md:h-24 rounded-xl overflow-hidden flex-shrink-0">
               <Image
                 src={(item.product.image?.[0] as string) || "/placeholder.svg"}
                 alt={item.product.name}
@@ -111,8 +111,10 @@ const CartPage = () => {
             </div>
 
             {/* Product Details */}
-            <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-xl mb-2">{item.product.name}</h3>
+            <div className="flex-1 items-start flex flex-col w-full min-w-0">
+              <h3 className="font-bold text-lg md:text-xl mb-2">
+                {item.product.name}
+              </h3>
               <p className="text-zinc-600 mb-2">{item.product.category}</p>
               {renderVariantDetails()}
               {item.storeName && (
@@ -124,46 +126,49 @@ const CartPage = () => {
               <p className="font-bold text-lg">₦{price.toLocaleString()}</p>
             </div>
 
-            {/* Quantity Controls */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-between rounded-full bg-gray-100 px-3 py-2 w-[140px] shadow-sm">
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.cartItemId, item.quantity - 1)
-                  }
-                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus size={18} />
-                </button>
-                <span className="w-12 text-center text-sm font-medium">
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.cartItemId, item.quantity + 1)
-                  }
-                  className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <Plus size={18} />
-                </button>
-              </div>
-            </div>
+            {/* Quantity, Total and Remove - responsive row */}
+            <div className="w-full">
+              <div className="flex w-full items-center justify-between gap-4">
+                {/* Quantity Controls */}
+                <div className="flex items-center justify-between rounded-full bg-gray-100 px-3 py-2 w-[140px] shadow-sm">
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(item.cartItemId, item.quantity - 1)
+                    }
+                    className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus size={18} />
+                  </button>
+                  <span className="w-12 text-center text-sm font-medium">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(item.cartItemId, item.quantity + 1)
+                    }
+                    className="p-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
 
-            {/* Total Price and Remove */}
-            <div className="text-right">
-              <p className="font-bold text-xl mb-3">
-                ₦{totalPrice.toLocaleString()}
-              </p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => removeItem(item.cartItemId)}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              >
-                Remove
-              </Button>
+                {/* Total Price and Remove */}
+                <div className="text-right">
+                  <p className="font-bold text-xl mb-2">
+                    ₦{totalPrice.toLocaleString()}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeItem(item.cartItemId)}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -171,7 +176,7 @@ const CartPage = () => {
     );
   };
   return (
-    <div className="min-h-screen bg-primary w-[90%] mx-auto px-5 lg:px-10 py-[calc(10vh+50px)]">
+    <div className="min-h-screen bg-primary w-[90%] mx-auto px-2 sm:px-5 lg:px-10 py-[calc(10vh+50px)]">
       <div className="flex gap-1 items-center mb-8 justify-between">
         {activeStore &&
           activeStore !== "0" &&
@@ -188,17 +193,17 @@ const CartPage = () => {
       </div>
 
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row w-full gap-2 items-start md:items-center justify-between mb-8">
           <h1 className="text-4xl font-bold">Your Cart</h1>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-row gap-4 items-center">
             <Button
               variant="outline"
               onClick={toggleGroupByStore}
               className={cn(
                 "px-4 shadow-md font-medium py-2",
                 groupedByStore &&
-                  "bg-general-primary border-general-primary text-general-primary-foreground"
+                  "bg-new-secondary border-new-secondary text-white"
               )}
             >
               {groupedByStore ? (
