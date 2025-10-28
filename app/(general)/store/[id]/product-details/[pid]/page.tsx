@@ -35,6 +35,7 @@ import Footer from "@/app/components/footer";
 import ShippingDetails from "../../components/shipping-details";
 import FooterNew from "@/app/components/footer-new";
 import { NavbarNew } from "@/app/components/navbar-new";
+import { toast } from "sonner";
 
 const Page = () => {
   const { pid, id } = useParams<{ pid: string; id: string }>();
@@ -266,6 +267,16 @@ const Page = () => {
                       />
                       <button
                         onClick={() => {
+                          console.log(currentStock, "currentStock");
+                          if (
+                            currentStock <
+                            (productIsInCart?.quantity || 0) + 1
+                          ) {
+                            toast.error(
+                              "You cannot add more than the available stock"
+                            );
+                            return;
+                          }
                           const cartItemId = getCartItemId(
                             product.id,
                             selectedVariantNew?.id
@@ -340,6 +351,12 @@ const Page = () => {
                   />
                   <button
                     onClick={() => {
+                      if (currentStock < (productIsInCart?.quantity || 0) + 1) {
+                        toast.error(
+                          "You cannot add more than the available stock"
+                        );
+                        return;
+                      }
                       const cartItemId = getCartItemId(product.id);
                       updateItemQuantity(
                         cartItemId,
