@@ -264,13 +264,35 @@ const CheckoutPage = () => {
       //     createdOrders[0]?.id ?? createdOrders[0]?.order_id
       //   }`
       // );
+      if (user && !user.Email) {
+        toast.error("Please add your email to your account");
+        return;
+      }
+      if (!user && !contactManually.email) {
+        toast.error("Please add your email to your account");
+        return;
+      }
+      if (!user && !contactManually.first_name && !contactManually.last_name) {
+        toast.error("Please add your name to make this order");
+        return;
+      }
+      const userDetails = user
+        ? {
+            id: user.id,
+            name: user.Name ?? user.name,
+            email: user.Email
+          }
+        : {
+            email: contactManually.email,
+            name: `${contactManually.first_name} ${contactManually.last_name}`
+          };
       const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
       clearCart();
       const paystackResponse = await initializePaystackPayment({
         order_id: createdOrders[0].id,
         purchase_id: purchaseId,
-        email: email,
-        customer_name: `${firstName} ${lastName}`,
+        email: userDetails.email!,
+        customer_name: userDetails.name,
         callback_url: `${window.location.origin}/checkout/success?orderIds=${orderIds}`
       });
       console.log(paystackResponse);
