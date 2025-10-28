@@ -13,24 +13,15 @@ import { ReactQueryProviders } from "../(handlers)/provicder";
 // });
 
 export const metadata: Metadata = {
-  title: "Hubsell Verification Success | Account Confirmed",
-  description:
-    "Successfully verified your Hubsell account! Start exploring our features and services. Hubsell ❤",
-  keywords:
-    "Hubsell, verification success, account confirmation, user onboarding",
+  title: "Hubsell Store",
+  description: "Hubsell Store ❤",
+  keywords: "Hubsell,  account confirmation, user onboarding",
   openGraph: {
-    title: "Hubsell Verification Success",
-    description:
-      "Your Hubsell account has been successfully verified. Welcome aboard! Hubsell ❤",
-    url: "https://www.hubsell.com/verification-success",
+    title: "Hubsell Store",
+    description: "Hubsell ❤",
+    url: "https://www.hubsell.com",
     siteName: "Hubsell",
     type: "website"
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hubsell Verification Success",
-    description:
-      "Account verification completed successfully. Get started with Hubsell today! ❤"
   }
 };
 

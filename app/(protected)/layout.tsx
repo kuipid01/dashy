@@ -3,6 +3,21 @@ import NavbarProtected from "../(protected)/_components/navbar-protected";
 import { Toaster } from "sonner";
 import { ReactQueryProviders } from "../(handlers)/provicder";
 import { WebSocketProvider } from "@/components/websocket-provider";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hubsell Dashboard",
+  description: "Hubsell Dashboard ❤",
+  keywords: "Hubsell, dashboard",
+  openGraph: {
+    title: "Hubsell Dashboard",
+    description: "Hubsell Dashboard ❤",
+    url: "https://www.hubsell.com",
+    siteName: "Hubsell",
+    type: "website"
+  }
+};
+
 export default function RootLayout({
   children
 }: Readonly<{

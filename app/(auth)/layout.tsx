@@ -148,6 +148,7 @@ import { Poiret_One } from "next/font/google";
 import "../globals.css";
 import { ReactQueryProviders } from "../(handlers)/provicder";
 import { AuthLayout } from "./components/auth-layout";
+import { Metadata } from "next";
 
 const poiretOne = Poiret_One({
   variable: "--font-poiret-one",
@@ -155,6 +156,18 @@ const poiretOne = Poiret_One({
   weight: ["400"]
 });
 
+export const metadata: Metadata = {
+  title: "Hubsell Auth",
+  description: "Hubsell Auth ❤",
+  keywords: "Hubsell, auth",
+  openGraph: {
+    title: "Hubsell Auth",
+    description: "Hubsell Auth ❤",
+    url: "https://www.hubsell.com",
+    siteName: "Hubsell",
+    type: "website"
+  }
+};
 export default function RootLayout({
   children
 }: {

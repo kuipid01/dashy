@@ -1,6 +1,20 @@
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import SettingsSidebar from "./pages/_comps/settings-sidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Hubsell User",
+  description: "Hubsell User ❤",
+  keywords: "Hubsell, user",
+  openGraph: {
+    title: "Hubsell User",
+    description: "Hubsell User ❤",
+    url: "https://www.hubsell.com",
+    siteName: "Hubsell",
+    type: "website"
+  }
+};
 
 export default function Layout({
   children
