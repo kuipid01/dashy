@@ -271,23 +271,20 @@ const CartPage = () => {
 
                     return (
                       <Card key={storeId} className="overflow-hidden">
-                        <CardHeader className="bg-general-primary border-b">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Store
-                                size={20}
-                                className="text-general-primary"
-                              />
-                              <CardTitle className="text-xl">
+                        <CardHeader className="bg-black border-b p-2 md:p-4 lg:p-6">
+                          <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+                            <div className="flex w-full md:w-auto items-center gap-2">
+                              <Store size={20} className="text-white  " />
+                              <CardTitle className="text-xl text-white">
                                 {storeName}
                               </CardTitle>
                             </div>
-                            <div className="text-right">
-                              <p className="text-sm text-general-primary">
+                            <div className="text-right w-full md:w-auto">
+                              <p className="text-sm text-white">
                                 {storeItemCount} item
                                 {storeItemCount !== 1 ? "s" : ""}
                               </p>
-                              <p className="font-bold text-lg text-general-primary">
+                              <p className="font-bold text-lg text-white">
                                 ₦{storeTotal.toLocaleString()}
                               </p>
                             </div>
