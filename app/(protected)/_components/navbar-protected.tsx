@@ -184,12 +184,6 @@ const NavbarProtected = () => {
         </div>
 
         <div className="flex gap-3 lg:hidden items-center">
-          <button
-            className=" cursor-pointer"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu size={24} />
-          </button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="size-[40px] bg-gray-400 border border-gray-600 cursor-pointer overflow-hidden ml-3 rounded-full relative">
@@ -203,7 +197,7 @@ const NavbarProtected = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               side="bottom"
-              className="min-w-[300px] mr-20 p-5"
+              className="min-w-[300px] bg-primary lg:mr-20 mr-5 p-5"
             >
               <DropdownMenuLabel className="mb-3">Account</DropdownMenuLabel>
               {isLoading ? (
@@ -279,6 +273,12 @@ const NavbarProtected = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <button
+            className=" cursor-pointer"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu size={24} />
+          </button>
         </div>
       </div>
 
@@ -289,16 +289,16 @@ const NavbarProtected = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
+            transition={{ duration: 0.05 }}
             className="fixed  inset-0 z-20 bg-black/50 flex"
           >
             <motion.div
               initial={{ opacity: 0, x: 100, scale: 0.8 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 100, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.1 }}
               key="sidebar-content"
-              className="bg-white absolute right-0 top-0 bottom-0 w-[250px] flex flex-col p-5"
+              className="bg-primary absolute right-0 top-0 bottom-0 w-[250px] flex flex-col p-5"
             >
               <div className="flex justify-between items-center mb-5">
                 <p className="font-bold text-lg">Menu</p>
@@ -328,7 +328,7 @@ const NavbarProtected = () => {
                       scale: 0.8,
                       rotate: index * 3
                     }}
-                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                    transition={{ delay: index * 0.1, duration: 0.1 }}
                     key={link.href}
                   >
                     <Link

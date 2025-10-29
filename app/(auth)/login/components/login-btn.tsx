@@ -23,6 +23,7 @@ const LoginBtn = () => {
       : "";
     window.location.href = `${BACKEND_URL}/v1/api/users${redirectQuery}`;
   };
+
   return (
     <>
       <button

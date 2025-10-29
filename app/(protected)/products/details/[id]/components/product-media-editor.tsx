@@ -127,11 +127,14 @@ const ProductMediaEditor: React.FC<ProductMediaEditorProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {media.map((m, index) => {
           const preview = typeof m === "string" ? m : URL.createObjectURL(m);
           return (
-            <div key={index} className="relative">
+            <div
+              key={index}
+              className="relative bg-primary border border-gray-100"
+            >
               <Image
                 width={124}
                 height={124}

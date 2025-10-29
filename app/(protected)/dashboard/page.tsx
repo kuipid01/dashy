@@ -102,6 +102,21 @@ const CustomDot = ({ cx, cy, index }: CustomDotProps) => {
   return null;
 };
 
+const handleTiktokLogin = async () => {
+  const response = await fetch(`http://localhost:4000/v1/api/tiktok/auth`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email: "kuipid01@@gmail.com"
+    })
+  });
+  const data = await response.json();
+  console.log(data);
+};
+
 // Utility Functions
 const isDateInRange = (date: Date, start: Date, end: Date): boolean => {
   return date >= start && date <= end;
@@ -540,6 +555,8 @@ const Page = () => {
             />
           </div>
         )}
+
+        <button onClick={handleTiktokLogin}>Integrate Tiktok</button>
       </div>
 
       {/* Product Modal */}

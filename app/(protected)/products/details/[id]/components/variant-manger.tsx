@@ -106,7 +106,8 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
   };
   const handleSubmit = async () => {
     try {
-      if (!editingVariant.id) {
+      if (editingVariant && !editingVariant.id) {
+        console.log(editingVariant, "editingVariant");
         toast.error(
           "You cannot edit a new variant that is not in the database"
         );
@@ -158,7 +159,10 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
       }
 
       const isValid = validateStock(baseVariant.Stock);
-      if (!isValid) return;
+      if (!isValid) {
+        toast.error("Stock exceeds total product quantity");
+        return;
+      }
 
       if (editingVariant) {
         console.log("Editing", editingVariant);
@@ -303,9 +307,11 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
   );
 
   return (
-    <div className=" max-w-full lg:max-w-8xl mx-auto p-6">
+    <div className=" max-w-full lg:max-w-8xl mx-auto p-2 md:p-4 lg:p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Product Variants</h1>
+        <h1 className="lg:text-2xl text-xl font-bold text-gray-900">
+          Product Variants
+        </h1>
         <button
           disabled={isPending || updating}
           onClick={() => {
@@ -325,7 +331,7 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
                 <VariantForm isEditing={!!editingVariant} />
             )} */}
       {(showAddForm || editingVariant) && (
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-4">
+        <div className="bg-white border-2 border-gray-200 rounded-lg p-2 md:p-4 lg:p-6 mb-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">
               {!!editingVariant ? "Edit Variant" : "Add New Variant"}
@@ -376,7 +382,10 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   SKU
                 </label>
-                <div className="flex">
+                <div
+                  className="flex flex-col sm:flex-row gap-2
+                 sm:gap-0"
+                >
                   <input
                     type="text"
                     value={formData.SKU || ""}
@@ -386,7 +395,7 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
                   />
                   <button
                     onClick={generateSKU}
-                    className="px-3 py-2 cursor-pointer bg-black text-white rounded-r-md hover:bg-black/80 text-sm"
+                    className="px-3 py-2 cursor-pointer bg-black text-white rounded-md sm:rounded-r-md hover:bg-black/80 text-sm"
                   >
                     Auto
                   </button>
@@ -409,7 +418,7 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Price ($)
+                    Price (₦)
                   </label>
                   <input
                     type="number"
