@@ -85,7 +85,7 @@ const ProductMediaEditor: React.FC<ProductMediaEditorProps> = ({
 
   return (
     <div className="border mt-4 p-4 rounded-lg shadow-md">
-      <div className="flex mb-2 justify-between items-center">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 mb-2 justify-between sm:justify-start items-start sm:items-center">
         <p>Product Media</p>
         <div className="flex items-center gap-2">
           {isEditing ? (

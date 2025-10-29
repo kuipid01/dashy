@@ -534,7 +534,7 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${variant?.price?.toFixed(2) || "0.00"}
+                    ₦{variant?.price?.toFixed(2) || "0.00"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <div className="flex -space-x-2">
@@ -601,7 +601,7 @@ const ProductVariantManager = ({ productId }: { productId: number }) => {
       </div>
 
       {/* Summary */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-blue-50 p-4 rounded-lg">
           <h3 className="font-semibold text-blue-900">Total Variants</h3>
           <p className="text-2xl font-bold text-black/80">{variants.length}</p>
