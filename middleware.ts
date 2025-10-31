@@ -39,7 +39,7 @@ export function middleware(request: NextRequest) {
   // Get the auth cookie (accessToken)
   const authCookie = request.cookies.get("access_token");
   const hasAuth = !!authCookie?.value || authCookie?.value === "";
-
+  console.log("Auth Cookie:", authCookie);
   // Handle protected routes
   if (isProtectedRoute) {
     if (!hasAuth) {

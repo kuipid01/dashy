@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const res = await fetch("https://api.nile.ng/go/v1/api/users/login-mail", {
+  const res = await fetch("https://api.kuipid.com/v1/api/users/login-mail", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

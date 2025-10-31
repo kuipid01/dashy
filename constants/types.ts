@@ -188,7 +188,7 @@ export interface User {
   // Core Info
   Name: string | null;
   Email: string | null;
-
+email: string | null;
   // OAuth IDs (non-sensitive)
   GithubID: string | null;
   TwitterID: string | null;

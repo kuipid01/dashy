@@ -53,7 +53,7 @@ const Page = () => {
         password: formDetails.password
       });
       console.log(response);
-      if (!response.error || response.error === null) {
+      if (response.email!== "") {
         toast.success("Get In !!!!");
         if (redirectPath) {
           router.push(redirectPath);
@@ -61,7 +61,7 @@ const Page = () => {
           router.push("/dashboard");
         }
       } else {
-        toast.error(response.error);
+        toast.error( "Account Login failed");
       }
     } catch (error: any) {
       console.log("got here");
