@@ -85,7 +85,7 @@ const Page = () => {
       </div>
       <div className="flex  justify-center items-center flex-1">
         <form
-          className=" max-w-[70%]  lg:max-w-md mx-auto b flex flex-col items-center"
+          className=" max-w-[70%] lg:max-h-[80vh] overflow-y-auto  lg:max-w-md mx-auto b flex flex-col items-center"
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
