@@ -3,8 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const CTABanner = () => {
+  const router = useRouter();
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
@@ -47,6 +49,9 @@ const CTABanner = () => {
 
             {/* CTA Button */}
             <motion.button
+            onClick={() => {
+              router.push("/signup")
+            }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-black text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 w-full sm:w-auto"

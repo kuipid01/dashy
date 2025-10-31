@@ -25,11 +25,11 @@ const LoginBtn = () => {
   };
 
   return (
-    <div className="max-w-[1000px]">
+    <div className="max-w-lg">
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="w-full cursor-pointer mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3"
+        className="w-full px-5 cursor-pointer mb-5 text-zinc-900 h-[40px] font-medium hover:bg-zinc-100 py-1 rounded-md border border-zinc-400 flex justify-center items-center gap-3"
       >
         <svg
           width="24"

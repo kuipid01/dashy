@@ -116,7 +116,7 @@ export const NavbarNew = () => {
         <div className="flex items-center gap-4">
           {links.map((li) => (
             <Link
-              className="text-base font-medium text-black hover:text-gray-600 transition-colors"
+              className="text-base hidden font-medium text-black hover:text-gray-600 transition-colors"
               key={li.href}
               href={li.href.toLowerCase()}
             >
@@ -258,22 +258,22 @@ export const NavbarNew = () => {
                   className="text-right text-4xl font-semibold px-5 py-3"
                   variants={item}
                 >
-                  <Link href="/features">Features</Link>
+                  <Link href="/">Home</Link>
                 </motion.li>
                 <motion.li
-                  className="text-right text-4xl font-semibold px-5 py-3"
+                  className="text-right hidden text-4xl font-semibold px-5 py-3"
                   variants={item}
                 >
                   <Link href="/pricing">Pricing</Link>
                 </motion.li>
                 <motion.li
-                  className="text-right text-4xl font-semibold px-5 py-3"
+                  className="text-right hidden text-4xl font-semibold px-5 py-3"
                   variants={item}
                 >
                   <Link href="/contact">Contact</Link>
                 </motion.li>
                 <motion.li
-                  className="text-right text-4xl font-semibold px-5 py-3"
+                  className="text-right hidden text-4xl font-semibold px-5 py-3"
                   variants={item}
                 >
                   <Link href="/discover">Discover</Link>
