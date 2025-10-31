@@ -10,7 +10,7 @@ const SocialProof = () => {
     {
       id: 1,
       quote:
-        "Hubsell saves us hours every week. Our social posts, ads, and updates now run themselves.",
+        "Kuipid saves us hours every week. Our social posts, ads, and updates now run themselves.",
       author: {
         name: "Sarah Adeyemi",
         title: "Marketing Lead at Bloom & Co",
@@ -89,7 +89,7 @@ const SocialProof = () => {
         >
           <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[48px] font-medium text-left leading-tight">
             Creators everywhere and business owners attest to the magic of
-            Hubsell
+            Kuipid
           </p>
           <NewBtnDark
             className="!bg-black text-white w-fit"
@@ -132,7 +132,7 @@ const SocialProof = () => {
           <div className="w-full lg:w-[682px] relative min-h-[400px] lg:min-h-[580px] bg-white rounded-[15px] p-6 sm:p-8 lg:px-[92px] lg:pt-[90px]">
             <Quote className="absolute rotate-180 top-6 lg:top-[90px] left-4 lg:left-[51px] text-black size-8 lg:size-10" />
             <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[48px] font-medium text-left leading-tight mt-8 lg:mt-0 max-w-[536px]">
-              Hubsell saves us hours every week. Our social posts, ads, and
+              Kuipid saves us hours every week. Our social posts, ads, and
               updates now run themselves.
             </p>
 

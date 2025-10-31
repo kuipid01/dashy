@@ -25,7 +25,7 @@ const LoginBtn = () => {
   };
 
   return (
-    <>
+    <div className="max-w-[1000px]">
       <button
         type="button"
         onClick={handleGoogleLogin}
@@ -73,7 +73,7 @@ const LoginBtn = () => {
       >
         Login with email
       </Link>
-    </>
+    </div>
   );
 };
 

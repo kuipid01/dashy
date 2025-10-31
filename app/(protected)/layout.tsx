@@ -6,17 +6,17 @@ import { WebSocketProvider } from "@/components/websocket-provider";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hubsell Dashboard",
-  description: "Hubsell Dashboard ❤",
-  keywords: "Hubsell, dashboard",
+  title: "Kuipid Dashboard",
+  description: "Kuipid Dashboard ❤",
+  keywords: "Kuipid, dashboard",
   icons: {
     icon: "/vercel.svg"
   },
   openGraph: {
-    title: "Hubsell Dashboard",
-    description: "Hubsell Dashboard ❤",
-    url: "https://www.hubsell.com",
-    siteName: "Hubsell",
+    title: "Kuipid Dashboard",
+    description: "Kuipid Dashboard ❤",
+    url: "https://www.Kuipid.com",
+    siteName: "Kuipid",
     type: "website"
   }
 };

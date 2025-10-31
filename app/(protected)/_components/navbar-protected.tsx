@@ -54,7 +54,7 @@ const NavbarProtected = () => {
     <>
       <div className="w-[90%] fixed z-10 backdrop-blur-[100px] top-[20px] bg-white/50 px-4 rounded-xl left-1/2 -translate-x-1/2 flex items-center justify-between h-[7vh] md:h-[10vh]">
         <Link href="/" className="text-[20px] font-bold">
-          Hubsell
+          Kuipid
         </Link>
 
         <div className="lg:flex hidden">

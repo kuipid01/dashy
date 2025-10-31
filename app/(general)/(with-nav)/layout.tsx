@@ -12,17 +12,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Hubsell",
-  description: "Hubsell ❤",
-  keywords: "Hubsell, store",
+  title: "Kuipid",
+  description: "Kuipid ❤",
+  keywords: "Kuipid, store",
   icons: {
     icon: "/vercel.svg"
   },
   openGraph: {
-    title: "Hubsell",
-    description: "Hubsell ❤",
-    url: "https://www.hubsell.com",
-    siteName: "Hubsell",
+    title: "Kuipid",
+    description: "Kuipid ❤",
+    url: "https://www.Kuipid.com",
+    siteName: "Kuipid",
     type: "website"
   }
 };

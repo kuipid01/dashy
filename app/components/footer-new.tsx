@@ -145,7 +145,7 @@ const FooterNew = () => {
               <ul className="space-y-2 sm:space-y-3">
                 <li>
                   <Link
-                    href="https://x.com/hubsell"
+                    href="https://x.com/Kuipid"
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base"
                   >
                     X (Twitter)
@@ -153,7 +153,7 @@ const FooterNew = () => {
                 </li>
                 <li>
                   <Link
-                    href="https://instagram.com/hubsell"
+                    href="https://instagram.com/Kuipid"
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base"
                   >
                     Instagram
@@ -161,7 +161,7 @@ const FooterNew = () => {
                 </li>
                 <li>
                   <Link
-                    href="https://twitter.com/hubsell"
+                    href="https://twitter.com/Kuipid"
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base"
                   >
                     Twitter
@@ -175,7 +175,7 @@ const FooterNew = () => {
         {/* Bottom Section - Copyright and Attribution */}
         <div className="border-t border-gray-800 mt-8 sm:mt-10 lg:mt-12 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <p className="text-gray-400 text-xs sm:text-sm">
-            © 2025 Hubsell. All rights reserved.
+            © 2025 Kuipid. All rights reserved.
           </p>
           <p className="text-gray-400 text-xs sm:text-sm flex items-center">
             Built with{" "}

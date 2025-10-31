@@ -4,17 +4,17 @@ import SettingsSidebar from "./pages/_comps/settings-sidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hubsell User",
-  description: "Hubsell User ❤",
-  keywords: "Hubsell, user",
+  title: "Kuipid User",
+  description: "Kuipid User ❤",
+  keywords: "Kuipid, user",
   icons: {
     icon: "/vercel.svg"
   },
   openGraph: {
-    title: "Hubsell User",
-    description: "Hubsell User ❤",
-    url: "https://www.hubsell.com",
-    siteName: "Hubsell",
+    title: "Kuipid User",
+    description: "Kuipid User ❤",
+    url: "https://www.Kuipid.com",
+    siteName: "Kuipid",
     type: "website"
   }
 };

@@ -29,7 +29,7 @@ export const Use1 = () => {
   return (
     <div className="h-fit min-h-screen pt-[100px] md:pt-[150px] bg-primary flex flex-col w-full ">
       <p className="text-center w-full lg:max-w-[80%] mx-auto text-[26px] md:text-[36px] lg:text-[46px] font-semibold">
-        HubSell Takes Care of the Essentials, So You Can Focus on Growth
+        Kuipid Takes Care of the Essentials, So You Can Focus on Growth
       </p>
       <div className=" h-[90vh] lg:h-screen pt-[100px] lg:pt-0 flex flex-col relative overflow-y-clip justify-center items-center">
         <Image

@@ -89,11 +89,11 @@ const Page = () => {
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
-            HubSell
+            Kuipid
           </h1>
 
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">
-            Sell smarter with HubSell—your store, sales, and growth in one
+            Sell smarter with Kuipid—your store, sales, and growth in one
             place.
           </p>
           <div className="flex flex-col gap-5 mb-5">
@@ -157,7 +157,7 @@ const Page = () => {
                 id=""
               />
               <p className=" text-sm leading-[1.2] font-light ">
-                I agree to Hubsell&apos;s{" "}
+                I agree to Kuipid&apos;s{" "}
                 <Link href="" className=" underline ">
                   Terms of Service
                 </Link>{" "}

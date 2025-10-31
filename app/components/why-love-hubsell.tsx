@@ -3,19 +3,19 @@ import React from "react";
 import { cubicBezier, motion } from "framer-motion";
 import Image from "next/image";
 
-const WhyLoveHubsell = () => {
+const WhyLoveKuipid = () => {
   const benefits = [
     {
       title: "Everything just flows",
       description:
-        "Automation feels natural, not forced. Hubsell connects your store, socials, and brand so everything runs smoothly without constant tinkering.",
+        "Automation feels natural, not forced. Kuipid connects your store, socials, and brand so everything runs smoothly without constant tinkering.",
       imagePlaceholder: true,
       wide: true
     },
     {
       title: "Work less, grow more",
       description:
-        "Hubsell takes care of your routine marketing — from posting to ad creation — so you can focus on products and people, not platforms.",
+        "Kuipid takes care of your routine marketing — from posting to ad creation — so you can focus on products and people, not platforms.",
       imagePlaceholder: true,
       wide: false
     },
@@ -63,7 +63,7 @@ const WhyLoveHubsell = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-5xl font-serif text-[#333333] mb-4"
           >
-            Why you will love using hubsell
+            Why you will love using Kuipid
           </motion.h2>
         </div>
 
@@ -93,7 +93,7 @@ const WhyLoveHubsell = () => {
               <div className="bg-darker-new-light overflow-clip md:absolute right-0 border border-darker-new-grey h-[300px]  rounded-lg md:h-full flex items-center justify-center">
                 <Image
                   src="/assets/landing-page/buying.svg"
-                  alt="why-love-hubsell"
+                  alt="why-love-Kuipid"
                   width={536}
                   height={392}
                   className=" sm:w-[300px] md:w-[436px] lg:w-[536px] h-full object-cover"
@@ -128,7 +128,7 @@ const WhyLoveHubsell = () => {
                 <div className="bg-darker-new-light border border-darker-new-grey rounded-lg h-[392px] flex items-center justify-center">
                   <Image
                     src="/assets/landing-page/steps.svg"
-                    alt="why-love-hubsell"
+                    alt="why-love-Kuipid"
                     width={536}
                     height={392}
                     className="w-full h-full object-cover"
@@ -155,7 +155,7 @@ const WhyLoveHubsell = () => {
                 <div className="bg-gradient from-[#F05D23] to-[#8A3514] bg-opacity-20 rounded-lg h-[392px] flex items-center justify-center">
                   <Image
                     src="/assets/landing-page/speed.svg"
-                    alt="why-love-hubsell"
+                    alt="why-love-Kuipid"
                     width={536}
                     height={392}
                     className="w-full h-full object-cover"
@@ -170,4 +170,4 @@ const WhyLoveHubsell = () => {
   );
 };
 
-export default WhyLoveHubsell;
+export default WhyLoveKuipid;

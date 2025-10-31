@@ -1,7 +1,7 @@
 import LandingPageNew from "@/app/components/landing-page-new";
 import DashboardNew from "@/app/components/dashboard-new";
 import HowItWorks from "@/app/components/how-it-works";
-import WhyLoveHubsell from "@/app/components/why-love-hubsell";
+import WhyLoveKuipid from "@/app/components/why-love-hubsell";
 import SocialProof from "@/app/components/social-proof";
 import FaqNew from "@/app/components/faq-new";
 import CTABanner from "@/app/components/cta-banner";
@@ -23,7 +23,7 @@ export default function Home() {
 
       <DashboardNew />
       <HowItWorks />
-      <WhyLoveHubsell />
+      <WhyLoveKuipid />
       <SocialProof />
       <CTABanner />
       {/* <Use1 /> */}

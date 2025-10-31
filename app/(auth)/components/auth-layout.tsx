@@ -55,7 +55,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
               Sign up <br /> and come on in
             </h1>
             <p className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center text-sm text-zinc-900 gap-1">
-              <Copyright size={15} /> Hubsell
+              <Copyright size={15} /> Kuipid
             </p>
             <Image
               alt="Sign Up Placeholder Image"

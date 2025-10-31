@@ -9,24 +9,24 @@ const FaqNew = () => {
 
   const faqData = [
     {
-      question: "What is Hubsell and how does it work?",
+      question: "What is Kuipid and how does it work?",
       answer:
-        "Hubsell is an all-in-one platform that automates your social media marketing, content creation, and customer engagement. It uses AI to create posts, schedule content, and manage your online presence across multiple platforms."
+        "Kuipid is an all-in-one platform that automates your social media marketing, content creation, and customer engagement. It uses AI to create posts, schedule content, and manage your online presence across multiple platforms."
     },
     // {
-    //   question: "How much does Hubsell cost?",
+    //   question: "How much does Kuipid cost?",
     //   answer:
     //     "We offer flexible pricing plans starting from $29/month for individual creators to $199/month for enterprise teams. All plans include a 14-day free trial with no credit card required."
     // },
     {
       question: "Can I connect multiple social media accounts?",
       answer:
-        "Yes! Hubsell supports Instagram, Facebook, Twitter, LinkedIn, and TikTok. You can connect unlimited accounts and manage them all from one dashboard."
+        "Yes! Kuipid supports Instagram, Facebook, Twitter, LinkedIn, and TikTok. You can connect unlimited accounts and manage them all from one dashboard."
     },
     {
       question: "Is there a mobile app available?",
       answer:
-        "Currently, Hubsell is optimized for web browsers and works perfectly on mobile devices. We're developing dedicated mobile apps for iOS and Android, coming soon in 2026."
+        "Currently, Kuipid is optimized for web browsers and works perfectly on mobile devices. We're developing dedicated mobile apps for iOS and Android, coming soon in 2026."
     },
     {
       question: "What kind of support do you offer?",
@@ -82,7 +82,7 @@ const FaqNew = () => {
             FAQs
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get answers to the most common questions about Hubsell
+            Get answers to the most common questions about Kuipid
           </p>
         </motion.div>
 

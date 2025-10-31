@@ -15,7 +15,7 @@ const Page = () => {
         height={100}
       />
       <p className="text-zinc-500 text-sm">Your mail has been verified</p>
-      <h1 className="text-2xl font-bold">Lets Go to your Hubsell Hubsell 🎉</h1>
+      <h1 className="text-2xl font-bold">Lets Go to your Kuipid Kuipid 🎉</h1>
 
       <Button
         onClick={() => router.push("/dashboard")}

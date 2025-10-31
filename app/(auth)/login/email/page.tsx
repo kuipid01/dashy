@@ -97,7 +97,7 @@ const Page = () => {
           action=""
         >
           <h1 className=" text-[20px] font-medium text-center uppercase text-black mb-5">
-            HubSell
+            Kuipid
           </h1>
 
           <p className=" text-black mb-5 font-light text-2xl leading-[1.5] text-center">

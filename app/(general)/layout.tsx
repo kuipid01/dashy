@@ -13,17 +13,17 @@ import { ReactQueryProviders } from "../(handlers)/provicder";
 // });
 
 export const metadata: Metadata = {
-  title: "Hubsell Store",
-  description: "Hubsell Store ❤",
-  keywords: "Hubsell,  account confirmation, user onboarding",
+  title: "Kuipid Store",
+  description: "Kuipid Store ❤",
+  keywords: "Kuipid,  account confirmation, user onboarding",
   icons: {
     icon: "/vercel.svg"
   },
   openGraph: {
-    title: "Hubsell Store",
-    description: "Hubsell ❤",
-    url: "https://www.hubsell.com",
-    siteName: "Hubsell",
+    title: "Kuipid Store",
+    description: "Kuipid ❤",
+    url: "https://www.Kuipid.com",
+    siteName: "Kuipid",
     type: "website"
   }
 };

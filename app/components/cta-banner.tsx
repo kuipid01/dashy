@@ -42,7 +42,7 @@ const CTABanner = () => {
 
             {/* Sub-text */}
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[24px] text-white/90 leading-relaxed mb-6 md:mb-8 max-w-lg mx-auto md:mx-0">
-              Hubsell connects your products, posts, and customers in one flow.
+              Kuipid connects your products, posts, and customers in one flow.
             </p>
 
             {/* CTA Button */}
@@ -51,7 +51,7 @@ const CTABanner = () => {
               whileTap={{ scale: 0.95 }}
               className="bg-black text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 w-full sm:w-auto"
             >
-              Try Hubsell Free
+              Try Kuipid Free
             </motion.button>
           </motion.div>
 

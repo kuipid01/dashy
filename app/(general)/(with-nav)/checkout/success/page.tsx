@@ -230,7 +230,7 @@ const SuccessPage = () => {
                 shortly.
               </p>
               <p className="mt-2">
-                Need help? Contact our support team at support@hubsell.com
+                Need help? Contact our support team at support@Kuipid.com
               </p>
             </div>
           </CardContent>

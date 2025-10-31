@@ -556,7 +556,7 @@ const Page = () => {
           </div>
         )}
 
-        <button onClick={handleTiktokLogin}>Integrate Tiktok</button>
+        {/* <button onClick={handleTiktokLogin}>Integrate Tiktok</button> */}
       </div>
 
       {/* Product Modal */}

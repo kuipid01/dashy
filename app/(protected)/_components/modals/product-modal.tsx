@@ -42,7 +42,7 @@ export function ProductModal({
           </DialogDescription>
           <p className="text-[16px] text-muted-foreground">
             Please ADD A PRODUCT TO START YOUR JOURNEY WITH THE FULL POWERS OF
-            HUBSELL.
+            Kuipid.
           </p>
 
           <DialogFooter>

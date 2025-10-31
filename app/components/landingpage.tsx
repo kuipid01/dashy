@@ -68,7 +68,7 @@ export const Landing = () => {
             Anything, Instantly.{" "}
           </h1>
           <p className="text-2xl w-full md:max-w-[70%] lg:max-w-[80%] my-4 text-center md:text-left">
-            Launch your global online store instantly and sell anything. HubSell
+            Launch your global online store instantly and sell anything. Kuipid
             simplifies e-commerce.
           </p>
 

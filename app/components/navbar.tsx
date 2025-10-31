@@ -146,7 +146,7 @@ export const Navbar = () => {
         )}
       >
         <Link href="/" className=" text-[20px] font-bold">
-          Hubsell
+          Kuipid
         </Link>
         <div className="hidden lg:flex items-center gap-4">
           <Link href="/features">Features</Link>

@@ -17,8 +17,8 @@
 // });
 
 // //  const metadata: Metadata = {
-// //   title: "Join Hubsell | Auth",
-// //   description: "Hubsell Auth Pages"
+// //   title: "Join Kuipid | Auth",
+// //   description: "Kuipid Auth Pages"
 // // };
 // export default function RootLayout({
 //   children
@@ -122,7 +122,7 @@
 //               </h1>
 //               <p className=" absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center text-sm text-zinc-900 gap-1">
 //                 {" "}
-//                 <Copyright size={15} /> Hubsell
+//                 <Copyright size={15} /> Kuipid
 //               </p>
 //               <Image
 //                 alt="Login Placeholder Image"
