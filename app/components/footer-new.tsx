@@ -32,7 +32,7 @@ const FooterNew = () => {
           <div className="w-full lg:w-auto">
             {/* Logo and Company Name */}
             <Image
-              src="/assets/logo-light.png"
+              src="/assets/logo-new-white.png"
               alt="logo"
               width={120}
               height={30}
