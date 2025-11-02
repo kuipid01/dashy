@@ -10,7 +10,8 @@ const settingsList = [
   { link: "Security", active: true },
   // { link: "Integrations", active: true },
   { link: "Store", active: true },
-  { link: "Delivery", active: true }
+  { link: "Delivery", active: true },
+  { link: "Banking", active: true }
 ];
 
 const SettingsSidebar = () => {

@@ -59,7 +59,7 @@ const Page = () => {
     } catch (error: any) {
       console.log("got here");
       console.log(error);
-      toast.error(error.response.data.error || "Account created successfully");
+      toast.error(error?.response?.data?.error || "Account failed creation.");
     }
   };
   // console.log(formDetails);

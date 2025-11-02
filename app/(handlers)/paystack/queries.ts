@@ -136,7 +136,7 @@ export const useVerifyAccountNumber = (accountNumber: string, bankCode: string) 
     return useQuery({
         queryKey: ["verify-account-number", accountNumber, bankCode],
         queryFn: () => paystackAPI.verifyAccountNumber(accountNumber, bankCode),
-        enabled: !!(accountNumber && bankCode),
+        enabled: !!(accountNumber.length>9 && bankCode.length>1),
         staleTime: 10 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
     });
@@ -144,7 +144,7 @@ export const useVerifyAccountNumber = (accountNumber: string, bankCode: string) 
 
 export const useListBanks = () => {
   return useQuery({
-    queryKey: ["banks"],
+    queryKey: ["paystack-banks"],
     queryFn: paystackAPI.listBanks,
   });
 };

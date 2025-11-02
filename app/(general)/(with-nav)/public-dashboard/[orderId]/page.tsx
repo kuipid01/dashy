@@ -1694,7 +1694,7 @@ export default function OrderDetailsPage() {
       { store: Partial<StoreType>; orders: Order[] }
     >();
 
-    orders.forEach((order) => {
+    orders?.forEach((order) => {
       console.log(order, "ORDERS");
       //@ts-ignore
       if (order.store_id) {

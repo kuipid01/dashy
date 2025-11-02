@@ -8,6 +8,7 @@ import Security from "../security";
 import Modifications from "../modifications";
 import StoreDetails from "./store-details";
 import DeliverySettings from "../delivery-settings";
+import BankDetails from "../bank-dets";
 
 const ActiveTabContent = () => {
   const searchParams = useSearchParams();
@@ -20,7 +21,8 @@ const ActiveTabContent = () => {
     // Integrations: <Integrations />,
     Modifications: <Modifications />,
     Store: <StoreDetails />,
-    Delivery: <DeliverySettings />
+    Delivery: <DeliverySettings />,
+    Banking: <BankDetails />,
   };
 
   return <>{componentMap[activeTab || ""] || <PersonalInformation />}</>;
