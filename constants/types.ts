@@ -102,6 +102,7 @@ export interface Address {
 
 // Main Order Type
 export interface Order {
+  not_protected_by_escrow?:boolean;
   id: number;
   total: number;
   status:
@@ -329,10 +330,10 @@ export interface CreateOrderRequest {
     fee: number;
     distance?: number;
   };
-  isEscrow?: boolean;
+  notProtectedByEscrow?: boolean;
 }
 export interface CreateTemporalOrderRequest {
-  isEscrow?: boolean;
+  notProtectedByEscrow?: boolean;
   purhase_id: string;
   store_id: number;
   order_items: {

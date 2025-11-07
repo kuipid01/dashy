@@ -7,7 +7,7 @@ import {
   Truck,
   MoreVertical,
   Calendar,
-  Package
+  Package,
 } from "lucide-react";
 import Image from "next/image";
 //
@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-  DropdownMenuLabel
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 
 export default function OrderCard({
   order,
-  store
+  store,
 }: {
   order: Order;
   store: any;
@@ -41,10 +41,12 @@ export default function OrderCard({
   const [isInvoiceOpen, setInvoiceOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   const imageToRender = order?.orderItems[0]?.Product.Image.includes(",")
     ? order?.orderItems[0]?.Product.Image.split(",")
     : order?.orderItems[0]?.Product.Image;
 
+  console.log(imageToRender);
   //
   const orderCardColor = {
     shipped: "bg-green-300/50",
@@ -55,7 +57,7 @@ export default function OrderCard({
     draft: "bg-gray-300/50",
     dispute: "bg-red-300/50",
     paid: "bg-green-500/50",
-    pending_payment: "bg-yellow-500/50"
+    pending_payment: "bg-yellow-500/50",
   };
 
   console.log("ORDER", order);
@@ -153,7 +155,11 @@ export default function OrderCard({
         <div className=" p-3 w-full flex items-center gap-3 rounded-md bg-[#F7F7F8]">
           <Image
             alt={""}
-            src={imageToRender[0] ?? "/assets/login.jpg"}
+            src={
+              typeof imageToRender === "string"
+                ? imageToRender
+                : imageToRender[0] ?? "/assets/login.jpg"
+            }
             width={100}
             height={100}
             className="w-[100px] h-[100px] rounded-md object-cover"

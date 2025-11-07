@@ -145,7 +145,7 @@ const CheckoutPage = () => {
     [distanceResults]
   );
 
-  const handleCompleteOrder = async (isEscrow: boolean = false) => {
+  const handleCompleteOrder = async (notProtectedByEscrow: boolean = false) => {
     if (user) {
       if (!email || !firstName || !lastName) {
         toast.error("Please fill in all required fields");
@@ -221,7 +221,7 @@ const CheckoutPage = () => {
               },
               shipping: shippingPayload,
               purhase_id: purchaseId,
-              isEscrow,
+              notProtectedByEscrow,
             });
           } else {
             // Logged-in user order
@@ -239,7 +239,7 @@ const CheckoutPage = () => {
               },
               shipping: shippingPayload,
               purhase_id: purchaseId,
-              isEscrow,
+              notProtectedByEscrow,
             });
           }
 
@@ -290,6 +290,7 @@ const CheckoutPage = () => {
           };
       const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
       clearCart();
+     
       const paystackResponse = await initializePaystackPayment({
         order_id: createdOrders[0].id,
         purchase_id: purchaseId,
@@ -298,6 +299,7 @@ const CheckoutPage = () => {
         subaccount: createdOrders[0].sub_account_code,
         callback_url: `${window.location.origin}/checkout/success?orderIds=${orderIds}`,
       });
+      console.log("paystackResponse", paystackResponse);
       if (paystackResponse.status === "success") {
         router.push(paystackResponse.data.authorization_url);
         setIsProcessing(false);
@@ -406,7 +408,7 @@ const CheckoutPage = () => {
       !shippingFeeIncluded()
     );
   };
-  const canUseEscrow = () => {
+  const canUseDirectToStore = () => {
     const distinctStoreLength = Object.keys(getItemsByStore()).length;
     if (distinctStoreLength === 1) {
       return true;
@@ -444,7 +446,7 @@ const CheckoutPage = () => {
 
     if (!shippingFeeIncluded()) return "Select Shipping Option";
 
-    return "Checkout";
+    return "Checkout (Escrow)";
   };
 
   if (!_hasHydrated) {
@@ -640,6 +642,15 @@ const CheckoutPage = () => {
                 </div>
               </CardContent>
               <div className=" !w-full gap-3  px-4 flex flex-col">
+                {canUseDirectToStore() && (
+                  <Button
+                    className=" bg-green-800  !w-full py-6 text-lg font-semibold"
+                    onClick={() => handleCompleteOrder(true)}
+                    disabled={isButtonDisabled()}
+                  >
+                    Checkout Direct
+                  </Button>
+                )}
                 <Button
                   className="!w-full py-6 text-lg font-semibold"
                   onClick={() => handleCompleteOrder()}
@@ -647,15 +658,7 @@ const CheckoutPage = () => {
                 >
                   {getButtonLabel()}
                 </Button>
-                {canUseEscrow() && (
-                  <Button
-                    className=" bg-green-800  !w-full py-6 text-lg font-semibold"
-                    onClick={() => handleCompleteOrder(true)}
-                    disabled={isButtonDisabled()}
-                  >
-                    Checkout (Escrow Protected)
-                  </Button>
-                )}
+                
               </div>
             </Card>
           </div>

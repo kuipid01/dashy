@@ -5,7 +5,7 @@
 import { useParams } from "next/navigation";
 import {
   useGetAllPurchaseOrders,
-  useUpdateOrderEscrow
+  useUpdateOrderEscrow,
 } from "@/app/(handlers)/order-tracking/query";
 import { Order } from "@/constants/types";
 import { Store as StoreType } from "@/types/store";
@@ -40,7 +40,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  X
+  X,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -49,13 +49,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import Skeleton from "@/app/(general)/_compoenents/skeleton";
 import {
   useUploadImage,
-  useUploadImageUnprotected
+  useUploadImageUnprotected,
 } from "@/app/(handlers)/product/product";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -109,43 +109,43 @@ const OrderStatusBadge = ({ status }: { status: string }) => {
         return {
           color: "bg-yellow-100 text-yellow-800",
           icon: Clock,
-          label: "Pending"
+          label: "Pending",
         };
       case "processing":
         return {
           color: "bg-blue-100 text-blue-800",
           icon: Package,
-          label: "Processing"
+          label: "Processing",
         };
       case "shipped":
         return {
           color: "bg-purple-100 text-purple-800",
           icon: Truck,
-          label: "Shipped"
+          label: "Shipped",
         };
       case "delivered":
         return {
           color: "bg-green-100 text-green-800",
           icon: CheckCircle,
-          label: "Delivered"
+          label: "Delivered",
         };
       case "draft":
         return {
           color: "bg-blue-100 text-blue-800",
           icon: CheckCircle,
-          label: "Draft"
+          label: "Draft",
         };
       case "cancelled":
         return {
           color: "bg-red-100 text-red-800",
           icon: AlertCircle,
-          label: "Cancelled"
+          label: "Cancelled",
         };
       default:
         return {
           color: "bg-gray-100 text-gray-800",
           icon: Clock,
-          label: status
+          label: status,
         };
     }
   };
@@ -172,49 +172,49 @@ const EscrowStatus = ({ order }: { order: Order }) => {
           status: "Payment Protected",
           color: "bg-blue-100 text-blue-800",
           icon: Shield,
-          description: "Your payment is secured in escrow until delivery"
+          description: "Your payment is secured in escrow until delivery",
         };
       case "processing":
         return {
           status: "Order Processing",
           color: "bg-yellow-100 text-yellow-800",
           icon: Package,
-          description: "Store is preparing your order"
+          description: "Store is preparing your order",
         };
       case "shipped":
         return {
           status: "In Transit",
           color: "bg-purple-100 text-purple-800",
           icon: Truck,
-          description: "Your order is on the way"
+          description: "Your order is on the way",
         };
       case "delivered":
         return {
           status: "Awaiting Confirmation",
           color: "bg-orange-100 text-orange-800",
           icon: Clock,
-          description: "Please confirm receipt to release payment"
+          description: "Please confirm receipt to release payment",
         };
       case "completed":
         return {
           status: "Payment Released",
           color: "bg-green-100 text-green-800",
           icon: ShieldCheck,
-          description: "Transaction completed successfully"
+          description: "Transaction completed successfully",
         };
       case "cancelled":
         return {
           status: "Cancelled",
           color: "bg-red-100 text-red-800",
           icon: AlertTriangle,
-          description: "Order was cancelled"
+          description: "Order was cancelled",
         };
       default:
         return {
           status: "Unknown",
           color: "bg-gray-100 text-gray-800",
           icon: Clock,
-          description: "Status unknown"
+          description: "Status unknown",
         };
     }
   };
@@ -230,12 +230,19 @@ const EscrowStatus = ({ order }: { order: Order }) => {
     return null;
   }
 
+  const isProtected = order.not_protected_by_escrow ? false : true;
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Icon className="w-5 h-5 text-gray-600" />
-          <span className="font-medium">Escrow Protection</span>
+          {isProtected ? (
+            <span className="font-medium">Escrow Protection</span>
+          ) : (
+            <span className="font-medium text-red-500">
+              Not Protected By Escrow
+            </span>
+          )}
         </div>
         <Button
           variant="ghost"
@@ -299,7 +306,7 @@ const OrderConfirmation = ({ order }: { order: Order }) => {
         await submitFeedback({
           feedback,
           stars: rating,
-          order_id: order.id
+          order_id: order.id,
         });
       }
       await updateOrderEscrow({
@@ -307,7 +314,7 @@ const OrderConfirmation = ({ order }: { order: Order }) => {
         refund_at: null,
         has_dispute: false,
         refund_requested: false,
-        payment_status: "pending_disbursement"
+        payment_status: "pending_disbursement",
       });
       toast.success(
         `Order confirmed! Payment will be released to the store.${
@@ -329,7 +336,7 @@ const OrderConfirmation = ({ order }: { order: Order }) => {
     toast.info("Refund request submitted. Store will be notified.");
     // Here you would typically make an API call to request refund
   };
-
+  const isProtected = order.not_protected_by_escrow ? false : true;
   if (
     order.status !== "delivered" ||
     order.delivery_approved_at ||
@@ -377,10 +384,12 @@ const OrderConfirmation = ({ order }: { order: Order }) => {
               <CheckCircle className="w-5 h-5" />
               <span className="font-medium">Order Confirmed</span>
             </div>
-            <p className="text-sm text-gray-600">
-              Payment has been released to the store. Thank you for your
-              purchase!
-            </p>
+            {isProtected && (
+              <p className="text-sm text-gray-600">
+                Payment has been released to the store. Thank you for your
+                purchase!
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -470,7 +479,7 @@ const DisputeResolution = ({ order }: { order: Order }) => {
     { value: "item_damaged", label: "Item damaged or defective" },
     { value: "wrong_item", label: "Wrong item received" },
     { value: "not_as_described", label: "Not as described" },
-    { value: "other", label: "Other" }
+    { value: "other", label: "Other" },
   ];
 
   const handleSubmitDispute = async () => {
@@ -484,7 +493,7 @@ const DisputeResolution = ({ order }: { order: Order }) => {
         has_dispute: true,
         delivery_rejected_reason: disputeReason,
         delivery_rejected_at: new Date(),
-        attachments: attachmentUrls.urls.join(",").toString()
+        attachments: attachmentUrls.urls.join(",").toString(),
       });
       setShowDisputeForm(false);
       toast.success(
@@ -505,7 +514,7 @@ const DisputeResolution = ({ order }: { order: Order }) => {
       delivery_rejected_reason: null,
       delivery_rejected_at: null,
       attachments: null,
-      payment_status: "held_in_escrow"
+      payment_status: "held_in_escrow",
     });
     setShowCancelDisputeForm(false);
     toast.success("Dispute cancelled successfully");
@@ -653,7 +662,150 @@ const DisputeResolution = ({ order }: { order: Order }) => {
   ) {
     return null;
   }
+  const isProtected = order.not_protected_by_escrow ? false : true;
+  if (!isProtected)
+    return (
+      <div className="space-y-3">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <h3 className="font-semibold text-red-800">Need Help?</h3>
+          </div>
+          <p className="text-sm text-red-700 mb-3">
+            If you have an issue with your order, you can open a dispute within
+            2 days of delivery.
+          </p>
+          <p className="text-sm bg-red-700 text-white w-fit rounded-md px-3 py-1 mb-3">
+            Note:This order is not protected so refunds depends on store and not
+            held in escrow
+          </p>
 
+          <Button
+            onClick={() => setShowDisputeForm(true)}
+            variant="outline"
+            className="w-full border-red-300 text-red-700 hover:bg-red-50"
+          >
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            Open Dispute
+          </Button>
+        </div>
+
+        {/* Dispute Form Modal */}
+        {showDisputeForm && (
+          <div className="fixed inset-0 bg-primary/50 backdrop-blur-lg flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6">
+              <h3 className="text-lg font-semibold mb-4">Open Dispute</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">
+                    Reason for dispute
+                  </label>
+                  <Select
+                    value={disputeReason}
+                    onValueChange={setDisputeReason}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select a reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {disputeReasons.map((reason) => (
+                        <SelectItem key={reason.value} value={reason.value}>
+                          {reason.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium">Description</label>
+                  <Textarea
+                    placeholder="Please describe the issue in detail..."
+                    value={disputeDescription}
+                    onChange={(e) => setDisputeDescription(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <Input
+                  accept="image/*"
+                  multiple
+                  type="file"
+                  onChange={(e) => {
+                    const files = e.target.files
+                      ? Array.from(e.target.files)
+                      : [];
+                    files.forEach((file) => {
+                      if (file.size > 5 * 1024 * 1024) {
+                        toast.error("File size must be less than 5MB");
+                        return;
+                      }
+                    });
+                    setattachments(
+                      e.target.files ? Array.from(e.target.files) : []
+                    );
+                  }}
+                />
+                <div className="flex  items-center gap-2">
+                  {attachments.map((attachment) => (
+                    <div className="relative w-10 h-10" key={attachment.name}>
+                      <Image
+                        width={100}
+                        height={100}
+                        src={URL.createObjectURL(attachment)}
+                        alt={attachment.name}
+                        className="w-10 h-10 object-cover rounded-md"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          setattachments(
+                            attachments.filter(
+                              (a) => a.name !== attachment.name
+                            )
+                          )
+                        }
+                        className="absolute hover:text-red-400 right-3 top-3 cursor-pointer text-white w-5 h-5"
+                        disabled={isUploading}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-6">
+                <Button
+                  onClick={handleSubmitDispute}
+                  disabled={
+                    !disputeReason ||
+                    !disputeDescription.trim() ||
+                    isPending ||
+                    isUploading
+                  }
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                >
+                  {isPending || isUploading ? (
+                    <Loader2 className="w-4 h-4 mr-2" />
+                  ) : (
+                    "Submit Dispute"
+                  )}
+                </Button>
+                <Button
+                  onClick={() => setShowDisputeForm(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   return (
     <div className="space-y-3">
       <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -797,7 +949,7 @@ const OrderTimeline = ({ order }: { order: Order }) => {
       title: "Order Placed",
       description: "Your order has been placed and payment is secured",
       icon: CreditCard,
-      completed: true
+      completed: true,
     },
     {
       status: "processing",
@@ -807,7 +959,7 @@ const OrderTimeline = ({ order }: { order: Order }) => {
       completed:
         ["processing", "shipped", "delivered", "completed"].includes(
           order.status
-        ) || order.delivery_approved_at
+        ) || order.delivery_approved_at,
     },
     {
       status: "shipped",
@@ -816,7 +968,7 @@ const OrderTimeline = ({ order }: { order: Order }) => {
       icon: Truck,
       completed:
         ["shipped", "delivered", "completed"].includes(order.status) ||
-        order.delivery_approved_at
+        order.delivery_approved_at,
     },
     {
       status: "delivered",
@@ -825,15 +977,15 @@ const OrderTimeline = ({ order }: { order: Order }) => {
       icon: MapPin,
       completed:
         ["delivered", "completed"].includes(order.status) ||
-        order.delivery_approved_at
+        order.delivery_approved_at,
     },
     {
       status: "completed",
       title: "Completed",
       description: "Transaction completed",
       icon: CheckCircle,
-      completed: order.status === "completed" || order.delivery_approved_at
-    }
+      completed: order.status === "completed" || order.delivery_approved_at,
+    },
   ];
 
   if (order.refund_status === "success" || order.refund_status === "pending") {
@@ -891,7 +1043,7 @@ const OrderTimeline = ({ order }: { order: Order }) => {
 // Store order group component
 const StoreOrderGroup = ({
   store,
-  orders
+  orders,
 }: {
   store: StoreType;
   orders: Order[];
@@ -987,7 +1139,7 @@ const StoreOrderGroup = ({
 // Order Receipt Component
 const OrderReceipt = ({
   orders,
-  purchaseId
+  purchaseId,
 }: {
   orders: Order[];
   purchaseId: string;
@@ -1369,43 +1521,43 @@ const PRECONFIGURED_MESSAGES = [
     id: "order_status",
     title: "Check Order Status",
     message:
-      "Hi! Could you please provide an update on my order status? I'd like to know when it will be shipped."
+      "Hi! Could you please provide an update on my order status? I'd like to know when it will be shipped.",
   },
   {
     id: "shipping_time",
     title: "Shipping Timeline",
     message:
-      "Hello! What is the estimated delivery time for my order? When can I expect to receive it?"
+      "Hello! What is the estimated delivery time for my order? When can I expect to receive it?",
   },
   {
     id: "order_modification",
     title: "Modify Order",
     message:
-      "Hi there! I need to make some changes to my order. Is it possible to modify the items or delivery address?"
+      "Hi there! I need to make some changes to my order. Is it possible to modify the items or delivery address?",
   },
   {
     id: "refund_request",
     title: "Refund Inquiry",
     message:
-      "Hello! I would like to request a refund for my order. Could you please guide me through the process?"
+      "Hello! I would like to request a refund for my order. Could you please guide me through the process?",
   },
   {
     id: "product_question",
     title: "Product Question",
     message:
-      "Hi! I have a question about one of the products in my order. Could you provide more details about it?"
+      "Hi! I have a question about one of the products in my order. Could you provide more details about it?",
   },
   {
     id: "delivery_issue",
     title: "Delivery Issue",
     message:
-      "Hello! I'm experiencing an issue with my delivery. Could you help me resolve this?"
-  }
+      "Hello! I'm experiencing an issue with my delivery. Could you help me resolve this?",
+  },
 ];
 
 // Multi-store message box component
 const MultiStoreMessageBox = ({
-  ordersByStore
+  ordersByStore,
 }: {
   ordersByStore: Map<number, { store: Partial<StoreType>; orders: Order[] }>;
 }) => {
@@ -1458,7 +1610,7 @@ const MultiStoreMessageBox = ({
       id: Date.now().toString(),
       text: message,
       timestamp: new Date(),
-      isUser: true
+      isUser: true,
     };
 
     setStoreConversations((prev) => {
@@ -1475,7 +1627,7 @@ const MultiStoreMessageBox = ({
         id: (Date.now() + 1).toString(),
         text: `Thank you for your message! We'll get back to you shortly regarding your order from ${selectedStore?.store.name}.`,
         timestamp: new Date(),
-        isUser: false
+        isUser: false,
       };
 
       setStoreConversations((prev) => {
