@@ -31,15 +31,14 @@ export type Product = {
   Category: string;
   Stock: number | null;
   ID: number;
-}
+};
 
 // Placeholder types for related models (assuming common fields)
 // You should replace these with your actual definitions if available.
 
 export interface User {
   id: number;
-  name: string
-
+  name: string;
 }
 
 export interface Payment {
@@ -59,7 +58,7 @@ export interface OrderItem {
   UnitPrice: number;
   TotalPrice: number;
   CreatedAt: Date;
-  Quantity: number
+  Quantity: number;
   // ... other order item fields
 }
 
@@ -106,15 +105,15 @@ export interface Order {
   id: number;
   total: number;
   status:
-  | "pending"
-  | "processing"
-  | "paid"
-  | "shipped"
-  | "delivered"
-  | "cancelled"
-  | "draft"
-  | "dispute"
-  | string; // Gorm default 'pending'
+    | "pending"
+    | "processing"
+    | "paid"
+    | "shipped"
+    | "delivered"
+    | "cancelled"
+    | "draft"
+    | "dispute"
+    | string; // Gorm default 'pending'
 
   userId: number;
   user: User;
@@ -148,7 +147,7 @@ export interface Order {
   addressId?: string;
   address?: Address;
   orderStatus: string;
-  sales_means: "ONLINE" | "STORE"
+  sales_means: "ONLINE" | "STORE";
   arrival_date: Date;
   placedAt: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
   placed_at: string; // time.Time in Go maps to string (ISO 8601) in JSON/TS
@@ -156,7 +155,6 @@ export interface Order {
   shipping_fee: number;
   payment_status: "held_in_escrow" | "paid" | "pending_disbursement" | "failed";
   deletedAt?: string; // gorm.DeletedAt is a pointer, so optional. Maps to string for timestamp or null.
-
 
   delivery_approved_at?: Date | null;
   delivery_rejected_at?: Date | null;
@@ -178,7 +176,6 @@ export interface Order {
   platform_to_store_payment_at?: Date | null;
 }
 
-
 export interface User {
   ID: number;
   CreatedAt: string;
@@ -188,7 +185,7 @@ export interface User {
   // Core Info
   Name: string | null;
   Email: string | null;
-email: string | null;
+  email: string | null;
   // OAuth IDs (non-sensitive)
   GithubID: string | null;
   TwitterID: string | null;
@@ -215,7 +212,11 @@ email: string | null;
 
   security?: Security;
   hasCompletedOnboarding: boolean;
-
+  TikTokOpenID?: string;
+  TikTokAccessToken?: string;
+  TikTokRefreshToken?: string;
+  TikTokTokenExpiresAt?: Date;
+  TikTokRefreshExpiresAt?: Date;
 }
 
 // Assuming you have a corresponding Go struct for Store
@@ -238,8 +239,6 @@ interface MonthlyEarning {
   start: string; // ISO timestamp (RFC3339)
   end: string; // ISO timestamp (RFC3339)
 }
-
-
 
 export interface ProductVariant {
   ID: string;
@@ -302,7 +301,7 @@ export interface TemporalUserWithOrders extends TemporalUser {
 
 // Order API Request/Response Types
 export interface CreateOrderRequest {
-  purhase_id: string,
+  purhase_id: string;
   userId?: number;
   temporalUserId?: number;
   store_id: number;
@@ -316,23 +315,25 @@ export interface CreateOrderRequest {
   agentId?: number;
   thirdPartyProvider?: string;
   contact?: {
-    id: string
+    id: string;
   };
-  paymentstatus: boolean,
+  paymentstatus: boolean;
   address?: {
-    id: string
+    id: string;
   };
   sales_means: "ONLINE" | "STORE";
   notes?: string;
   shipping: {
-    zone_id?: string,
-    zone_name?: string,
-    fee: number,
-    distance?: number
-  }
+    zone_id?: string;
+    zone_name?: string;
+    fee: number;
+    distance?: number;
+  };
+  isEscrow?: boolean;
 }
 export interface CreateTemporalOrderRequest {
-  purhase_id: string,
+  isEscrow?: boolean;
+  purhase_id: string;
   store_id: number;
   order_items: {
     product_id: number;
@@ -352,7 +353,7 @@ export interface CreateTemporalOrderRequest {
     sub_contact_phone?: string;
     sub_contact_email?: string;
   };
-  paymentstatus: boolean,
+  paymentstatus: boolean;
   address?: {
     id?: string;
     street?: string;
@@ -365,18 +366,17 @@ export interface CreateTemporalOrderRequest {
   sales_means: "ONLINE" | "STORE";
   notes?: string;
   temporal_user: {
-    email: string,
-    first_name: string,
-    last_name: string,
-    phone: string
-  },
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone: string;
+  };
   shipping: {
-    zone_id?: string,
-    zone_name?: string,
-    fee: number,
-    distance?: number
-  }
-
+    zone_id?: string;
+    zone_name?: string;
+    fee: number;
+    distance?: number;
+  };
 }
 
 export interface UpdateOrderRequest {
@@ -389,7 +389,7 @@ export interface UpdateOrderRequest {
   contactId?: string;
   addressId?: string;
   notes?: string;
-  arrival_date?: Date
+  arrival_date?: Date;
 }
 
 export interface LinkOrderToDeliveryOptionRequest {
@@ -496,9 +496,6 @@ export interface ContactSearchResponse {
   message?: string;
 }
 
-
-
-
 // ===================== Shipping & Delivery Types =====================
 export type ShippingPricingModel = "zones" | "distance";
 
@@ -506,13 +503,13 @@ export interface ShippingConfig {
   model: ShippingPricingModel;
   base_fee?: number; // distance model
   per_km?: number;
-  store: Store;  // distance model
+  store: Store; // distance model
   storeLocation?: {
-    lat: number
-    lng: number
-    address?: string
+    lat: number;
+    lng: number;
+    address?: string;
   };
-  zones?: ShippingZone[]
+  zones?: ShippingZone[];
 }
 
 export interface ShippingZone {
@@ -522,7 +519,7 @@ export interface ShippingZone {
   coverage_value: string; // e.g. "Within 10km radius" or "Lagos: Ikeja, Yaba"
   flat_fee: number;
   free_ship_min?: number | null;
-  estimatedDays?: number
+  estimatedDays?: number;
 }
 
 export interface UpsertShippingConfigRequest {
@@ -558,8 +555,6 @@ export interface ShippingQuoteResponse {
   currency: string; // e.g., NGN
   breakdown?: Record<string, number>;
 }
-
-
 
 export interface Location {
   place_id: string;
@@ -692,6 +687,8 @@ export interface PaystackInitializeRequest {
   email: string;
   customer_name: string;
   callback_url: string;
+  subaccount?: string;
+  bearer?:string // "subaccount";
 }
 
 export interface PaystackInitializeResponse {
@@ -827,8 +824,8 @@ export interface CreateRefundRequest {
   payment_ref: string;
   amount: number;
   reason: string;
-  bank_account_number:string;
-  bank_account_name:string;
+  bank_account_number: string;
+  bank_account_name: string;
 }
 
 export interface UpdateRefundStatusRequest {

@@ -1,4 +1,3 @@
-
 import { User } from "@/constants/types";
 import { api } from "../base";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,30 +17,42 @@ const addBank = async (data: Omit<BankAccount, "id">): Promise<any> => {
   const response = await api.post(`/users/addBank`, data);
   return response.data;
 };
-const updateUserOnboardingStatus = async (hasCompletedOnboarding: boolean): Promise<User> => {
+const updateUserOnboardingStatus = async (
+  hasCompletedOnboarding: boolean
+): Promise<User> => {
   const response = await api.put(`/users/update-onboarding-status`, {
-    hasCompletedOnboarding
+    hasCompletedOnboarding,
   });
   return response.data;
 };
 
 export type BankUpdateDto = {
-  bank_id: Number
-  is_primary: boolean,
-  is_substitute: boolean
-}
+  bank_id: Number;
+  is_primary: boolean;
+  is_substitute: boolean;
+};
+export type BankSubaccountDto = {
+  bank_id: string;
+  description: string;
+};
 export type BankDeleteDto = {
-  bank_id: Number
-}
+  bank_id: Number;
+};
 const updateBank = async (data: BankUpdateDto): Promise<User> => {
-  const response = await api.put(`/users/updateBank`,data);
+  const response = await api.put(`/users/updateBank`, data);
+  return response.data;
+};
+const makeBankSubaccount = async (data: BankSubaccountDto): Promise<any> => {
+  const response = await api.post(`/users/subaccount`, data);
   return response.data;
 };
 const deleteBank = async (data: BankDeleteDto): Promise<User> => {
   const response = await api.delete(`/users/deleteBank/${data.bank_id}`);
   return response.data;
 };
-const updateUserSecurity = async (security_settings: Partial<Security>): Promise<Security> => {
+const updateUserSecurity = async (
+  security_settings: Partial<Security>
+): Promise<Security> => {
   const response = await api.put(`/users/security`, security_settings);
   return response.data;
 };
@@ -68,18 +79,32 @@ export const useUpdateUser = () => {
     isPending,
   };
 };
-export const useCheckUserPassword = () => {
+export const useMakeBankSubaccount = () => {
   const query = useQueryClient();
-  const { mutateAsync, isPending, data } = useMutation({
-    mutationFn: (data: { password: string }) => checkPassword(data),
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (data: BankSubaccountDto) => makeBankSubaccount(data),
     onSuccess: () => {
+      query.invalidateQueries({ queryKey: ["sub-accounts"] });
+      query.invalidateQueries({ queryKey: ["store"] });
     },
   });
 
   return {
     mutateAsync,
     isPending,
-    data
+  };
+};
+export const useCheckUserPassword = () => {
+  const query = useQueryClient();
+  const { mutateAsync, isPending, data } = useMutation({
+    mutationFn: (data: { password: string }) => checkPassword(data),
+    onSuccess: () => {},
+  });
+
+  return {
+    mutateAsync,
+    isPending,
+    data,
   };
 };
 export const useAddBank = () => {
@@ -94,43 +119,44 @@ export const useAddBank = () => {
   return {
     addBank: mutateAsync,
     addingBank: isPending,
-    data
+    data,
   };
 };
 export const useDeleteBank = () => {
   const query = useQueryClient();
   const { mutateAsync, isPending, data } = useMutation({
     mutationFn: (data: BankDeleteDto) => deleteBank(data),
-    onSuccess: (_,variables) => {
-      query.invalidateQueries({ queryKey: ["banks",variables.bank_id] });
+    onSuccess: (_, variables) => {
+      query.invalidateQueries({ queryKey: ["banks", variables.bank_id] });
     },
   });
 
   return {
     deleteBank: mutateAsync,
     deletingBank: isPending,
-    data
+    data,
   };
 };
 export const useUpdateBank = () => {
   const query = useQueryClient();
   const { mutateAsync, isPending, data } = useMutation({
     mutationFn: (data: BankUpdateDto) => updateBank(data),
-    onSuccess: (_,variables) => {
-      query.invalidateQueries({ queryKey: ["banks",variables.bank_id] });
+    onSuccess: (_, variables) => {
+      query.invalidateQueries({ queryKey: ["banks", variables.bank_id] });
     },
   });
 
   return {
     updateBank: mutateAsync,
     updatingBank: isPending,
-    data
+    data,
   };
 };
 export const useUpdateUserOnboardingStatus = () => {
   const query = useQueryClient();
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (hasCompletedOnboarding: boolean) => updateUserOnboardingStatus(hasCompletedOnboarding),
+    mutationFn: (hasCompletedOnboarding: boolean) =>
+      updateUserOnboardingStatus(hasCompletedOnboarding),
     onSuccess: () => {
       query.invalidateQueries({ queryKey: ["current-user"] });
     },
@@ -156,13 +182,11 @@ export const useUpdateUserSecurity = () => {
   };
 };
 
-
-
 export const useSearchUserStores = (query: string) => {
   return useQuery({
     queryKey: ["user-stores", query],
     queryFn: () => getUsersStores(query),
-    enabled: query !== ""
+    enabled: query !== "",
   });
 };
 
@@ -170,13 +194,11 @@ export const useGetUserSecurity = () => {
   return useQuery({
     queryKey: ["current-user-security"],
     queryFn: () => getUserSecurity(),
-
   });
 };
 export const useGetBanks = () => {
   return useQuery({
     queryKey: ["banks"],
     queryFn: () => getUserBanks(),
-
   });
 };

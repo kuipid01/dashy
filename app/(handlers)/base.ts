@@ -1,13 +1,13 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 export const api = axios.create({
-  // baseURL: "http://localhost:4000/v1/api/",
+  //baseURL: "http://localhost:4000/v1/api/",
   baseURL: "https://api.kuipid.com/v1/api/",
   withCredentials: true, 
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
-     "Authorization": `Bearer ${Cookies.get("access_token")}`,
+    "Authorization": `Bearer ${Cookies.get("access_token")}`,
   },
 });
 console.log(Cookies.get("access_token"),"access token been sent")
@@ -17,7 +17,7 @@ api.interceptors.request.use(
     const token = Cookies.get("access_token");
     console.log("TOJEN FOR REQUEST", token)
     if (token) {
-       config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },

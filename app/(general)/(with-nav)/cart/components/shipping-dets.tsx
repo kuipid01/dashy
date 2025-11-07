@@ -107,8 +107,6 @@ const ShippingDetailsOrder = ({
     }[]
   >([]);
 
-  console.log(zonesSelected, "ZONES ELECTED");
-
   const cart = Object.values(items);
 
   const storeIds = useMemo(
@@ -119,10 +117,8 @@ const ShippingDetailsOrder = ({
   const { setShippingFeeForStore, clearShippingFees, setShippingAddress } =
     useCartStore();
 
-  console.log(distanceResults, "Distance Results");
 
   const handleSelectLocation = (location: Location) => {
-    console.log(location, " LOCATION SELECTED");
 
     setValueAdress(location.display_name);
     setAddress("");
@@ -314,17 +310,12 @@ const ShippingDetailsOrder = ({
   };
   const distances: number[] = [];
   useEffect(() => {
-    console.log("🚀 useEffect triggered with latLon:", latLon);
-
+    
     if (latLon.lat && latLon.lon) {
       for (const config of storeConfigs) {
         if (config.config.model !== "distance" && zonesPresent) continue;
         // Only auto-calc for distance-based stores
-        console.log("WE GOT HERE FOR THE CONFIG", config);
-
-        console.log("PASSED THE MODEL", config.config.model);
-        console.log("🔍 Checking config for storeId:", config.storeId);
-
+       
         if (
           !config.config.storeLocation?.lat &&
           !config.config.storeLocation?.lng
@@ -352,35 +343,21 @@ const ShippingDetailsOrder = ({
         const baseRate = config.config.base_fee || 5;
         const perKmRate = config.config.per_km || 0.5;
 
-        // Log the key variables before the final calculation.
-        console.log("💰 Shipping calculation details:", {
-          baseRate: baseRate,
-          perKmRate: perKmRate,
-          distance: distance
-        });
+       
 
         const shippingCost = baseRate + distance * perKmRate;
 
-        // Log the final calculated shipping cost.
-        console.log("📦 Calculated shipping cost:", shippingCost.toFixed(2));
-
+        
         const estimatedDays = Math.ceil(distance / 50); // Rough estimate
 
-        // Log the final calculated estimated delivery days.
-        console.log("🚚 Estimated delivery days:", estimatedDays);
-        const result = {
+           const result = {
           distance: distance.toFixed(1),
           cost: shippingCost.toFixed(2),
           estimatedDays: `${estimatedDays}-${estimatedDays + 1}`,
           type: "distance"
         };
 
-        console.log(
-          `📦 Shipping result for storeId ${config.storeId}:`,
-          result
-        );
-
-        setDistanceResults((prev) => ({
+            setDistanceResults((prev) => ({
           ...prev,
           [config.storeId]: result
         }));
@@ -402,21 +379,12 @@ const ShippingDetailsOrder = ({
     lat2: number,
     lng2: number
   ) => {
-    // Log the input coordinates for debugging.
-    console.log("🧮 Calculating distance with inputs:", {
-      userLat: lat1,
-      userLng: lng1,
-      storeLat: lat2,
-      storeLng: lng2
-    });
-
+  
     const R = 6371; // Earth's radius in km
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
 
-    // Log intermediate values to track the calculation.
-    console.log("📐 Delta Lat/Lng (in radians):", { dLat, dLng });
-
+    
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((lat1 * Math.PI) / 180) *
@@ -424,20 +392,13 @@ const ShippingDetailsOrder = ({
         Math.sin(dLng / 2) *
         Math.sin(dLng / 2);
 
-    // Log the 'a' variable, which is part of the Haversine formula.
-    console.log("🔢 'a' value:", a);
-
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-
-    // Log the final calculated distance.
-    console.log("✅ Final distance calculated:", distance, "km");
 
     return distance;
   };
 
-  console.log(distanceResults, "DISTANECE RESULTS");
-  return (
+   return (
     <div
       className={clsx(
         "space-y-4",

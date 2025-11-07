@@ -8,22 +8,23 @@ export const metadata: Metadata = {
   description: "Kuipid User ❤",
   keywords: "Kuipid, user",
   icons: {
-    icon: "/vercel.svg"
+    icon: "/vercel.svg",
   },
   openGraph: {
     title: "Kuipid User",
     description: "Kuipid User ❤",
     url: "https://www.Kuipid.com",
     siteName: "Kuipid",
-    type: "website"
-  }
+    type: "website",
+  },
 };
 
 export default function Layout({
-  children
+  children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex  lg:flex-row flex-col overflow-x-hidden relative min-h-screen antialiased">
+    <div className="flex lg:flex-row flex-col _h-screen items-start justify-start overflow-x-hidden relative min-h-screen antialiased">
+      {" "}
       <Suspense
         fallback={
           <div className="grid place-items-center py-10">
@@ -31,7 +32,9 @@ export default function Layout({
           </div>
         }
       >
-        <SettingsSidebar />
+        <div className=" sticky _top-[0vh] h-fit">
+          <SettingsSidebar />
+        </div>
       </Suspense>
       <div className="flex mt-5 sm:mt-0 flex-col px-0 sm:px-5 lg:px-10  flex-1">
         {children}

@@ -101,7 +101,7 @@ const CartPage = () => {
         <CardContent className=" p-2 md:p-4 lg:p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
             {/* Product Image */}
-            <div className="relative md:w-24 w-full h-[200px] md:h-24 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="relative bg-gray-100 md:w-24 w-full h-[200px] md:h-24 rounded-xl overflow-hidden flex-shrink-0">
               <Image
                 src={(item.product.image?.[0] as string) || "/placeholder.svg"}
                 alt={item.product.name}
@@ -112,7 +112,7 @@ const CartPage = () => {
 
             {/* Product Details */}
             <div className="flex-1 items-start flex flex-col w-full min-w-0">
-              <h3 className="font-bold text-lg md:text-xl mb-2">
+              <h3 className="font-bold text-lg capitalize md:text-xl mb-2">
                 {item.product.name}
               </h3>
               <p className="text-zinc-600 mb-2">{item.product.category}</p>
@@ -127,8 +127,8 @@ const CartPage = () => {
             </div>
 
             {/* Quantity, Total and Remove - responsive row */}
-            <div className="w-full">
-              <div className="flex w-full items-center justify-between gap-4">
+            <div className=" w-full md:w-fit ">
+              <div className="flex w-full  items-center justify-between gap-4">
                 {/* Quantity Controls */}
                 <div className="flex items-center justify-between rounded-full bg-gray-100 px-3 py-2 w-[140px] shadow-sm">
                   <button

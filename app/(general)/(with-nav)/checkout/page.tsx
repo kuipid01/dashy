@@ -8,12 +8,12 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCartStore } from "@/stores/cart-store";
-import { Package, ArrowLeft } from "lucide-react";
+import { Package, ArrowLeft, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -22,7 +22,7 @@ import {
   useCheckUserExists,
   useCreatePendingUser,
   useResendOTP,
-  useFetchUser
+  useFetchUser,
 } from "@/app/(handlers)/auth-handlers/auth";
 import { toast } from "sonner";
 import Skeleton from "../../_compoenents/skeleton";
@@ -57,7 +57,7 @@ const CheckoutPage = () => {
     clearCart,
     _hasHydrated,
     getItemPrice,
-    getItemTotalPrice
+    getItemTotalPrice,
   } = useCartStore();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -83,7 +83,7 @@ const CheckoutPage = () => {
     email: "",
     phone: "",
     sub_contact_phone: "",
-    sub_contact_email: ""
+    sub_contact_email: "",
   });
 
   const [addressManually, setAddressManually] = useState({
@@ -92,22 +92,23 @@ const CheckoutPage = () => {
     state: "",
     postalCode: "",
     country: "Nigeria",
-    addressDescription: ""
+    addressDescription: "",
   });
 
   // Contact selection state
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [latLon, setLatLon] = useState({
     lat: "",
-    lon: ""
+    lon: "",
   });
+
   const { mutateAsync: createOrder, isPending: creatingOrder } =
     useCreateOrder();
   const { mutateAsync: createOrderTemp, isPending: creatingOrderTemp } =
     useCreateOrderWithTemporalUser();
   const {
     mutateAsync: initializePaystackPayment,
-    isPending: isInitializingPaystackPayment
+    isPending: isInitializingPaystackPayment,
   } = useInitializePaystackPayment();
   const { mutateAsync: createPendingUser, isPending: isCreatingUser } =
     useCreatePendingUser();
@@ -143,9 +144,8 @@ const CheckoutPage = () => {
       ),
     [distanceResults]
   );
-  // console.log(shippingFee);
 
-  const handleCompleteOrder = async () => {
+  const handleCompleteOrder = async (isEscrow: boolean = false) => {
     if (user) {
       if (!email || !firstName || !lastName) {
         toast.error("Please fill in all required fields");
@@ -178,7 +178,7 @@ const CheckoutPage = () => {
         const orderItems = items.map((item: any) => ({
           product_id: item.product.id,
           quantity: item.quantity,
-          price: item.product.discounted_price ?? item.product.price ?? 0
+          price: item.product.discounted_price ?? item.product.price ?? 0,
         }));
         const shippingRes = distanceResults[storeId];
         let shippingPayload;
@@ -186,12 +186,12 @@ const CheckoutPage = () => {
           shippingPayload = {
             zone_id: shippingRes.zone_id,
             zone_name: shippingRes.zone_name,
-            fee: parseFloat(shippingRes.cost)
+            fee: parseFloat(shippingRes.cost),
           };
         } else {
           shippingPayload = {
             distance: parseFloat(shippingRes.distance),
-            fee: parseFloat(shippingRes.cost)
+            fee: parseFloat(shippingRes.cost),
           };
         }
         try {
@@ -206,21 +206,22 @@ const CheckoutPage = () => {
               sales_means: "ONLINE" as const,
               contact: {
                 id: selectedContact?.ID as string,
-                ...contactManually
+                ...contactManually,
               },
               paymentstatus: false,
               address: {
                 id: selectedAddress?.id as string,
-                ...addressManually
+                ...addressManually,
               },
               temporal_user: {
                 email: contactManually.email,
                 first_name: contactManually.first_name,
                 last_name: contactManually.last_name,
-                phone: contactManually.phone
+                phone: contactManually.phone,
               },
               shipping: shippingPayload,
-              purhase_id: purchaseId
+              purhase_id: purchaseId,
+              isEscrow,
             });
           } else {
             // Logged-in user order
@@ -230,14 +231,15 @@ const CheckoutPage = () => {
               deliveryMode: "store" as const,
               sales_means: "ONLINE" as const,
               contact: {
-                id: selectedContact?.ID as string
+                id: selectedContact?.ID as string,
               },
               paymentstatus: false,
               address: {
-                id: selectedAddress?.id as string
+                id: selectedAddress?.id as string,
               },
               shipping: shippingPayload,
-              purhase_id: purchaseId
+              purhase_id: purchaseId,
+              isEscrow,
             });
           }
 
@@ -280,11 +282,11 @@ const CheckoutPage = () => {
         ? {
             id: user.id,
             name: user.Name ?? user.name,
-            email: user.Email
+            email: user.Email,
           }
         : {
             email: contactManually.email,
-            name: `${contactManually.first_name} ${contactManually.last_name}`
+            name: `${contactManually.first_name} ${contactManually.last_name}`,
           };
       const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
       clearCart();
@@ -293,9 +295,9 @@ const CheckoutPage = () => {
         purchase_id: purchaseId,
         email: userDetails.email!,
         customer_name: userDetails.name,
-        callback_url: `${window.location.origin}/checkout/success?orderIds=${orderIds}`
+        subaccount: createdOrders[0].sub_account_code,
+        callback_url: `${window.location.origin}/checkout/success?orderIds=${orderIds}`,
       });
-      console.log(paystackResponse);
       if (paystackResponse.status === "success") {
         router.push(paystackResponse.data.authorization_url);
         setIsProcessing(false);
@@ -342,9 +344,7 @@ const CheckoutPage = () => {
   };
 
   const disabled = () => {
-    console.log(selectedContact);
     if (isProcessing || isCreatingUser) {
-      console.log("failed here 1");
       return true;
     }
     if (
@@ -355,7 +355,6 @@ const CheckoutPage = () => {
         !addressManually.postalCode ||
         !addressManually.country)
     ) {
-      console.log("failed here 2");
       return true;
     }
     if (
@@ -365,13 +364,10 @@ const CheckoutPage = () => {
         !contactManually.last_name ||
         !contactManually.phone)
     ) {
-      console.log("failed here 3");
       return true;
     }
     if (user) {
       if (!phone || !isValidNigerianNumber(phone)) {
-        console.log(phone);
-        console.log("failed here 5 , rea");
         return true;
       }
     }
@@ -380,8 +376,6 @@ const CheckoutPage = () => {
         !contactManually.phone ||
         !isValidNigerianNumber(contactManually.phone)
       ) {
-        console.log(contactManually.phone);
-        console.log("failed here 5 , manual");
         return true;
       }
     }
@@ -389,9 +383,6 @@ const CheckoutPage = () => {
     return false;
   };
   const isAddressIncomplete = () => {
-    console.log(addressManually);
-    console.log(selectedAddress);
-    console.log("failed here 1");
     return (
       !selectedAddress &&
       (!addressManually.street ||
@@ -415,7 +406,14 @@ const CheckoutPage = () => {
       !shippingFeeIncluded()
     );
   };
-
+  const canUseEscrow = () => {
+    const distinctStoreLength = Object.keys(getItemsByStore()).length;
+    if (distinctStoreLength === 1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const getButtonLabel = () => {
     if (isProcessing || isCreatingUser) return "Processing...";
 
@@ -641,15 +639,24 @@ const CheckoutPage = () => {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
+              <div className=" !w-full gap-3  px-4 flex flex-col">
                 <Button
-                  className="w-full py-6 text-lg font-semibold"
-                  onClick={handleCompleteOrder}
+                  className="!w-full py-6 text-lg font-semibold"
+                  onClick={() => handleCompleteOrder()}
                   disabled={isButtonDisabled()}
                 >
                   {getButtonLabel()}
                 </Button>
-              </CardFooter>
+                {canUseEscrow() && (
+                  <Button
+                    className=" bg-green-800  !w-full py-6 text-lg font-semibold"
+                    onClick={() => handleCompleteOrder(true)}
+                    disabled={isButtonDisabled()}
+                  >
+                    Checkout (Escrow Protected)
+                  </Button>
+                )}
+              </div>
             </Card>
           </div>
         </div>

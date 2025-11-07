@@ -38,10 +38,13 @@ import {
   useCheckUserPassword,
   useDeleteBank,
   useGetBanks,
+  useMakeBankSubaccount,
   useUpdateBank,
 } from "@/app/(handlers)/user/user";
 import { set } from "date-fns";
 import ConfirmDelete from "@/app/(general)/_compoenents/confirm-delete";
+import { ButtonLikePill } from "@/app/(general)/_compoenents/pill-round";
+import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
 
 export type BankAccount = {
   id: string;
@@ -55,7 +58,8 @@ export type BankAccount = {
 
 export default function BankDetails() {
   const { addBank, addingBank } = useAddBank();
-
+  const { mutateAsync: makeSubAccount, isPending: subAccountLoading } =
+    useMakeBankSubaccount();
   const { deleteBank, deletingBank } = useDeleteBank();
   const { updateBank, updatingBank } = useUpdateBank();
   const {
@@ -64,7 +68,9 @@ export default function BankDetails() {
     data,
   } = useCheckUserPassword();
 
-  console.log("data", data);
+  const { store, isLoading: storeLoading } = useFetchUserStore();
+  const userStore = store?.store;
+  // console.log(userStore);
 
   const { data: myBanks, isFetching } = useGetBanks();
   const { data: bankList } = useListBanks();
@@ -105,7 +111,19 @@ export default function BankDetails() {
     setIsSubstitute(false);
     setModalOpen(true);
   };
-
+  const makeSubAccountFn = async ({ bankId }: { bankId: string }) => {
+    try {
+      await makeSubAccount({
+        bank_id: bankId.toString(),
+        description: "",
+      });
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error.response.data.error ?? "Failed to make this a sub account"
+      );
+    }
+  };
   const addBankAccount = async () => {
     if (!selectedBank || !verifyAccountNumber?.account_name) {
       toast.error("Please complete all fields");
@@ -239,10 +257,15 @@ export default function BankDetails() {
       return;
     }
   };
-  console.log("BANKS LOCALLY", banks);
+  // console.log("BANKS LOCALLY", banks);
   const primaryBank = banks.find((b) => b.is_primary);
   const substituteBanks = banks.filter((b) => b.is_substitute && !b.is_primary);
-  console.log(substituteBanks);
+  // console.log(substituteBanks);
+
+  const isAlreadyDefaultPaymentApp =
+    userStore?.subaccount?.account_number === primaryBank?.account_number &&
+    userStore?.subaccount?.subaccount_code;
+
   return (
     <div className="flex lg:px-10 py-4 flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -250,16 +273,35 @@ export default function BankDetails() {
           <Building2 size={24} /> Bank Details
         </h2>
         <Button disabled={banks.length >= 3} onClick={openAddBankModal}>
-          <Plus className="mr-2 h-4 w-4 disabled:opacity-40 disabled:cursor-none" /> Add Bank Account
+          <Plus className="mr-2 h-4 w-4 disabled:opacity-40 disabled:cursor-none" />{" "}
+          Add Bank Account
         </Button>
       </div>
 
       {/* Primary Bank Section */}
       <Card className="p-4 space-y-4">
-        <div className="flex items-center gap-2 font-medium">
-          <CheckCircle2 size={18} className="text-green-600" />
-          Primary Receiving Account
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-medium">
+            <CheckCircle2 size={18} className="text-green-600" />
+            Primary Receiving Account
+          </div>
+          {banks.length > 0 && (
+            <Button
+              disabled={isAlreadyDefaultPaymentApp}
+              onClick={() => {
+                if (!primaryBank || isAlreadyDefaultPaymentApp) {
+                  return;
+                }
+                makeSubAccountFn({ bankId: primaryBank.id });
+              }}
+            >
+              {isAlreadyDefaultPaymentApp
+                ? "Already Your Default account"
+                : "Set as default payment account"}
+            </Button>
+          )}
         </div>
+
         <Badge variant="secondary" className="text-xs">
           This is your main account where funds will be deposited
         </Badge>

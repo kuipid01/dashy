@@ -57,8 +57,7 @@ const Page = () => {
         `/verify-mail?email=${encodeURIComponent(formDetails.email)}`
       );
     } catch (error: any) {
-      console.log("got here");
-      console.log(error);
+    
       toast.error(error?.response?.data?.error || "Account failed creation.");
     }
   };

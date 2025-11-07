@@ -8,8 +8,7 @@ import React from "react";
 const LoginBtn = () => {
   const searchParams = useSearchParams();
 
-  console.log(searchParams.get("redirect"), "serch params");
-  const toBeRedirectedTo = searchParams.get("redirect") ?? undefined;
+   const toBeRedirectedTo = searchParams.get("redirect") ?? undefined;
 
   const loginUrl = new URL("/login/email", window.location.origin);
 

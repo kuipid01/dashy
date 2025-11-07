@@ -11,7 +11,7 @@ import {
   Flower,
   Sparkles,
   UserRoundPlus,
-  Weight
+  Weight,
 } from "lucide-react";
 
 import {
@@ -20,7 +20,7 @@ import {
   Line,
   DotProps,
   Area,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 import ContainerDashboard from "../_components/container-dashboard";
 import { ArrowDivNew } from "../_components/small-comps";
@@ -32,12 +32,12 @@ import { useFetchUserProducts } from "@/app/(handlers)/product/product";
 import { OnboardingFlow } from "./comps_personal/onboarding-flow";
 import {
   useFetchUser,
-  useFetchUserStore
+  useFetchUserStore,
 } from "@/app/(handlers)/auth-handlers/auth";
 import {
   useFetchStoreOrders,
   useUpdateOrder,
-  useUpdateOrderStatus
+  useUpdateOrderStatus,
 } from "@/app/(handlers)/orders/orders";
 import SalesCard from "./comps_personal/sales-card";
 import { CardContent } from "@/components/ui/card";
@@ -54,10 +54,10 @@ import {
   DashboardPillSkeleton,
   ProductPillDahboard,
   ProductPillDahboardSkeleton,
-  ViewMoreBtnPillProps
+  ViewMoreBtnPillProps,
 } from "@/app/(general)/_compoenents/pill-round";
 import TopSellingProducts, {
-  TopSellingProduct
+  TopSellingProduct,
 } from "../_components/top-selling-products";
 import LatestOrders from "../_components/latest-orders";
 import MonthlyIncomeChart from "../_components/monthly-income-chart";
@@ -82,7 +82,7 @@ const MONTH_NAMES = [
   "Sep",
   "Oct",
   "Nov",
-  "Dec"
+  "Dec",
 ];
 
 // Custom Components
@@ -102,21 +102,6 @@ const CustomDot = ({ cx, cy, index }: CustomDotProps) => {
   return null;
 };
 
-const handleTiktokLogin = async () => {
-  const response = await fetch(`http://localhost:4000/v1/api/tiktok/auth`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      email: "kuipid01@@gmail.com"
-    })
-  });
-  const data = await response.json();
-  console.log(data);
-};
-
 // Utility Functions
 const isDateInRange = (date: Date, start: Date, end: Date): boolean => {
   return date >= start && date <= end;
@@ -134,7 +119,7 @@ const getCurrentMonthRange = () => {
   const now = new Date();
   return {
     start: startOfMonth(now),
-    end: endOfMonth(now)
+    end: endOfMonth(now),
   };
 };
 
@@ -160,7 +145,7 @@ const useOrderAnalytics = (orders: Order[] | undefined) => {
         totalRevenue: 0,
         formattedData: [],
         comparisonText: "No orders yet",
-        latestSales: []
+        latestSales: [],
       };
     }
 
@@ -238,7 +223,7 @@ const useOrderAnalytics = (orders: Order[] | undefined) => {
       formattedData,
       thisMonthOrders,
       comparisonText: getComparisonText(),
-      latestOrders
+      latestOrders,
     };
   }, [orders]);
 };
@@ -287,8 +272,8 @@ const Page = () => {
             | "shipped"
             | "delivered"
             | "cancelled"
-            | undefined
-        }
+            | undefined,
+        },
       });
     },
     [updateOrder]
@@ -317,7 +302,7 @@ const Page = () => {
       salesMap.set(id, {
         productId: id,
         quantity: item.quantity ?? 0,
-        product: item.Product
+        product: item.Product,
       });
     }
   });
@@ -556,7 +541,6 @@ const Page = () => {
           </div>
         )}
 
-        {/* <button onClick={handleTiktokLogin}>Integrate Tiktok</button> */}
       </div>
 
       {/* Product Modal */}
