@@ -1,24 +1,37 @@
-"use client"
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../base";
-import { 
-  Order, 
-  CreateOrderRequest, 
-  UpdateOrderRequest, 
+import {
+  Order,
+  CreateOrderRequest,
+  UpdateOrderRequest,
   LinkOrderToDeliveryOptionRequest,
   OrderWithProducts,
   CreateTemporalOrderRequest,
- 
 } from "@/constants/types";
 
 // Direct API functions for use outside of React Query
 export const orderAPI = {
   // Create a new order
-  create: async (data: CreateOrderRequest): Promise<Order> => {
+  create: async (
+    data: CreateOrderRequest
+  ): Promise<{
+    message: string;
+    order_id: any;
+    status: string;
+    data: Order;
+  }> => {
     const response = await api.post("/orders", data);
     return response.data;
   },
-  createTemporalUser: async (data: CreateTemporalOrderRequest): Promise<Order> => {
+  createTemporalUser: async (
+    data: CreateTemporalOrderRequest
+  ): Promise<{
+    message: string;
+    order_id: any;
+    status: string;
+    data: Order;
+  }> => {
     const response = await api.post("/orders/temporal", data);
     return response.data;
   },
@@ -59,7 +72,10 @@ export const orderAPI = {
   },
 
   // Link order to delivery option
-  linkToDeliveryOption: async (id: number, data: LinkOrderToDeliveryOptionRequest): Promise<Order> => {
+  linkToDeliveryOption: async (
+    id: number,
+    data: LinkOrderToDeliveryOptionRequest
+  ): Promise<Order> => {
     const response = await api.put(`/orders/${id}/delivery-options`, data);
     return response.data.data || response.data;
   },

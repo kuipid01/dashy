@@ -243,7 +243,7 @@ const CheckoutPage = () => {
             });
           }
 
-          createdOrders.push(createdOrder);
+          createdOrders.push(createdOrder.data);
         } catch (err: any) {
           console.error(`❌ Failed to create order for store ${storeId}`, err);
           toast.error(
@@ -290,7 +290,15 @@ const CheckoutPage = () => {
           };
       const orderIds = createdOrders.map((o) => o.id ?? o.order_id).join(",");
       clearCart();
-     
+      console.log("RAW createdOrder:", createdOrders);
+
+      console.log(
+        "ORDER GOTTEN",
+        createdOrders[0].sub_account_code,
+        createdOrders[0],
+        "total oder"
+      );
+
       const paystackResponse = await initializePaystackPayment({
         order_id: createdOrders[0].id,
         purchase_id: purchaseId,
@@ -658,7 +666,6 @@ const CheckoutPage = () => {
                 >
                   {getButtonLabel()}
                 </Button>
-                
               </div>
             </Card>
           </div>

@@ -12,6 +12,7 @@ import {
 export const paystackAPI = {
   // Initialize Paystack payment
   initializePayment: async (data: PaystackInitializeRequest): Promise<PaystackInitializeResponse> => {
+    console.log("DATA BEEN SENT", data);
     const response = await api.post("/paystack/initialize", data);
     return response.data || response.data.data;
   },

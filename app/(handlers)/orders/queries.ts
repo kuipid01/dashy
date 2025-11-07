@@ -28,10 +28,10 @@ export const useCreateOrder = () => {
       // Invalidate and refetch order queries
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
       // Set the new order in cache
-      queryClient.setQueryData(orderKeys.byId(data.id), data);
+      queryClient.setQueryData(orderKeys.byId(data.data.id), data);
       // Invalidate store orders if storeId is present
-      if (data.storeId) {
-        queryClient.invalidateQueries({ queryKey: orderKeys.byStoreId(data.storeId) });
+      if (data.data.storeId) {
+        queryClient.invalidateQueries({ queryKey: orderKeys.byStoreId(data.data.storeId) });
       }
     },
   });
@@ -46,10 +46,10 @@ export const useCreateOrderWithTemporalUser = () => {
       // Invalidate and refetch order queries
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
       // Set the new order in cache
-      queryClient.setQueryData(orderKeys.byId(data.id), data);
+      queryClient.setQueryData(orderKeys.byId(data.data.id), data);
       // Invalidate store orders if storeId is present
-      if (data.storeId) {
-        queryClient.invalidateQueries({ queryKey: orderKeys.byStoreId(data.storeId) });
+      if (data.data.storeId) {
+        queryClient.invalidateQueries({ queryKey: orderKeys.byStoreId(data.data.storeId) });
       }
     },
   });
