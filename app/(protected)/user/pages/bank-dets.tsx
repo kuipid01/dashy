@@ -44,7 +44,10 @@ import {
 import { set } from "date-fns";
 import ConfirmDelete from "@/app/(general)/_compoenents/confirm-delete";
 import { ButtonLikePill } from "@/app/(general)/_compoenents/pill-round";
-import { useFetchUserStore } from "@/app/(handlers)/auth-handlers/auth";
+import {
+  useFetchUser,
+  useFetchUserStore,
+} from "@/app/(handlers)/auth-handlers/auth";
 
 export type BankAccount = {
   id: string;
@@ -57,6 +60,8 @@ export type BankAccount = {
 };
 
 export default function BankDetails() {
+  const { user, isLoading } = useFetchUser();
+  console.log(user);
   const { addBank, addingBank } = useAddBank();
   const { mutateAsync: makeSubAccount, isPending: subAccountLoading } =
     useMakeBankSubaccount();
@@ -563,7 +568,7 @@ export default function BankDetails() {
               </div>
             </div>
           </div>
-          {showPasswordEntering && (
+          {showPasswordEntering && user?.Provider === "APP_AUTH" && (
             <div className="grid gap-2">
               <Label htmlFor="account-number">Enter Password</Label>
               <Input

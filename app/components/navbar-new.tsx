@@ -101,7 +101,7 @@ export const NavbarNew = () => {
   ];
   return (
     <nav className="max-w-[1121px] fixed lg:relative  z-9000 backdrop-blur-2xl lg:backdrop-blur-none top-0 left-0 right-0 py-4 sm:py-[25px] lg:pt-[45px] mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
-      <Link href="/" className="cursor-pointer ">
+      <Link href="/dashboard" className="cursor-pointer ">
         <Image
           src="/assets/logo-new.svg"
           alt="logo"
