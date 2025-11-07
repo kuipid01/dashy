@@ -591,12 +591,18 @@ export default function BankDetails() {
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
+
             <Button
               onClick={() => {
-                if (showPasswordEntering) {
-                  handleCheckPassword();
+                if (user?.Provider === "APP_AUTH") {
+                  // For normal users → step through password verification
+                  if (showPasswordEntering) {
+                    handleCheckPassword();
+                  } else {
+                    setShowPasswordEntering(true);
+                  }
                 } else {
-                  setShowPasswordEntering(true);
+                     addBankAccount(); 
                 }
               }}
               disabled={
@@ -606,7 +612,11 @@ export default function BankDetails() {
                 addingBank
               }
             >
-              {showPasswordEntering ? "Verify Password" : "Add Account"}
+              {user?.Provider === "APP_AUTH"
+                ? showPasswordEntering
+                  ? "Verify Password"
+                  : "Add Account"
+                : "Add Account"}
             </Button>
           </DialogFooter>
         </DialogContent>
